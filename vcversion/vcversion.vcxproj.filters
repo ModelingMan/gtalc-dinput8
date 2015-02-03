@@ -3,9 +3,11 @@
   <ItemGroup>
     <Filter Include="include">
       <UniqueIdentifier>{860d80af-2631-4493-b480-ff397329d9a9}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{25ade000-ef28-4c2e-9230-65dd7db08dbd}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>

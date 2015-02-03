@@ -6,7 +6,7 @@
 	http://www.artemkh.com/gtalc.php
 *******************************************************************************/
 
-unsigned int AdjustOffsetUS11(unsigned int Offset)
+unsigned long AdjustOffsetUS11(unsigned long Offset)
 {
 	if (Offset < 0x00489D0C)
 		return Offset;
@@ -114,7 +114,7 @@ unsigned int AdjustOffsetUS11(unsigned int Offset)
 		return Offset;
 }
 
-unsigned int AdjustOffsetAUS10(unsigned int Offset)
+unsigned long AdjustOffsetAUS10(unsigned long Offset)
 {
 	if (Offset < 0x00600B8A)
 		return AdjustOffsetUS11(Offset);
@@ -171,7 +171,7 @@ unsigned int AdjustOffsetAUS10(unsigned int Offset)
 		return Offset;
 }
 
-unsigned int AdjustOffsetGER10(unsigned int Offset)
+unsigned long AdjustOffsetGER10(unsigned long Offset)
 {
 	if (Offset < 0x004A3941)
 		return AdjustOffsetUS11(Offset);
@@ -216,7 +216,7 @@ unsigned int AdjustOffsetGER10(unsigned int Offset)
 		return Offset;
 }
 
-unsigned int AdjustOffsetGER11(unsigned int Offset)
+unsigned long AdjustOffsetGER11(unsigned long Offset)
 {
 	if (Offset < 0x00600FB0)
 		return AdjustOffsetGER10(Offset);

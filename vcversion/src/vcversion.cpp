@@ -8,6 +8,11 @@
 
 #include <Windows.h>
 
+unsigned long AdjustOffsetUS11(unsigned long Offset);
+unsigned long AdjustOffsetAUS10(unsigned long Offset);
+unsigned long AdjustOffsetGER10(unsigned long Offset);
+unsigned long AdjustOffsetGER11(unsigned long Offset);
+
 namespace vcversion
 {
 	enum eGTAVersion
@@ -19,11 +24,6 @@ namespace vcversion
 		verGTAVC_GER_10,
 		verGTAVC_GER_11
 	};
-
-	unsigned int AdjustOffsetUS11(unsigned int Offset);
-	unsigned int AdjustOffsetAUS10(unsigned int Offset);
-	unsigned int AdjustOffsetGER10(unsigned int Offset);
-	unsigned int AdjustOffsetGER11(unsigned int Offset);
 
 	eGTAVersion gDetectedVersion = verUnknown;
 

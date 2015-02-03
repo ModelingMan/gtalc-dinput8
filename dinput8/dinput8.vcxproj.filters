@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\EntryPoint.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CRunningScriptHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cAudioManagerHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CHudHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPagerHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CFontHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CScrollBarHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CMovingThings.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CTowerClockHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CDigitalClockHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\CRunningScriptHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cAudioManagerHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CHudHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Utils.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CPagerHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CFontHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CScrollBarHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CMovingThingsHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CTowerClockHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CDigitalClockHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dinput8.def">
+      <Filter>src</Filter>
+    </None>
+    <None Include="include\ScrollBarMessages.inc">
+      <Filter>include</Filter>
+    </None>
+  </ItemGroup>
+</Project>
