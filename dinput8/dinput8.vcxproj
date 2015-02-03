@@ -132,7 +132,7 @@
   <ItemGroup>
     <ClCompile Include="src\CDigitalClockHack.cpp" />
     <ClCompile Include="src\CFontHack.cpp" />
-    <ClCompile Include="src\CMovingThings.cpp" />
+    <ClCompile Include="src\CMovingThingsHack.cpp" />
     <ClCompile Include="src\CPagerHack.cpp" />
     <ClCompile Include="src\cAudioManagerHack.cpp" />
     <ClCompile Include="src\CHudHack.cpp" />

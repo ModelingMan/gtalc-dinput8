@@ -32,13 +32,13 @@
     <ClCompile Include="src\CScrollBarHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\CMovingThings.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\CTowerClockHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\CDigitalClockHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CMovingThingsHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
