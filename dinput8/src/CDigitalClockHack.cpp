@@ -95,7 +95,7 @@ void CDigitalClockHack::Render()
 			{
 				for (int u = 0; u < 5; u++)
 				{
-					if (ScrollCharSet[v17 + o] + o & (1 << u))
+					if (ScrollCharSet[v17 + o] & (1 << u))
 					{
 						v29.x = v12 * this->m_0C * this->m_1C * 0.125f + this->m_Position.x;
 						v29.y = v12 * this->m_10 * this->m_1C * 0.125f + this->m_Position.y;
