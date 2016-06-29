@@ -76,5 +76,11 @@
     <ClCompile Include="src\CSprite.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CGeneral.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCranes.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

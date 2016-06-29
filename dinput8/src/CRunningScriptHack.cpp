@@ -1,6 +1,7 @@
 #include "CRunningScriptHack.h"
 #include "CPagerHack.h"
 #include "CScrollBarHack.h"
+#include "CCranesHack.h"
 #include "Globals.h"
 #include "vcclasses.h"
 #include "vcversion.h"
@@ -17,6 +18,11 @@ bool CRunningScriptHack::initialise()
 	//Memory is protected from write (write protection of .text section removed at startup)
 	union { bool (CRunningScriptHack::*func)(); unsigned long offset; } nasty = { &ProcessOneCommandHack };
 	*ProcessOneCommandHackAddr = nasty.offset - reinterpret_cast<unsigned long>(ProcessOneCommandHackAddr + 1);
+
+	// detonator weapon swtich
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005D49C7)) = 0xD;
+	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x005345ED)), 0x90, 9);
+
 	return true;
 }
 
@@ -33,8 +39,20 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 	case 0x014D:
 		return this->_014D_text_pager();
 
+	case 0x01EE:
+		return this->_01EE_activate_crane();
+		break;
+
+	case 0x01EF:
+		return this->_01EF_deactivate_crane();
+		break;
+
 	case 0x024C:
 		return this->_024C_set_phone_message();
+		break;
+
+	case 0x02FB:
+		return this->_02FB_activate_crusher_crane();
 		break;
 
 	case 0x034A:	// set_portland_complete
@@ -51,6 +69,14 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 
 	case 0x0351:
 		return this->_0351_is_nasty_game();
+		break;
+
+	case 0x0368:
+		return this->_0368_activate_military_crane();
+		break;
+
+	case 0x03A0:
+		return this->_03A0_is_crane_lifting_car();
 		break;
 
 	case 0x03C2:
@@ -105,6 +131,32 @@ bool CRunningScriptHack::_014D_text_pager()
 	return 0;
 }
 
+bool CRunningScriptHack::_01EE_activate_crane()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 10);
+	float temp;
+	if (ScriptParams[2].float32 > ScriptParams[4].float32) {
+		temp = ScriptParams[4].float32;
+		ScriptParams[4].float32 = ScriptParams[2].float32;
+		ScriptParams[2].float32 = temp;
+	}
+	if (ScriptParams[3].float32 > ScriptParams[5].float32) {
+		temp = ScriptParams[5].float32;
+		ScriptParams[5].float32 = ScriptParams[3].float32;
+		ScriptParams[3].float32 = temp;
+	}
+	ScriptParams[9].float32 = ScriptParams[9].float32 * 3.1415927f * 5.5555557e-3f;
+	CCranesHack::ActivateCrane(ScriptParams[2].float32, ScriptParams[4].float32, ScriptParams[3].float32, ScriptParams[5].float32, ScriptParams[6].float32, ScriptParams[7].float32, ScriptParams[8].float32, ScriptParams[9].float32, false, false, ScriptParams[0].float32, ScriptParams[1].float32);
+	return 0;
+}
+
+bool CRunningScriptHack::_01EF_deactivate_crane()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 2);
+	CCranesHack::DeActivateCrane(ScriptParams[0].float32, ScriptParams[1].float32);
+	return 0;
+}
+
 bool CRunningScriptHack::_024C_set_phone_message()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
@@ -117,9 +169,56 @@ bool CRunningScriptHack::_024C_set_phone_message()
 	return 0;
 }
 
+bool CRunningScriptHack::_02FB_activate_crusher_crane()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 10);
+	float temp;
+	if (ScriptParams[2].float32 > ScriptParams[4].float32) {
+		temp = ScriptParams[4].float32;
+		ScriptParams[4].float32 = ScriptParams[2].float32;
+		ScriptParams[2].float32 = temp;
+	}
+	if (ScriptParams[3].float32 > ScriptParams[5].float32) {
+		temp = ScriptParams[5].float32;
+		ScriptParams[5].float32 = ScriptParams[3].float32;
+		ScriptParams[3].float32 = temp;
+	}
+	ScriptParams[9].float32 = ScriptParams[9].float32 * 3.1415927f * 5.5555557e-3f;
+	CCranesHack::ActivateCrane(ScriptParams[2].float32, ScriptParams[4].float32, ScriptParams[3].float32, ScriptParams[5].float32, ScriptParams[6].float32, ScriptParams[7].float32, ScriptParams[8].float32, ScriptParams[9].float32, true, false, ScriptParams[0].float32, ScriptParams[1].float32);
+	return 0;
+}
+
 bool CRunningScriptHack::_0351_is_nasty_game()
 {
-	this->UpdateCompareFlag(*(BYTE *)vcversion::AdjustOffset(0x68DD68) != 0);
+	this->UpdateCompareFlag(*(bool *)vcversion::AdjustOffset(0x68DD68));
+	return 0;
+}
+
+bool CRunningScriptHack::_0368_activate_military_crane()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 10);
+	float temp;
+	if (ScriptParams[2].float32 > ScriptParams[4].float32) {
+		temp = ScriptParams[4].float32;
+		ScriptParams[4].float32 = ScriptParams[2].float32;
+		ScriptParams[2].float32 = temp;
+	}
+	if (ScriptParams[3].float32 > ScriptParams[5].float32) {
+		temp = ScriptParams[5].float32;
+		ScriptParams[5].float32 = ScriptParams[3].float32;
+		ScriptParams[3].float32 = temp;
+	}
+	ScriptParams[9].float32 = ScriptParams[9].float32 * 3.1415927f * 5.5555557e-3f;
+	CCranesHack::ActivateCrane(ScriptParams[2].float32, ScriptParams[4].float32, ScriptParams[3].float32, ScriptParams[5].float32, ScriptParams[6].float32, ScriptParams[7].float32, ScriptParams[8].float32, ScriptParams[9].float32, false, true, ScriptParams[0].float32, ScriptParams[1].float32);
+	return 0;
+}
+
+bool CRunningScriptHack::_03A0_is_crane_lifting_car()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 3);
+	auto VehiclePoolGetStruct = (uintptr_t(__thiscall *)(void *, INT))vcversion::AdjustOffset(0x451C70);
+	void **carPool = (void **)vcversion::AdjustOffset(0xA0FDE4);
+	this->UpdateCompareFlag(CCranesHack::IsThisCarPickedUp(ScriptParams[0].float32, ScriptParams[1].float32, VehiclePoolGetStruct(*carPool, ScriptParams[2].int32)));
 	return 0;
 }
 
@@ -147,11 +246,11 @@ bool CRunningScriptHack::_0421_force_rain()
 bool CRunningScriptHack::_0422_does_garage_contain_car()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	auto IsEntityEntirelyInside3D = (BYTE(__thiscall *)(uintptr_t, uintptr_t, FLOAT))vcversion::AdjustOffset(0x430630);
+	auto IsEntityEntirelyInside3D = (bool(__thiscall *)(uintptr_t, uintptr_t, FLOAT))vcversion::AdjustOffset(0x430630);
 	auto VehiclePoolGetStruct = (uintptr_t(__thiscall *)(void *, INT))vcversion::AdjustOffset(0x451C70);
 	void **carPool = (void **)vcversion::AdjustOffset(0xA0FDE4);
 	DWORD cgarage = vcversion::AdjustOffset(0x812668);
-	this->UpdateCompareFlag(IsEntityEntirelyInside3D(ScriptParams[0].int32 * 0xA8 + cgarage, VehiclePoolGetStruct(*carPool, ScriptParams[1].int32), 0.0) != 0);
+	this->UpdateCompareFlag(IsEntityEntirelyInside3D(ScriptParams[0].int32 * 0xA8 + cgarage, VehiclePoolGetStruct(*carPool, ScriptParams[1].int32), 0.0));
 	return 0;
 }
 

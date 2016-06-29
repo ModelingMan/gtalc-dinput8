@@ -41,6 +41,12 @@
     <ClCompile Include="src\CMovingThingsHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CRendererHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCranesHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CRunningScriptHack.h">
@@ -71,6 +77,12 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\CDigitalClockHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CRendererHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CCranesHack.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

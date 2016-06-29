@@ -22,8 +22,10 @@
   <ItemGroup>
     <ClCompile Include="src\cAudioManager.cpp" />
     <ClCompile Include="src\CClock.cpp" />
+    <ClCompile Include="src\CCranes.cpp" />
     <ClCompile Include="src\cDMAudio.cpp" />
     <ClCompile Include="src\CFont.cpp" />
+    <ClCompile Include="src\CGeneral.cpp" />
     <ClCompile Include="src\CHud.cpp" />
     <ClCompile Include="src\CMessages.cpp" />
     <ClCompile Include="src\CRunningScript.cpp" />

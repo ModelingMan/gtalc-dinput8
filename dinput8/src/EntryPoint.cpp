@@ -9,6 +9,7 @@
 #include "CMovingThingsHack.h"
 #include "CPagerHack.h"
 #include "CRunningScriptHack.h"
+#include "CRendererHack.h"
 
 HMODULE hOrigDLL = NULL;
 
@@ -107,7 +108,8 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			//!CHudHack::initialise() ||
 			!CMovingThingsHack::initialise() ||
 			!CPagerHack::initialise() ||
-			!CRunningScriptHack::initialise())
+			!CRunningScriptHack::initialise() ||
+			!CRendererHack::initialise())
 		{
 			VirtualProtect((LPVOID)(0x400000 + sectionheader->VirtualAddress), sectionheader->Misc.VirtualSize, OldProtect, &OldProtect);
 			return FALSE;

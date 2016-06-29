@@ -126,12 +126,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\CCranesHack.cpp" />
     <ClCompile Include="src\CDigitalClockHack.cpp" />
     <ClCompile Include="src\CFontHack.cpp" />
     <ClCompile Include="src\CMovingThingsHack.cpp" />
     <ClCompile Include="src\CPagerHack.cpp" />
     <ClCompile Include="src\cAudioManagerHack.cpp" />
     <ClCompile Include="src\CHudHack.cpp" />
+    <ClCompile Include="src\CRendererHack.cpp" />
     <ClCompile Include="src\CRunningScriptHack.cpp" />
     <ClCompile Include="src\CScrollBarHack.cpp" />
     <ClCompile Include="src\CTowerClockHack.cpp" />
@@ -139,11 +141,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\cAudioManagerHack.h" />
+    <ClInclude Include="include\CCranesHack.h" />
     <ClInclude Include="include\CDigitalClockHack.h" />
     <ClInclude Include="include\CFontHack.h" />
     <ClInclude Include="include\CHudHack.h" />
     <ClInclude Include="include\CMovingThingsHack.h" />
     <ClInclude Include="include\CPagerHack.h" />
+    <ClInclude Include="include\CRendererHack.h" />
     <ClInclude Include="include\CRunningScriptHack.h" />
     <ClInclude Include="include\CScrollBarHack.h" />
     <ClInclude Include="include\CTowerClockHack.h" />

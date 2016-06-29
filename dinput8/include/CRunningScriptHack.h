@@ -11,9 +11,19 @@ public:
 
 	bool _014D_text_pager();
 
+	bool _01EE_activate_crane();
+
+	bool _01EF_deactivate_crane();
+
 	bool _024C_set_phone_message();
 
+	bool _02FB_activate_crusher_crane();
+
 	bool _0351_is_nasty_game();
+
+	bool _0368_activate_military_crane();
+
+	bool _03A0_is_crane_lifting_car();
 
 	bool _03C2_is_phone_displaying_message();
 
