@@ -451,54 +451,61 @@ public:;
 };
 
 //########################################################################
+//# CCrane
+//########################################################################
+
+class CCrane
+{
+public:
+	unsigned int  object;             // 0x00, pointer to crane object
+	unsigned int  hook;               // 0x04, pointer to hook object
+	float         pickupX1;           // 0x08
+	float         pickupX2;           // 0x0C
+	float         pickupY1;           // 0x10
+	float         pickupY2;           // 0x14
+	float         dropoffX;           // 0x18
+	float         dropoffY;           // 0x1C
+	float         dropoffZ;           // 0x20
+	float         dropoffHeading;     // 0x24
+	float         armPickupRotation;  // 0x28
+	float         armDropoffRotation; // 0x2C
+	float         armPickupDistance;  // 0x30
+	float         armDropoffDistance; // 0x34
+	float         armPickupHeight;    // 0x38
+	float         armDropoffHeight;   // 0x3C
+	float         armCurrentRotation; // 0x40
+	float         armCurrentDistance; // 0x44
+	float         armCurrentHeight;   // 0x48
+	float         hookInitialX;       // 0x4C
+	float         hookInitialY;       // 0x50
+	float         hookInitialZ;       // 0x54
+	float         hookCurrentX;       // 0x58
+	float         hookCurrentY;       // 0x5C
+	float         hookCurrentZ;       // 0x60
+	float         unk1;               // 0x64
+	float         unk2;               // 0x68
+	unsigned int  vehicle;            // 0x6C, pointer to vehicle to be picked up
+	unsigned int  timer;              // 0x70
+	unsigned char activity;           // 0x74
+	unsigned char status;             // 0x75
+	unsigned char countCollected;     // 0x76
+	unsigned char isCrusher;          // 0x77
+	unsigned char isMilitary;         // 0x78
+	unsigned char unk3;               // 0x79
+	unsigned char isNotCab;           // 0x7A
+	unsigned char padding;            // 0x7B
+};
+
+//########################################################################
 //# CCranes
 //########################################################################
 
 class CCranes
 {
 public:
-	struct Crane
-	{
-		unsigned int  object;             // 0x00, pointer to crane object
-		unsigned int  hook;               // 0x04, pointer to hook object
-		float         pickupX1;           // 0x08
-		float         pickupX2;           // 0x0C
-		float         pickupY1;           // 0x10
-		float         pickupY2;           // 0x14
-		float         dropoffX;           // 0x18
-		float         dropoffY;           // 0x1C
-		float         dropoffZ;           // 0x20
-		float         dropoffHeading;     // 0x24
-		float         armPickupRotation;  // 0x28
-		float         armDropoffRotation; // 0x2C
-		float         armPickupDistance;  // 0x30
-		float         armDropoffDistance; // 0x34
-		float         armPickupHeight;    // 0x38
-		float         armDropoffHeight;   // 0x3C
-		float         armCurrentRotation; // 0x40
-		float         armCurrentDistance; // 0x44
-		float         armCurrentHeight;   // 0x48
-		float         hookInitialX;       // 0x4C
-		float         hookInitialY;       // 0x50
-		float         hookInitialZ;       // 0x54
-		float         hookCurrentX;       // 0x58
-		float         hookCurrentY;       // 0x5C
-		float         hookCurrentZ;       // 0x60
-		float         unk1;               // 0x64
-		float         unk2;               // 0x68
-		unsigned int  vehicle;            // 0x6C, pointer to vehicle to be picked up
-		unsigned int  timer;              // 0x70
-		unsigned char activity;           // 0x74
-		unsigned char status;             // 0x75
-		unsigned char countCollected;     // 0x76
-		unsigned char isCrusher;          // 0x77
-		unsigned char isMilitary;         // 0x78
-		unsigned char unk3;               // 0x79
-		unsigned char isNotCab;           // 0x7A
-		unsigned char padding;            // 0x7B
-	};
-	static int *numCranes;
-	static Crane *cranes;
+	static int &carsCollectedMilitaryCrane;
+	static int &numCranes;
+	static CCrane *cranes;
 };
 
 //########################################################################

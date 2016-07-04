@@ -1,13 +1,102 @@
 #include "CCranesHack.h"
 #include "Globals.h"
+#include "vcversion.h"
 
 #include <math.h>
+
+bool CCranesHack::initialise()
+{
+	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x005A8CBF)) = MILITARYCRANETOTAL;
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005A8CCC)) = MILITARYCRANETOTAL;
+
+	unsigned long addr, data;
+
+	// CCranes::RegisterCarForMilitaryCrane
+	addr = vcversion::AdjustOffset(0x005A8CB9);
+	data = (unsigned long)&CCranesHack::RegisterCarForMilitaryCrane;
+	*(unsigned long *)(addr + 1) = data - addr - 5;
+
+	// CCranes::DoesMilitaryCraneHaveThisOneAlready
+	addr = vcversion::AdjustOffset(0x005A8232);
+	data = (unsigned long)&CCranesHack::DoesMilitaryCraneHaveThisOneAlready;
+	*(unsigned long *)(addr + 1) = data - addr - 5;
+
+	// CCranes::InitCranes
+	addr = vcversion::AdjustOffset(0x004A4EC4);
+	data = (unsigned long)&CCranesHack::InitCranes;
+	*(unsigned long *)(addr + 1) = data - addr - 5;
+	addr = vcversion::AdjustOffset(0x004A4993);
+	*(unsigned long *)(addr + 1) = data - addr - 5;
+
+	// CCrane::DoesCranePickUpThisCarType
+	addr = vcversion::AdjustOffset(0x005A821E);
+	bool(__thiscall CCraneHack::* function)(unsigned int) = &CCraneHack::DoesCranePickUpThisCarType;
+	data = (unsigned long &)function;
+	*(unsigned long *)(addr + 1) = data - addr - 5;
+	addr = vcversion::AdjustOffset(0x005A8275);
+	*(unsigned long *)(addr + 1) = data - addr - 5;
+
+	return true;
+}
+
+void CCranesHack::RegisterCarForMilitaryCrane(unsigned int model)
+{
+	switch (model) {
+	case 137:
+		carsCollectedMilitaryCrane |= 1;
+		break;
+	case 146:
+		carsCollectedMilitaryCrane |= 2;
+		break;
+	case 156:
+		carsCollectedMilitaryCrane |= 4;
+		break;
+	case 157:
+		carsCollectedMilitaryCrane |= 8;
+		break;
+	case 162:
+		carsCollectedMilitaryCrane |= 0x10;
+		break;
+	case 163:
+		carsCollectedMilitaryCrane |= 0x20;
+		break;
+	case 220:
+		carsCollectedMilitaryCrane |= 0x40;
+		break;
+	case 236:
+		carsCollectedMilitaryCrane |= 0x80;
+		break;
+	}
+}
+
+bool CCranesHack::DoesMilitaryCraneHaveThisOneAlready(unsigned int model)
+{
+	switch (model) {
+	case 137:
+		return !!(carsCollectedMilitaryCrane & 1);
+	case 146:
+		return !!(carsCollectedMilitaryCrane & 2);
+	case 156:
+		return !!(carsCollectedMilitaryCrane & 4);
+	case 157:
+		return !!(carsCollectedMilitaryCrane & 8);
+	case 162:
+		return !!(carsCollectedMilitaryCrane & 0x10);
+	case 163:
+		return !!(carsCollectedMilitaryCrane & 0x20);
+	case 220:
+		return !!(carsCollectedMilitaryCrane & 0x40);
+	case 236:
+		return !!(carsCollectedMilitaryCrane & 0x80);
+	}
+	return false;
+}
 
 bool CCranesHack::IsThisCarPickedUp(float positionX, float positionY, unsigned int vehicle)
 {
 	float craneObjectX, craneObjectY, distance;
-	if (*numCranes > 0) {
-		for (int i = 0; i < *numCranes; i++) {
+	if (numCranes > 0) {
+		for (int i = 0; i < numCranes; i++) {
 			craneObjectX = *(float *)(cranes[i].object + 0x34);
 			craneObjectY = *(float *)(cranes[i].object + 0x38);
 			distance = sqrt(pow(positionX - craneObjectX, 2) + pow(positionY - craneObjectY, 2));
@@ -24,8 +113,8 @@ void CCranesHack::DeActivateCrane(float positionX, float positionY)
 	int index = -1;
 	float craneObjectX, craneObjectY, minDistance, distance;
 	minDistance = 100.0;
-	if (*numCranes > 0) {
-		for (int i = 0; i < *numCranes; i++) {
+	if (numCranes > 0) {
+		for (int i = 0; i < numCranes; i++) {
 			craneObjectX = *(float *)(cranes[i].object + 0x34);
 			craneObjectY = *(float *)(cranes[i].object + 0x38);
 			distance = sqrt(pow(positionX - craneObjectX, 2) + pow(positionY - craneObjectY, 2));
@@ -44,8 +133,8 @@ void CCranesHack::ActivateCrane(float pickupX1, float pickupX2, float pickupY1, 
 	int index = -1;
 	float craneObjectX, craneObjectY, minDistance, distance, pickupCenterX, pickupCenterY;
 	minDistance = 100.0;
-	if (*numCranes > 0) {
-		for (int i = 0; i < *numCranes; i++) {
+	if (numCranes > 0) {
+		for (int i = 0; i < numCranes; i++) {
 			craneObjectX = *(float *)(cranes[i].object + 0x34);
 			craneObjectY = *(float *)(cranes[i].object + 0x38);
 			distance = sqrt(pow(positionX - craneObjectX, 2) + pow(positionY - craneObjectY, 2));
@@ -75,9 +164,9 @@ void CCranesHack::ActivateCrane(float pickupX1, float pickupX2, float pickupY1, 
 	craneObjectX = *(float *)(cranes[index].object + 0x34);
 	craneObjectY = *(float *)(cranes[index].object + 0x38);
 	if (isCrusher) {
-		cranes[index].armPickupHeight = -0.95099998f;
+		cranes[index].armPickupHeight = -0.95099998f + OFFSETHEIGHT;
 	} else if (isMilitary) {
-		cranes[index].armPickupHeight = 10.7862f;
+		cranes[index].armPickupHeight = 10.7862f + OFFSETHEIGHT;
 	} else {
 		cranes[index].armPickupHeight = CWorld::FindGroundZForCoord(pickupCenterX, pickupCenterY);
 	}
@@ -86,4 +175,107 @@ void CCranesHack::ActivateCrane(float pickupX1, float pickupX2, float pickupY1, 
 	cranes[index].armDropoffRotation = CGeneral::GetATanOfXY(dropoffX - craneObjectX, dropoffY - craneObjectY);
 	cranes[index].armDropoffDistance = sqrt(pow(dropoffX - craneObjectX, 2) + pow(dropoffY - craneObjectY, 2));
 	cranes[index].armDropoffHeight = dropoffZ;
+}
+
+void CCranesHack::AddThisOneCrane(unsigned int entity)
+{
+	// reset orientation
+	*(float *)(entity + 4) = 1.0;
+	*(float *)(entity + 8) = 0.0;
+	*(float *)(entity + 0xC) = 0.0;
+	*(float *)(entity + 0x14) = 0.0;
+	*(float *)(entity + 0x18) = 1.0;
+	*(float *)(entity + 0x1C) = 0.0;
+	*(float *)(entity + 0x24) = 0.0;
+	*(float *)(entity + 0x28) = 0.0;
+	*(float *)(entity + 0x2C) = 1.0;
+	// add crane to array
+	if (numCranes < 8) {
+		int index = numCranes;
+		cranes[index].object = entity;
+		cranes[index].activity = 0;
+		// initialise rotation
+		cranes[index].armCurrentRotation = (float)(numCranes);
+		while (cranes[index].armCurrentRotation > 6.283) {
+			cranes[index].armCurrentRotation -= 6.283;
+		}
+		cranes[index].armCurrentDistance = 20.0f;
+		cranes[index].armCurrentHeight = 20.0f + OFFSETHEIGHT;
+		cranes[index].timer = 0;
+		cranes[index].status = 0;
+		cranes[index].unk3 = 0;
+		cranes[index].isNotCab = *(unsigned short *)(entity + 0x5C) == 893 ? 0 : 1;
+		cranes[index].hook = 0;
+		// new! magnet for cranes!
+		if (cranes[index].isNotCab || *(float *)(entity + 0x38) > 0.0) {
+			auto allocateObject = (unsigned int(__cdecl *)(unsigned int))0x4E4070;
+			unsigned int object = allocateObject(0x194);
+			if (object) {
+				auto createObject = (unsigned int(__thiscall *)(int, int, bool))0x4E41B0;
+				object = createObject(object, 1365, false);
+			}
+			*(unsigned char *)(object + 0x16C) = 2;
+			*(unsigned char *)(object + 0x51) = *(unsigned char *)(object + 0x51) & 0xFE;
+			*(unsigned char *)(object + 0x52) = (*(unsigned char *)(object + 0x52) & 0xFD) | 2;
+			*(unsigned char *)(object + 0x11A) = *(unsigned char *)(object + 0x11A) & 0xFD;
+			cranes[index].hook = object;
+		}
+		numCranes++;
+	}
+}
+
+void CCranesHack::InitCranes()
+{
+	carsCollectedMilitaryCrane = 0;
+	numCranes = 0;
+	unsigned int buildings = *(unsigned int *)0x0097F240;
+	unsigned int buildingObjects = *(unsigned int *)buildings; // pointer to entity array of buildings
+	unsigned int buildingValidities = *(unsigned int *)(buildings + 4); // pointer to char array of valid and invalid buildings
+	int numberOfBuildings = *(int *)(buildings + 8); // number of buildings
+	int i = 0;
+	numCranes = 0;
+	for (int i = 0; i < numberOfBuildings; i++) {
+		if (((*(char *)(buildingValidities + i)) & 0x80) != 0x80) { // is building in array valid
+			unsigned short buildingModel = *(unsigned short *)(buildingObjects + i * 0x64 + 0x5C); // pointer to building model
+			if (buildingModel == 882 || buildingModel == 883 || buildingModel == 893) {
+				AddThisOneCrane(buildingObjects + i * 0x64);
+			}
+		}
+	}
+}
+
+bool CCraneHack::DoesCranePickUpThisCarType(unsigned int model)
+{
+	if (isCrusher) {
+		if (model == 137 || // Firetruck
+			model == 138 || // Trashmaster
+			model == 155 || // Hunter
+			model == 158 || // Securicar
+			model == 161 || // Bus
+			model == 162 || // Rhino
+			model == 167 || // Coach
+			model == 177 || // Sea Sparrow
+			model == 190 || // Skimmer
+			model == 194 || // Dodo
+			model == 199 || // Sparrow
+			model == 217 || // Maverick
+			model == 218 || // VCN Maverick
+			model == 227) { // Police Maverick
+			return false;
+		}
+		return true;
+	} else if (isMilitary) {
+		if (model == 137 || // Firetruck
+			model == 146 || // Ambulance
+			model == 156 || // Police
+			model == 157 || // Enforcer
+			model == 162 || // Rhino
+			model == 163 || // Barracks OL
+			model == 220 || // Fbi Car
+			model == 236) { // Vice Cheetah
+			return true;
+		}
+		return false;
+	}
+	return true;
 }

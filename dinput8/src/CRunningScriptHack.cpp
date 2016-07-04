@@ -23,6 +23,9 @@ bool CRunningScriptHack::initialise()
 	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005D49C7)) = 0xD;
 	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x005345ED)), 0x90, 9);
 
+	// second helicopter
+	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x004D1E0F)) = 2;
+
 	return true;
 }
 
@@ -81,6 +84,10 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 
 	case 0x03C2:
 		return this->_03C2_is_phone_displaying_message();
+		break;
+
+	case 0x03EC:
+		return this->_03EC_has_military_crane_collected_all_cars();
 		break;
 
 	case 0x0410:
@@ -216,7 +223,7 @@ bool CRunningScriptHack::_0368_activate_military_crane()
 bool CRunningScriptHack::_03A0_is_crane_lifting_car()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 3);
-	auto VehiclePoolGetStruct = (uintptr_t(__thiscall *)(void *, INT))vcversion::AdjustOffset(0x451C70);
+	auto VehiclePoolGetStruct = (uintptr_t(__thiscall *)(void *, int))vcversion::AdjustOffset(0x451C70);
 	void **carPool = (void **)vcversion::AdjustOffset(0xA0FDE4);
 	this->UpdateCompareFlag(CCranesHack::IsThisCarPickedUp(ScriptParams[0].float32, ScriptParams[1].float32, VehiclePoolGetStruct(*carPool, ScriptParams[2].int32)));
 	return 0;
@@ -226,6 +233,12 @@ bool CRunningScriptHack::_03C2_is_phone_displaying_message()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
 	this->UpdateCompareFlag((ScriptParams[0].int32 * 0x34 + vcversion::AdjustOffset(0x817CF0) + 8) == *(DWORD *)vcversion::AdjustOffset(0x7030E8));
+	return 0;
+}
+
+bool CRunningScriptHack::_03EC_has_military_crane_collected_all_cars()
+{
+	this->UpdateCompareFlag(CCranes::carsCollectedMilitaryCrane == MILITARYCRANETOTAL);
 	return 0;
 }
 
@@ -246,8 +259,8 @@ bool CRunningScriptHack::_0421_force_rain()
 bool CRunningScriptHack::_0422_does_garage_contain_car()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	auto IsEntityEntirelyInside3D = (bool(__thiscall *)(uintptr_t, uintptr_t, FLOAT))vcversion::AdjustOffset(0x430630);
-	auto VehiclePoolGetStruct = (uintptr_t(__thiscall *)(void *, INT))vcversion::AdjustOffset(0x451C70);
+	auto IsEntityEntirelyInside3D = (bool(__thiscall *)(uintptr_t, uintptr_t, float))vcversion::AdjustOffset(0x430630);
+	auto VehiclePoolGetStruct = (uintptr_t(__thiscall *)(void *, int))vcversion::AdjustOffset(0x451C70);
 	void **carPool = (void **)vcversion::AdjustOffset(0xA0FDE4);
 	DWORD cgarage = vcversion::AdjustOffset(0x812668);
 	this->UpdateCompareFlag(IsEntityEntirelyInside3D(ScriptParams[0].int32 * 0xA8 + cgarage, VehiclePoolGetStruct(*carPool, ScriptParams[1].int32), 0.0));

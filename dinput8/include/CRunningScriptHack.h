@@ -27,6 +27,8 @@ public:
 
 	bool _03C2_is_phone_displaying_message();
 
+	bool _03EC_has_military_crane_collected_all_cars();
+
 	bool _0410_set_gang_ped_model_preference();
 
 	bool _0421_force_rain();
