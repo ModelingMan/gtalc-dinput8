@@ -1,40 +1,28 @@
 #include "CCranesHack.h"
 #include "Globals.h"
 #include "vcversion.h"
+#include "SilentCall.h"
 
 #include <math.h>
+
+// FindCarInSectorList
+static void FindCarInSectorList();
+unsigned long findCarProceedJump = vcversion::AdjustOffset(0x0005A81EC);
+unsigned long findCarEndJump = vcversion::AdjustOffset(0x005A82F4);
 
 bool CCranesHack::initialise()
 {
 	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x005A8CBF)) = MILITARYCRANETOTAL;
 	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005A8CCC)) = MILITARYCRANETOTAL;
 
-	unsigned long addr, data;
-
-	// CCranes::RegisterCarForMilitaryCrane
-	addr = vcversion::AdjustOffset(0x005A8CB9);
-	data = (unsigned long)&CCranesHack::RegisterCarForMilitaryCrane;
-	*(unsigned long *)(addr + 1) = data - addr - 5;
-
-	// CCranes::DoesMilitaryCraneHaveThisOneAlready
-	addr = vcversion::AdjustOffset(0x005A8232);
-	data = (unsigned long)&CCranesHack::DoesMilitaryCraneHaveThisOneAlready;
-	*(unsigned long *)(addr + 1) = data - addr - 5;
-
-	// CCranes::InitCranes
-	addr = vcversion::AdjustOffset(0x004A4EC4);
-	data = (unsigned long)&CCranesHack::InitCranes;
-	*(unsigned long *)(addr + 1) = data - addr - 5;
-	addr = vcversion::AdjustOffset(0x004A4993);
-	*(unsigned long *)(addr + 1) = data - addr - 5;
-
-	// CCrane::DoesCranePickUpThisCarType
-	addr = vcversion::AdjustOffset(0x005A821E);
+	call(0x005A8CB9, &CCranesHack::RegisterCarForMilitaryCrane, PATCH_NOTHING);
+	call(0x005A8232, &CCranesHack::DoesMilitaryCraneHaveThisOneAlready, PATCH_NOTHING);
+	call(0x004A4EC4, &CCranesHack::InitCranes, PATCH_NOTHING);
+	call(0x004A4993, &CCranesHack::InitCranes, PATCH_NOTHING);
 	bool(__thiscall CCraneHack::* function)(unsigned int) = &CCraneHack::DoesCranePickUpThisCarType;
-	data = (unsigned long &)function;
-	*(unsigned long *)(addr + 1) = data - addr - 5;
-	addr = vcversion::AdjustOffset(0x005A8275);
-	*(unsigned long *)(addr + 1) = data - addr - 5;
+	call(0x005A821E, (unsigned long &)function, PATCH_NOTHING);
+	call(0x005A8275, (unsigned long &)function, PATCH_NOTHING);
+	call(0x005A81DF, &FindCarInSectorList, PATCH_JUMP);
 
 	return true;
 }
@@ -124,6 +112,7 @@ void CCranesHack::DeActivateCrane(float positionX, float positionY)
 			}
 		}
 	}
+	if (index == -1) return;
 	cranes[index].activity = 2;
 	cranes[index].status = 0;
 }
@@ -144,6 +133,7 @@ void CCranesHack::ActivateCrane(float pickupX1, float pickupX2, float pickupY1, 
 			}
 		}
 	}
+	if (index == -1) return;
 	cranes[index].pickupX1 = pickupX1;
 	cranes[index].pickupX2 = pickupX2;
 	cranes[index].pickupY1 = pickupY1;
@@ -278,4 +268,18 @@ bool CCraneHack::DoesCranePickUpThisCarType(unsigned int model)
 		return false;
 	}
 	return true;
+}
+
+void __declspec(naked) FindCarInSectorList()
+{
+	_asm
+	{
+		cmp dword ptr [ebp+29Ch], 0 // is vehicle type car
+		jz proceed
+		cmp dword ptr [ebp+29Ch], 5 // is vehicle type bike
+		jz proceed
+		jmp findCarEndJump
+	proceed:
+		jmp findCarProceedJump
+	}
 }

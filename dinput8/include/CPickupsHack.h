@@ -1,6 +1,6 @@
 #pragma once
 
-class CRendererHack
+class CPickupsHack
 {
 public:
 	static bool initialise();

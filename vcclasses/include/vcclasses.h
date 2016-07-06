@@ -443,7 +443,7 @@ public:
 
 class CSprite
 {
-public:;
+public:
 	static void InitSpriteBuffer();
 	static bool CalcScreenCoors(const RwV3d &, RwV3d *, float *, float *, bool);
 	static void RenderBufferedOneXLUSprite(float, float, float, float, float, unsigned char, unsigned char, unsigned char, short, float, unsigned char);
@@ -514,7 +514,7 @@ public:
 
 class CGeneral
 {
-public:;
+public:
 	   static float GetATanOfXY(float, float);
 };
 

@@ -5,6 +5,7 @@
 #include "Globals.h"
 #include "vcclasses.h"
 #include "vcversion.h"
+#include "SilentCall.h"
 
 #include <string.h>
 #include <Windows.h>
@@ -13,19 +14,26 @@ using namespace VCGlobals;
 
 unsigned long *ProcessOneCommandHackAddr = reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x0044FDB6));
 
+// GetRandomCarOfTypeInAreaNoSave
+static void GetRandomCarOfTypeInAreaNoSave();
+unsigned long getRandomCarProceedJump = vcversion::AdjustOffset(0x0062F23D);
+unsigned long getRandomCarEndJump = vcversion::AdjustOffset(0x0062F269);
+
 bool CRunningScriptHack::initialise()
 {
 	//Memory is protected from write (write protection of .text section removed at startup)
 	union { bool (CRunningScriptHack::*func)(); unsigned long offset; } nasty = { &ProcessOneCommandHack };
 	*ProcessOneCommandHackAddr = nasty.offset - reinterpret_cast<unsigned long>(ProcessOneCommandHackAddr + 1);
 
-	// detonator weapon swtich
+	// detonator weapon switch
 	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005D49C7)) = 0xD;
 	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x005345ED)), 0x90, 9);
 
 	// second helicopter
 	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x004D1E0F)) = 2;
 
+	// 053E accept mission vehicles - workaround for crusher
+	call(0x0062F234, &GetRandomCarOfTypeInAreaNoSave, PATCH_JUMP);
 	return true;
 }
 
@@ -287,4 +295,18 @@ bool CRunningScriptHack::_0447_is_player_lifting_a_phone()
 	this->CollectParameters(&this->m_dwScriptIP, 1);
 	this->UpdateCompareFlag(*(DWORD *)(*(DWORD *)(CWorld::Players + 0x2E * ScriptParams[0].int32) + 0x244) == 0x13);
 	return 0;
+}
+
+void __declspec(naked) GetRandomCarOfTypeInAreaNoSave()
+{
+	_asm
+	{
+		cmp byte ptr [ebx+1F8h], 1 // is traffic vehicle
+		jz proceed
+		cmp byte ptr [ebx+1F8h], 2 // is mission vehicle
+		jz proceed
+		jmp getRandomCarEndJump
+	proceed:
+		jmp getRandomCarProceedJump
+	}
 }

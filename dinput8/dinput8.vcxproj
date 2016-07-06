@@ -141,11 +141,13 @@
     <ClCompile Include="src\CPagerHack.cpp" />
     <ClCompile Include="src\cAudioManagerHack.cpp" />
     <ClCompile Include="src\CHudHack.cpp" />
+    <ClCompile Include="src\CPickupsHack.cpp" />
     <ClCompile Include="src\CRendererHack.cpp" />
     <ClCompile Include="src\CRunningScriptHack.cpp" />
     <ClCompile Include="src\CScrollBarHack.cpp" />
     <ClCompile Include="src\CTowerClockHack.cpp" />
     <ClCompile Include="src\EntryPoint.cpp" />
+    <ClCompile Include="src\SilentCall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\cAudioManagerHack.h" />
@@ -155,14 +157,17 @@
     <ClInclude Include="include\CHudHack.h" />
     <ClInclude Include="include\CMovingThingsHack.h" />
     <ClInclude Include="include\CPagerHack.h" />
+    <ClInclude Include="include\CPickupsHack.h" />
     <ClInclude Include="include\CRendererHack.h" />
     <ClInclude Include="include\CRunningScriptHack.h" />
     <ClInclude Include="include\CScrollBarHack.h" />
     <ClInclude Include="include\CTowerClockHack.h" />
+    <ClInclude Include="include\SilentCall.h" />
     <ClInclude Include="include\Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dinput8.def" />
+    <None Include="include\PickupText.inc" />
     <None Include="include\ScrollBarMessages.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

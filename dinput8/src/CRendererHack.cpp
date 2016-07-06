@@ -4,7 +4,7 @@
 
 bool CRendererHack::initialise()
 {
-	// disable backface culling from The Hero's SkyGfx - temporary
+	// disable backface culling from aap's skygfx_vc - temporary
 	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x004C9E5F)) = 1;
 	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x004C9F08)) = 1;
 	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x004C9F5D)) = 1;
