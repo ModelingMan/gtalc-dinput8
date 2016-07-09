@@ -134,6 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\CPadHack.cpp" />
     <ClCompile Include="src\CCranesHack.cpp" />
     <ClCompile Include="src\CDigitalClockHack.cpp" />
     <ClCompile Include="src\CFontHack.cpp" />
@@ -151,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\cAudioManagerHack.h" />
+    <ClInclude Include="include\CPadHack.h" />
     <ClInclude Include="include\CCranesHack.h" />
     <ClInclude Include="include\CDigitalClockHack.h" />
     <ClInclude Include="include\CFontHack.h" />

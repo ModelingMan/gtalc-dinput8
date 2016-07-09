@@ -11,6 +11,8 @@ namespace VCGlobals
 
 	extern char *ScrollCharSet;
 
+	extern float &timeScale;
+
 	union ScriptParameter
 	{
 		char int8;
@@ -39,4 +41,5 @@ namespace VCGlobals
 	extern RsGlobalType& Globals;
 
 	CPlayerPed *FindPlayerPed();
+	CVehicle *FindPlayerVehicle();
 }

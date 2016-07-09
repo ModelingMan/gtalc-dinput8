@@ -201,7 +201,7 @@ public:
 class CHud
 {
 public:
-	static void SetHelpMessage(unsigned short*, bool, bool);
+	static void SetHelpMessage(wchar_t*, bool, bool);
 };
 
 //########################################################################
@@ -243,6 +243,28 @@ protected:
 	Pager Pagers[8];	// Queue of a maximum of 8 pager messages.
 };
 
+//########################################################################
+//# CWanted
+//########################################################################
+
+class CWanted
+{
+public:
+	unsigned char space1[0x0020];
+	int level;                    // 0x20
+
+	void SetWantedLevelCheat(int);
+};
+
+//########################################################################
+//# CPed
+//########################################################################
+
+class CPed
+{
+public:
+	void GiveWeapon(int, unsigned int, bool);
+};
 
 //########################################################################
 //# CPlayerInfo
@@ -263,9 +285,16 @@ public:
 //# CPlayerPed
 //########################################################################
 
-class CPlayerPed
+class CPlayerPed : public CPed
 {
-
+public:
+	unsigned char space1[0x0244];
+	unsigned int state;           // 0x244
+	unsigned char space2[0x010C];
+	float health;                 // 0x354
+	float armour;                 // 0x358
+	unsigned char space3[0x0298];
+	CWanted *wanted;              // 0x5F4
 };
 
 //########################################################################
@@ -515,7 +544,85 @@ public:
 class CGeneral
 {
 public:
-	   static float GetATanOfXY(float, float);
+	static float GetATanOfXY(float, float);
+};
+
+//########################################################################
+//# CAutomobile
+//########################################################################
+
+class CAutomobile
+{
+
+};
+
+//########################################################################
+//# CVehicle
+//########################################################################
+
+class CVehicle : public CAutomobile
+{
+public:
+	unsigned char space1[0x0204];
+	float health;                  // 0x204
+	unsigned char space2[0x0094];
+	unsigned int type;             // 0x29C
+	float damageManager;           // 0x2A0
+};
+
+//########################################################################
+//# CDamageManager
+//########################################################################
+
+class CDamageManager
+{
+public:
+	void SetEngineStatus(unsigned int);
+	void SetWheelStatus(int, unsigned int);
+};
+
+//########################################################################
+//# CWeather
+//########################################################################
+
+class CWeather
+{
+public:
+	static void ForceWeatherNow(short);
+};
+
+//########################################################################
+//# CStreaming
+//########################################################################
+
+class CStreaming
+{
+public:
+	static void RequestModel(int, int);
+	static void LoadAllRequestedModels(bool);
+	static void SetModelIsDeletable(int);
+};
+
+//########################################################################
+//# CFire
+//########################################################################
+
+class CFire
+{
+public:
+	unsigned char space1[0x07];
+	unsigned char sfx;          // 0x07
+	unsigned char space2[0x28];
+};
+
+//########################################################################
+//# CFireManager
+//########################################################################
+
+class CFireManager
+{
+public:
+	static CFire *fires;
 };
 
 #endif

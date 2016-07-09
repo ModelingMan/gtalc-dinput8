@@ -14,9 +14,17 @@ namespace VCGlobals
 
 	RsGlobalType& Globals = *reinterpret_cast<RsGlobalType *>(vcversion::AdjustOffset(0x009B48D8));
 
+	float &timeScale = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x0097F264));
+
 	CPlayerPed *(*g_pFindPlayerPed)() = *reinterpret_cast<CPlayerPed *(*)()>(vcversion::AdjustOffset(0x004BC120));
 	CPlayerPed *FindPlayerPed()
 	{
 		return g_pFindPlayerPed();
+	}
+
+	CVehicle *(*g_pFindPlayerVehicle)() = *reinterpret_cast<CVehicle *(*)()>(vcversion::AdjustOffset(0x004BC1E0));
+	CVehicle *FindPlayerVehicle()
+	{
+		return g_pFindPlayerVehicle();
 	}
 }

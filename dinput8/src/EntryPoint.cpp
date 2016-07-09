@@ -12,6 +12,7 @@
 #include "CRendererHack.h"
 #include "CCranesHack.h"
 #include "CPickupsHack.h"
+#include "CPadHack.h"
 
 HMODULE hOrigDLL = NULL;
 
@@ -113,7 +114,8 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			!CRunningScriptHack::initialise() ||
 			!CRendererHack::initialise() ||
 			!CCranesHack::initialise() ||
-			!CPickupsHack::initialise())
+			!CPickupsHack::initialise() ||
+			!CPadHack::initialise())
 		{
 			VirtualProtect((LPVOID)(0x400000 + sectionheader->VirtualAddress), sectionheader->Misc.VirtualSize, OldProtect, &OldProtect);
 			return FALSE;

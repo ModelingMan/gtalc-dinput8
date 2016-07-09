@@ -19,6 +19,15 @@ static void GetRandomCarOfTypeInAreaNoSave();
 unsigned long getRandomCarProceedJump = vcversion::AdjustOffset(0x0062F23D);
 unsigned long getRandomCarEndJump = vcversion::AdjustOffset(0x0062F269);
 
+// GangsInitialise
+static void GangsInitialise();
+unsigned long gangInitialiseEndJump = vcversion::AdjustOffset(0x004EEEDF);
+
+// ProjectileInfoUpdate
+static void ProjectileInfoUpdate();
+unsigned long projectileInfoUpdateProceedJump = vcversion::AdjustOffset(0x005C6ECC);
+unsigned long projectileInfoUpdateEndJump = vcversion::AdjustOffset(0x005C6F45);
+
 bool CRunningScriptHack::initialise()
 {
 	//Memory is protected from write (write protection of .text section removed at startup)
@@ -32,8 +41,14 @@ bool CRunningScriptHack::initialise()
 	// second helicopter
 	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x004D1E0F)) = 2;
 
+	// 0410 (Purple Nines) fix
+	call(0x004EEED1, &GangsInitialise, PATCH_JUMP);
+
 	// 053E accept mission vehicles - workaround for crusher
 	call(0x0062F234, &GetRandomCarOfTypeInAreaNoSave, PATCH_JUMP);
+
+	// ProjectileInfo null thrower fix
+	call(0x005C6EC6, &ProjectileInfoUpdate, PATCH_JUMP);
 	return true;
 }
 
@@ -285,21 +300,20 @@ bool CRunningScriptHack::_042A_is_threat_for_ped_type()
 bool CRunningScriptHack::_0444_set_script_fire_audio()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	DWORD fire = vcversion::AdjustOffset(0x97F8A0);
-	*(BYTE *)(ScriptParams[0].int32 * 0x30 + fire + 7) = (BYTE)(ScriptParams[1].int32 ? 1 : 0);
+	CFireManager::fires[ScriptParams[0].int32].sfx = (char)(ScriptParams[1].int32 ? 1 : 0);
 	return 0;
 }
 
 bool CRunningScriptHack::_0447_is_player_lifting_a_phone()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
-	this->UpdateCompareFlag(*(DWORD *)(*(DWORD *)(CWorld::Players + 0x2E * ScriptParams[0].int32) + 0x244) == 0x13);
+	this->UpdateCompareFlag(*(DWORD *)(*(DWORD *)(CWorld::Players + 0x170 * ScriptParams[0].int32) + 0x244) == 0x13);
 	return 0;
 }
 
 void __declspec(naked) GetRandomCarOfTypeInAreaNoSave()
 {
-	_asm
+	__asm
 	{
 		cmp byte ptr [ebx+1F8h], 1 // is traffic vehicle
 		jz proceed
@@ -308,5 +322,28 @@ void __declspec(naked) GetRandomCarOfTypeInAreaNoSave()
 		jmp getRandomCarEndJump
 	proceed:
 		jmp getRandomCarProceedJump
+	}
+}
+
+void GangsInitialise()
+{
+	for (int i = 0; i < 8 * 0x18; i += 0x18) {
+		*(BYTE *)(i + vcversion::AdjustOffset(0x7D925C)) = 255;
+	}
+}
+
+void __declspec(naked) ProjectileInfoUpdate()
+{
+	__asm
+	{
+		mov eax, [ebp+4] // get pointer of projectile thrower
+		test eax, eax    // compare pointer with 0
+		jz end
+		mov eax, [ebp+0]
+		cmp eax, 0Ch
+		jmp projectileInfoUpdateProceedJump
+	end:
+		jmp projectileInfoUpdateEndJump
+
 	}
 }

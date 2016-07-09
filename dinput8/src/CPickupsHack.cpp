@@ -40,7 +40,7 @@ bool CPickupsHack::initialise()
 
 void __declspec(naked) RenderPickUpText()
 {
-	_asm
+	__asm
 	{
 		test eax, eax
 		jz text0
@@ -57,7 +57,7 @@ void __declspec(naked) RenderPickUpText()
 
 void __declspec(naked) DoPickUpEffects()
 {
-	_asm
+	__asm
 	{
 		movsx ecx, word ptr [ebp+5Ch] // get pickup model index
 
@@ -68,21 +68,21 @@ void __declspec(naked) DoPickUpEffects()
 		mov eax, cameraModel          // get camera model address
 		movzx eax, word ptr [eax]     // read address to get model index
 		cmp eax, ecx                  // compare with pickup model index
-		jnz armorBribeModels
+		jnz bodyarmourBribeModels
 	adrenalineCameraEffect:
 		mov ebx, 6                    // color FF0000
 		jmp endMatch
 
-	armorBribeModels:
+	bodyarmourBribeModels:
 		mov eax, bodyarmourModel      // get bodyarmour model address, must use eax
 		movzx eax, word ptr [eax]     // read address to get model index
 		cmp eax, ecx                  // compare with pickup model index
-		jz armorBribeEffect
+		jz bodyarmourBribeEffect
 		mov ebx, bribeModel           // get bribe model address
 		movzx ebx, word ptr [ebx]     // read address to get model index
 		cmp ebx, ecx                  // compare with pickup model index
 		jnz infoKillfrenzyModels
-	armorBribeEffect:
+	bodyarmourBribeEffect:
 		mov ebx, 37                   // color 80FF80
 		jmp endMatch
 

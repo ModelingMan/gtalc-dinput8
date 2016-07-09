@@ -198,10 +198,10 @@ void CCranesHack::AddThisOneCrane(unsigned int entity)
 		cranes[index].hook = 0;
 		// new! magnet for cranes!
 		if (cranes[index].isNotCab || *(float *)(entity + 0x38) > 0.0) {
-			auto allocateObject = (unsigned int(__cdecl *)(unsigned int))0x4E4070;
+			auto allocateObject = (unsigned int(__cdecl *)(unsigned int))vcversion::AdjustOffset(0x004E4070);
 			unsigned int object = allocateObject(0x194);
 			if (object) {
-				auto createObject = (unsigned int(__thiscall *)(int, int, bool))0x4E41B0;
+				auto createObject = (unsigned int(__thiscall *)(int, int, bool))vcversion::AdjustOffset(0x004E41B0);
 				object = createObject(object, 1365, false);
 			}
 			*(unsigned char *)(object + 0x16C) = 2;
@@ -218,12 +218,10 @@ void CCranesHack::InitCranes()
 {
 	carsCollectedMilitaryCrane = 0;
 	numCranes = 0;
-	unsigned int buildings = *(unsigned int *)0x0097F240;
+	unsigned int buildings = *(unsigned int *)vcversion::AdjustOffset(0x0097F240);
 	unsigned int buildingObjects = *(unsigned int *)buildings; // pointer to entity array of buildings
 	unsigned int buildingValidities = *(unsigned int *)(buildings + 4); // pointer to char array of valid and invalid buildings
 	int numberOfBuildings = *(int *)(buildings + 8); // number of buildings
-	int i = 0;
-	numCranes = 0;
 	for (int i = 0; i < numberOfBuildings; i++) {
 		if (((*(char *)(buildingValidities + i)) & 0x80) != 0x80) { // is building in array valid
 			unsigned short buildingModel = *(unsigned short *)(buildingObjects + i * 0x64 + 0x5C); // pointer to building model
@@ -272,7 +270,7 @@ bool CCraneHack::DoesCranePickUpThisCarType(unsigned int model)
 
 void __declspec(naked) FindCarInSectorList()
 {
-	_asm
+	__asm
 	{
 		cmp dword ptr [ebp+29Ch], 0 // is vehicle type car
 		jz proceed

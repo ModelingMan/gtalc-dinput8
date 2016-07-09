@@ -21,23 +21,30 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\cAudioManager.cpp" />
+    <ClCompile Include="src\CAutomobile.cpp" />
     <ClCompile Include="src\CClock.cpp" />
     <ClCompile Include="src\CCranes.cpp" />
+    <ClCompile Include="src\CDamageManager.cpp" />
     <ClCompile Include="src\cDMAudio.cpp" />
+    <ClCompile Include="src\CFireManager.cpp" />
     <ClCompile Include="src\CFont.cpp" />
     <ClCompile Include="src\CGeneral.cpp" />
     <ClCompile Include="src\CHud.cpp" />
     <ClCompile Include="src\CMessages.cpp" />
+    <ClCompile Include="src\CPed.cpp" />
     <ClCompile Include="src\CRunningScript.cpp" />
     <ClCompile Include="src\cSampleManager.cpp" />
     <ClCompile Include="src\CScrollBar.cpp" />
     <ClCompile Include="src\CSprite.cpp" />
     <ClCompile Include="src\CSprite2d.cpp" />
+    <ClCompile Include="src\CStreaming.cpp" />
     <ClCompile Include="src\CText.cpp" />
     <ClCompile Include="src\CTheScripts.cpp" />
     <ClCompile Include="src\CTimer.cpp" />
     <ClCompile Include="src\CTxdStore.cpp" />
     <ClCompile Include="src\CUserDisplay.cpp" />
+    <ClCompile Include="src\CWanted.cpp" />
+    <ClCompile Include="src\CWeather.cpp" />
     <ClCompile Include="src\CWorld.cpp" />
     <ClCompile Include="src\Globals.cpp" />
   </ItemGroup>
