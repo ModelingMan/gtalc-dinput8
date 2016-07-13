@@ -2,6 +2,7 @@
 #include "Globals.h"
 #include "vcversion.h"
 #include "SilentCall.h"
+#include "Vehicles.h"
 
 static void AddToCheatString();
 static void UpdatePedCount();
@@ -33,8 +34,24 @@ char *wheelsOnlyCheatString = "VQLFUrIVUP`MJi[G";
 char *flyboyCheatString = "EG`UadKJZ_aQOc";
 char *gripCheatString = "GFTFXdOZSP[ZVc";
 char *goreCheatString = "WFLIPnETJWf\\Za[";
+char *vehicleCheatString = "UFJSN^UHD";
 char *skinnyCheatString = "UJTNNmJVS[";
 char weaponsForAll[12] = { 6, 17, 23, 21, 25, 26, 28, 30, 31, 15, 12, 0 };
+int vehicleModel = CAR_LANDSTAL;
+
+char specialCharacters[10][8] =
+{
+	"eight2",
+	"misty",
+	"ray",
+	"tony",
+	"love",
+	"dealer",
+	"frankie",
+	"maria",
+	"donky",
+	"sam"
+};
 
 bool CPadHack::initialise()
 {
@@ -44,8 +61,21 @@ bool CPadHack::initialise()
 	// remove cheat warning
 	call(0x004990AD, 0x004990C0, PATCH_JUMP);
 
-	// modified weapon set for arm everybody cheat
+	// modify weapon set for arm everybody cheat
 	call(0x0053B6B9, &UpdatePedCount, PATCH_JUMP);
+
+	// modify special character cheats
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACA66)) = (unsigned long)&specialCharacters[0]; // igbuddy
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACA96)) = (unsigned long)&specialCharacters[1]; // igcandy
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACAC6)) = (unsigned long)&specialCharacters[2]; // igken
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACAF6)) = (unsigned long)&specialCharacters[3]; // ighlary
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACB26)) = (unsigned long)&specialCharacters[4]; // igjezz
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACB56)) = (unsigned long)&specialCharacters[5]; // igphil
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACB86)) = (unsigned long)&specialCharacters[6]; // igsonny
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACD76)) = (unsigned long)&specialCharacters[7]; // igmerc
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACDA6)) = (unsigned long)&specialCharacters[8]; // igdick
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACEB6)) = (unsigned long)&specialCharacters[9]; // igdiaz
+
 	return true;
 }
 
@@ -138,7 +168,7 @@ void CPadHack::NotWantedCheat()
 void CPadHack::TankCheat()
 {
 	auto VehicleCheat = (void(__cdecl *)(int))vcversion::AdjustOffset(0x004AE8F0);
-	VehicleCheat(162);
+	VehicleCheat(CAR_RHINO);
 }
 
 void CPadHack::BlowUpCarsCheat()
@@ -252,6 +282,36 @@ void CPadHack::GripCheat()
 	unsigned char &c = *(unsigned char *)vcversion::AdjustOffset(0x00A10B0F);
 	c = c == 0 ? 1 : 0;
 	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
+}
+
+void CPadHack::VehicleCheat()
+{
+	auto VehicleCheat = (void(__cdecl *)(int))vcversion::AdjustOffset(0x004AE8F0);
+	VehicleCheat(vehicleModel++);
+	if (vehicleModel == BOAT_RIO ||
+		vehicleModel == BOAT_PREDATOR ||
+		vehicleModel == BOAT_SQUALO ||
+		vehicleModel == BIKE_PIZZABOY ||
+		vehicleModel == BOAT_MARQUIS ||
+		vehicleModel == BOAT_JETMAX) {
+		vehicleModel++;
+	}
+	if (vehicleModel == HELI_CHOPPER ||
+		vehicleModel == BOAT_GHOST) {
+		vehicleModel += 2;
+	}
+	if (vehicleModel == CAR_BLISTAC) {
+		vehicleModel += 3;
+	}
+	if (vehicleModel == BOAT_SKIMMER) {
+		vehicleModel += 4;
+	}
+	if (vehicleModel == PLANE_AIRTRAIN) {
+		vehicleModel += 5;
+	}
+	if (vehicleModel > CAR_VICECHEE) {
+		vehicleModel = CAR_LANDSTAL;
+	}
 }
 
 void __declspec(naked) AddToCheatString()
@@ -483,8 +543,18 @@ void __declspec(naked) AddToCheatString()
 		test al, al
 		pop ecx
 		pop ecx
-		jnz end
+		jnz vehicle
 		call CPadHack::GripCheat
+		jmp end
+	vehicle:
+		push vehicleCheatString
+		push recentKeys
+		call cipherFunction
+		test al, al
+		pop ecx
+		pop ecx
+		jnz end
+		call CPadHack::VehicleCheat
 	end:
 		push skinnyCheatString
 		jmp addToCheatEndJump

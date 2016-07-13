@@ -7,6 +7,7 @@ namespace VCGlobals
 	CText& TheText = *reinterpret_cast<CText *>(vcversion::AdjustOffset(0x0094B220));
 	cDMAudio& DMAudio = *reinterpret_cast<cDMAudio *>(vcversion::AdjustOffset(0x00A10B8A));
 	cSampleManager& SampleManager = *reinterpret_cast<cSampleManager *>(vcversion::AdjustOffset(0x00983B90));
+	cAudioManager &AudioManager = *reinterpret_cast<cAudioManager *>(vcversion::AdjustOffset(0x0078D718));
 
 	char *ScrollCharSet = reinterpret_cast<char *>(vcversion::AdjustOffset(0x00696674));
 

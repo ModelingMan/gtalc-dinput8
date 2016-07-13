@@ -103,6 +103,7 @@ public:
 	unsigned char ComputeVolume(unsigned char, float, float);
 	float GetDistanceSquared(const CVector &); // INLINED!
 	void ProcessLoopingScriptObject(unsigned char);
+	unsigned int GetPedCommentSfxFromRange(int &, unsigned long, int, int);
 };
 
 //########################################################################
@@ -623,6 +624,53 @@ class CFireManager
 {
 public:
 	static CFire *fires;
+};
+
+//########################################################################
+//# CGarage
+//########################################################################
+
+class CGarage
+{
+public:
+	unsigned char type;         // 0x00
+	unsigned char doorState;    // 0x01
+	unsigned char space1[0xA6];
+
+	bool IsEntityEntirelyInside3D(unsigned long, float);
+};
+
+//########################################################################
+//# CGarages
+//########################################################################
+
+class CGarages
+{
+public:
+	static int *carsCollected;
+	static CGarage *garages;
+
+	static void TriggerMessage(char *, short, unsigned short, short);
+};
+
+//########################################################################
+//# CExplosion
+//########################################################################
+
+class CExplosion
+{
+public:
+	struct Explosion
+	{
+		unsigned int type;          // 0x00
+		float x;                    // 0x04
+		float y;                    // 0x08
+		float z;                    // 0x0C
+		unsigned char space1[0x14];
+		unsigned char activity;     // 0x24
+		unsigned char space2[0x10];
+	};
+	static Explosion *explosions;
 };
 
 #endif

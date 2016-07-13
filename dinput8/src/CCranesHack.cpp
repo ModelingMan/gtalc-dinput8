@@ -1,7 +1,7 @@
 #include "CCranesHack.h"
-#include "Globals.h"
 #include "vcversion.h"
 #include "SilentCall.h"
+#include "Vehicles.h"
 
 #include <math.h>
 
@@ -30,28 +30,28 @@ bool CCranesHack::initialise()
 void CCranesHack::RegisterCarForMilitaryCrane(unsigned int model)
 {
 	switch (model) {
-	case 137:
+	case CAR_FIRETRUK:
 		carsCollectedMilitaryCrane |= 1;
 		break;
-	case 146:
+	case CAR_AMBULAN:
 		carsCollectedMilitaryCrane |= 2;
 		break;
-	case 156:
+	case CAR_POLICE:
 		carsCollectedMilitaryCrane |= 4;
 		break;
-	case 157:
+	case CAR_ENFORCER:
 		carsCollectedMilitaryCrane |= 8;
 		break;
-	case 162:
+	case CAR_RHINO:
 		carsCollectedMilitaryCrane |= 0x10;
 		break;
-	case 163:
+	case CAR_BARRACKS:
 		carsCollectedMilitaryCrane |= 0x20;
 		break;
-	case 220:
+	case CAR_FBICAR:
 		carsCollectedMilitaryCrane |= 0x40;
 		break;
-	case 236:
+	case CAR_VICECHEE:
 		carsCollectedMilitaryCrane |= 0x80;
 		break;
 	}
@@ -60,21 +60,21 @@ void CCranesHack::RegisterCarForMilitaryCrane(unsigned int model)
 bool CCranesHack::DoesMilitaryCraneHaveThisOneAlready(unsigned int model)
 {
 	switch (model) {
-	case 137:
+	case CAR_FIRETRUK:
 		return !!(carsCollectedMilitaryCrane & 1);
-	case 146:
+	case CAR_AMBULAN:
 		return !!(carsCollectedMilitaryCrane & 2);
-	case 156:
+	case CAR_POLICE:
 		return !!(carsCollectedMilitaryCrane & 4);
-	case 157:
+	case CAR_ENFORCER:
 		return !!(carsCollectedMilitaryCrane & 8);
-	case 162:
+	case CAR_RHINO:
 		return !!(carsCollectedMilitaryCrane & 0x10);
-	case 163:
+	case CAR_BARRACKS:
 		return !!(carsCollectedMilitaryCrane & 0x20);
-	case 220:
+	case CAR_FBICAR:
 		return !!(carsCollectedMilitaryCrane & 0x40);
-	case 236:
+	case CAR_VICECHEE:
 		return !!(carsCollectedMilitaryCrane & 0x80);
 	}
 	return false;
@@ -235,32 +235,31 @@ void CCranesHack::InitCranes()
 bool CCraneHack::DoesCranePickUpThisCarType(unsigned int model)
 {
 	if (isCrusher) {
-		if (model == 137 || // Firetruck
-			model == 138 || // Trashmaster
-			model == 155 || // Hunter
-			model == 158 || // Securicar
-			model == 161 || // Bus
-			model == 162 || // Rhino
-			model == 167 || // Coach
-			model == 177 || // Sea Sparrow
-			model == 190 || // Skimmer
-			model == 194 || // Dodo
-			model == 199 || // Sparrow
-			model == 217 || // Maverick
-			model == 218 || // VCN Maverick
-			model == 227) { // Police Maverick
+		if (model == CAR_FIRETRUK ||
+			model == CAR_TRASH ||
+			model == CAR_HUNTER ||
+			model == CAR_SECURICA ||
+			model == CAR_BUS ||
+			model == CAR_RHINO ||
+			model == CAR_COACH ||
+			model == CAR_SEASPAR ||
+			model == BOAT_SKIMMER ||
+			model == CAR_DODO ||
+			model == CAR_MAVERICK ||
+			model == CAR_VCNMAV ||
+			model == CAR_POLMAV) {
 			return false;
 		}
 		return true;
 	} else if (isMilitary) {
-		if (model == 137 || // Firetruck
-			model == 146 || // Ambulance
-			model == 156 || // Police
-			model == 157 || // Enforcer
-			model == 162 || // Rhino
-			model == 163 || // Barracks OL
-			model == 220 || // Fbi Car
-			model == 236) { // Vice Cheetah
+		if (model == CAR_FIRETRUK ||
+			model == CAR_AMBULAN ||
+			model == CAR_POLICE ||
+			model == CAR_ENFORCER ||
+			model == CAR_RHINO ||
+			model == CAR_BARRACKS ||
+			model == CAR_FBICAR ||
+			model == CAR_VICECHEE) {
 			return true;
 		}
 		return false;

@@ -17,9 +17,13 @@ public:
 
 	bool _024C_set_phone_message();
 
+	bool _02BD_is_debug_mode();
+
 	bool _02FB_activate_crusher_crane();
 
 	bool _0351_is_nasty_game();
+
+	bool _0356_is_explosion_in_area();
 
 	bool _0368_activate_military_crane();
 

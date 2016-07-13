@@ -28,6 +28,8 @@ unsigned long pickupEffectNoMatchJump = vcversion::AdjustOffset(0x0043F246);
 bool CPickupsHack::initialise()
 {
 	call(0x0043E639, &RenderPickUpText, PATCH_JUMP);
+
+	// non-weapon pickup effects
 	call(0x0043F0F5, &DoPickUpEffects, PATCH_JUMP);
 
 	// pickup colors, blue-green-red

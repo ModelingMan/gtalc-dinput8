@@ -134,6 +134,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\CExplosionHack.cpp" />
+    <ClCompile Include="src\CGaragesHack.cpp" />
     <ClCompile Include="src\CPadHack.cpp" />
     <ClCompile Include="src\CCranesHack.cpp" />
     <ClCompile Include="src\CDigitalClockHack.cpp" />
@@ -152,6 +154,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\cAudioManagerHack.h" />
+    <ClInclude Include="include\CExplosionHack.h" />
+    <ClInclude Include="include\CGaragesHack.h" />
     <ClInclude Include="include\CPadHack.h" />
     <ClInclude Include="include\CCranesHack.h" />
     <ClInclude Include="include\CDigitalClockHack.h" />
@@ -166,6 +170,7 @@
     <ClInclude Include="include\CTowerClockHack.h" />
     <ClInclude Include="include\SilentCall.h" />
     <ClInclude Include="include\Utils.h" />
+    <ClInclude Include="include\Vehicles.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dinput8.def" />

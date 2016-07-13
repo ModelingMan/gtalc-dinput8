@@ -5,6 +5,7 @@
 static unsigned long g_AddSampleToRequestedQueue = vcversion::AdjustOffset(0x005F7560);
 static unsigned long g_ComputeVolume = vcversion::AdjustOffset(0x005F7A20);
 static unsigned long g_ProcessLoopingScriptObject = vcversion::AdjustOffset(0x005DC5A0);
+static unsigned long g_GetPedCommentSfxFromRange = vcversion::AdjustOffset(0x005DA690);
 
 __declspec(naked) void cAudioManager::AddSampleToRequestedQueue()
 {
@@ -27,4 +28,9 @@ float cAudioManager::GetDistanceSquared(const CVector& pos)
 	float y = pos.y - VCGlobals::TheCamera.GetMatrix().pos.y;
 	float z = 0.2f * (pos.z - VCGlobals::TheCamera.GetMatrix().pos.z);
 	return x * x + y * y + z * z;
+}
+
+__declspec(naked) unsigned int cAudioManager::GetPedCommentSfxFromRange(int &, unsigned long, int, int)
+{
+	__asm jmp g_GetPedCommentSfxFromRange;
 }

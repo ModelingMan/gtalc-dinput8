@@ -2,6 +2,7 @@
 #include "CPagerHack.h"
 #include "CScrollBarHack.h"
 #include "CCranesHack.h"
+#include "CExplosionHack.h"
 #include "Globals.h"
 #include "vcclasses.h"
 #include "vcversion.h"
@@ -28,6 +29,13 @@ static void ProjectileInfoUpdate();
 unsigned long projectileInfoUpdateProceedJump = vcversion::AdjustOffset(0x005C6ECC);
 unsigned long projectileInfoUpdateEndJump = vcversion::AdjustOffset(0x005C6F45);
 
+// CamControl
+static void CamControl();
+unsigned long camControlOther = vcversion::AdjustOffset(0x00472BF9);
+unsigned long camControlCar = vcversion::AdjustOffset(0x00472C02);
+
+int debugMode;
+
 bool CRunningScriptHack::initialise()
 {
 	//Memory is protected from write (write protection of .text section removed at startup)
@@ -49,6 +57,43 @@ bool CRunningScriptHack::initialise()
 
 	// ProjectileInfo null thrower fix
 	call(0x005C6EC6, &ProjectileInfoUpdate, PATCH_JUMP);
+
+	// RC Baron camera controls
+	*reinterpret_cast<float *>(vcversion::AdjustOffset(0x0068ABF4)) = 0.0;
+	*reinterpret_cast<float *>(vcversion::AdjustOffset(0x0068ABEC)) = 0.0;
+	call(0x00483F6A, 0x00483F7D, PATCH_JUMP);
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x00597CBE)) = 3;
+	call(0x00472BE8, &CamControl, PATCH_JUMP);
+
+	// RC Baron process engine - temporary workaround affects RC helicopters
+	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x005F3925)) = 342;
+	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x005F392C)) = 342;
+	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x005F395B)) = 342;
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005F394C)) = 80;
+	*reinterpret_cast<float *>(vcversion::AdjustOffset(0x005F3973)) = 90.0;
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005F55CA)) = 0x2B;
+	
+	// debug modes
+	const char *debugKeys[11] =
+	{
+		"MasterDebug",
+		"MasterExtras1",
+		"MasterExtras2",
+		"MasterPackagesCompleted",
+		"MasterParamedicCompleted",
+		"MasterVigilanteCompleted",
+		"MasterFirefighterCompleted",
+		"MasterIEGaragesCompleted",
+		"Master100Completed",
+		"SkipHelp",
+		"ViceCity"
+	};
+	for (int i = 0; i < 11; i++) {
+		if (GetPrivateProfileInt("Debug", debugKeys[i], 0, "./gta-lc.ini")) {
+			debugMode |= (1 << i);
+		}
+	}
+
 	return true;
 }
 
@@ -77,6 +122,10 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 		return this->_024C_set_phone_message();
 		break;
 
+	case 0x02BD:
+		return this->_02BD_is_debug_mode();
+		break;
+
 	case 0x02FB:
 		return this->_02FB_activate_crusher_crane();
 		break;
@@ -95,6 +144,10 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 
 	case 0x0351:
 		return this->_0351_is_nasty_game();
+		break;
+
+	case 0x0356:
+		return this->_0356_is_explosion_in_area();
 		break;
 
 	case 0x0368:
@@ -199,6 +252,13 @@ bool CRunningScriptHack::_024C_set_phone_message()
 	return 0;
 }
 
+bool CRunningScriptHack::_02BD_is_debug_mode()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 1);
+	this->UpdateCompareFlag(!!(debugMode & ScriptParams[0].int32));
+	return 0;
+}
+
 bool CRunningScriptHack::_02FB_activate_crusher_crane()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 10);
@@ -221,6 +281,13 @@ bool CRunningScriptHack::_02FB_activate_crusher_crane()
 bool CRunningScriptHack::_0351_is_nasty_game()
 {
 	this->UpdateCompareFlag(*(bool *)vcversion::AdjustOffset(0x68DD68));
+	return 0;
+}
+
+bool CRunningScriptHack::_0356_is_explosion_in_area()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 7);
+	this->UpdateCompareFlag(CExplosionHack::TestForExplosionInArea(ScriptParams[0].int32, ScriptParams[1].float32, ScriptParams[4].float32, ScriptParams[2].float32, ScriptParams[5].float32, ScriptParams[3].float32, ScriptParams[6].float32));
 	return 0;
 }
 
@@ -282,11 +349,9 @@ bool CRunningScriptHack::_0421_force_rain()
 bool CRunningScriptHack::_0422_does_garage_contain_car()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	auto IsEntityEntirelyInside3D = (bool(__thiscall *)(uintptr_t, uintptr_t, float))vcversion::AdjustOffset(0x430630);
 	auto VehiclePoolGetStruct = (uintptr_t(__thiscall *)(void *, int))vcversion::AdjustOffset(0x451C70);
 	void **carPool = (void **)vcversion::AdjustOffset(0xA0FDE4);
-	DWORD cgarage = vcversion::AdjustOffset(0x812668);
-	this->UpdateCompareFlag(IsEntityEntirelyInside3D(ScriptParams[0].int32 * 0xA8 + cgarage, VehiclePoolGetStruct(*carPool, ScriptParams[1].int32), 0.0));
+	this->UpdateCompareFlag(CGarages::garages[ScriptParams[0].int32].IsEntityEntirelyInside3D(VehiclePoolGetStruct(*carPool, ScriptParams[1].int32), 0.0));
 	return 0;
 }
 
@@ -345,5 +410,23 @@ void __declspec(naked) ProjectileInfoUpdate()
 	end:
 		jmp projectileInfoUpdateEndJump
 
+	}
+}
+
+void __declspec(naked) CamControl()
+{
+	__asm
+	{
+		mov eax, dword ptr [ebp+80Ch]
+		mov edi, dword ptr [eax+29Ch]
+		cmp edi, 1
+		jz other
+		movzx edi, word ptr [eax+5Ch] // get model index of vehicle
+		cmp edi, 194                  // compare with model index of RC Baron
+		jnz car
+	other:
+		jmp camControlOther
+	car:
+		jmp camControlCar
 	}
 }

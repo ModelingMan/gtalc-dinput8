@@ -26,8 +26,10 @@
     <ClCompile Include="src\CCranes.cpp" />
     <ClCompile Include="src\CDamageManager.cpp" />
     <ClCompile Include="src\cDMAudio.cpp" />
+    <ClCompile Include="src\CExplosion.cpp" />
     <ClCompile Include="src\CFireManager.cpp" />
     <ClCompile Include="src\CFont.cpp" />
+    <ClCompile Include="src\CGarages.cpp" />
     <ClCompile Include="src\CGeneral.cpp" />
     <ClCompile Include="src\CHud.cpp" />
     <ClCompile Include="src\CMessages.cpp" />

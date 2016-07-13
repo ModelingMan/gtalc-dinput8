@@ -8,6 +8,7 @@ namespace VCGlobals
 	extern CText& TheText;
 	extern cDMAudio& DMAudio;
 	extern cSampleManager& SampleManager;
+	extern cAudioManager &AudioManager;
 
 	extern char *ScrollCharSet;
 
