@@ -6,7 +6,7 @@ class CGaragesHack : public CGarages
 {
 public:
 	static bool initialise();
-	static bool HasImportExportGarageCollectedThisCar(short index, int car);
+	static bool HasImportExportGarageCollectedThisCar(short index, int slot);
 };
 
 class CGarageHack : public CGarage
@@ -15,4 +15,6 @@ public:
 	void MarkThisCarAsCollectedForCraig(int model);
 	bool HasThisCarBeenCollected(int model);
 	bool HasThisCarNotBeenCollected(int model);
+	static void UpdateProxy(void);
+	void Update(void);
 };

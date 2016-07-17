@@ -1,4 +1,5 @@
 #include "CPadHack.h"
+#include "CRunningScriptHack.h"
 #include "Globals.h"
 #include "vcversion.h"
 #include "SilentCall.h"
@@ -35,6 +36,7 @@ char *flyboyCheatString = "EG`UadKJZ_aQOc";
 char *gripCheatString = "GFTFXdOZSP[ZVc";
 char *goreCheatString = "WFLIPnETJWf\\Za[";
 char *vehicleCheatString = "UFJSN^UHD";
+char *vehicleReverseCheatString = "FFYDNmFHS";
 char *skinnyCheatString = "UJTNNmJVS[";
 char weaponsForAll[12] = { 6, 17, 23, 21, 25, 26, 28, 30, 31, 15, 12, 0 };
 int vehicleModel = CAR_LANDSTAL;
@@ -286,31 +288,65 @@ void CPadHack::GripCheat()
 
 void CPadHack::VehicleCheat()
 {
-	auto VehicleCheat = (void(__cdecl *)(int))vcversion::AdjustOffset(0x004AE8F0);
-	VehicleCheat(vehicleModel++);
-	if (vehicleModel == BOAT_RIO ||
-		vehicleModel == BOAT_PREDATOR ||
-		vehicleModel == BOAT_SQUALO ||
-		vehicleModel == BIKE_PIZZABOY ||
-		vehicleModel == BOAT_MARQUIS ||
-		vehicleModel == BOAT_JETMAX) {
-		vehicleModel++;
+	if (CRunningScriptHack::debugMode & DEBUG_MASTERDEBUG) {
+		auto VehicleCheat = (void(__cdecl *)(int))vcversion::AdjustOffset(0x004AE8F0);
+		VehicleCheat(vehicleModel++);
+		if (vehicleModel == BOAT_RIO ||
+			vehicleModel == BOAT_PREDATOR ||
+			vehicleModel == BOAT_SQUALO ||
+			vehicleModel == BIKE_PIZZABOY ||
+			vehicleModel == BOAT_MARQUIS ||
+			vehicleModel == BOAT_JETMAX) {
+			vehicleModel++;
+		}
+		if (vehicleModel == HELI_CHOPPER ||
+			vehicleModel == BOAT_GHOST) {
+			vehicleModel += 2;
+		}
+		if (vehicleModel == CAR_BLISTAC) {
+			vehicleModel += 3;
+		}
+		if (vehicleModel == BOAT_SKIMMER) {
+			vehicleModel += 4;
+		}
+		if (vehicleModel == PLANE_AIRTRAIN) {
+			vehicleModel += 5;
+		}
+		if (vehicleModel > CAR_VICECHEE) {
+			vehicleModel = CAR_LANDSTAL;
+		}
 	}
-	if (vehicleModel == HELI_CHOPPER ||
-		vehicleModel == BOAT_GHOST) {
-		vehicleModel += 2;
-	}
-	if (vehicleModel == CAR_BLISTAC) {
-		vehicleModel += 3;
-	}
-	if (vehicleModel == BOAT_SKIMMER) {
-		vehicleModel += 4;
-	}
-	if (vehicleModel == PLANE_AIRTRAIN) {
-		vehicleModel += 5;
-	}
-	if (vehicleModel > CAR_VICECHEE) {
-		vehicleModel = CAR_LANDSTAL;
+}
+
+void CPadHack::VehicleReverseCheat()
+{
+	if (CRunningScriptHack::debugMode & DEBUG_MASTERDEBUG) {
+		auto VehicleCheat = (void(__cdecl *)(int))vcversion::AdjustOffset(0x004AE8F0);
+		VehicleCheat(vehicleModel--);
+		if (vehicleModel == BOAT_RIO ||
+			vehicleModel == BOAT_PREDATOR ||
+			vehicleModel == BOAT_SQUALO ||
+			vehicleModel == BIKE_PIZZABOY ||
+			vehicleModel == BOAT_MARQUIS ||
+			vehicleModel == BOAT_JETMAX) {
+			vehicleModel--;
+		}
+		if (vehicleModel == BIKE_ANGEL ||
+			vehicleModel == BOAT_DINGHY) {
+			vehicleModel -= 2;
+		}
+		if (vehicleModel == CAR_DELOFLY) {
+			vehicleModel -= 3;
+		}
+		if (vehicleModel == BIKE_FREEWAY) {
+			vehicleModel -= 4;
+		}
+		if (vehicleModel == BOAT_TROPIC) {
+			vehicleModel -= 5;
+		}
+		if (vehicleModel < CAR_LANDSTAL) {
+			vehicleModel = CAR_VICECHEE;
+		}
 	}
 }
 
@@ -553,8 +589,18 @@ void __declspec(naked) AddToCheatString()
 		test al, al
 		pop ecx
 		pop ecx
-		jnz end
+		jnz vehicleReverse
 		call CPadHack::VehicleCheat
+		jmp end
+	vehicleReverse:
+		push vehicleReverseCheatString
+		push recentKeys
+		call cipherFunction
+		test al, al
+		pop ecx
+		pop ecx
+		jnz end
+		call CPadHack::VehicleReverseCheat
 	end:
 		push skinnyCheatString
 		jmp addToCheatEndJump

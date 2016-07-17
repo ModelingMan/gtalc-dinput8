@@ -2,6 +2,9 @@
 
 #include "vcclasses.h"
 
+#define DEBUG_MASTERDEBUG 1
+#define DEBUG_VICECITY 1024
+
 class CRunningScriptHack : public CRunningScript
 {
 public:
@@ -44,4 +47,6 @@ public:
 	bool _0444_set_script_fire_audio();
 
 	bool _0447_is_player_lifting_a_phone();
+
+	static int debugMode;
 };

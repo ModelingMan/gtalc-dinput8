@@ -2,6 +2,7 @@
 #include "CDigitalClockHack.h"
 #include "CScrollBarHack.h"
 #include "CTowerClockHack.h"
+#include "CRunningScriptHack.h"
 #include "Globals.h"
 #include "vcclasses.h"
 #include "vcversion.h"
@@ -46,7 +47,9 @@ bool CMovingThingsHack::initialise()
 	call(0x004A45B4, 0x0054F420, PATCH_CALL); // update
 
 	// do not update trails and banner
-	call(0x005AFDD3, 0x005AFE37, PATCH_JUMP);
+	if (!(CRunningScriptHack::debugMode & DEBUG_VICECITY)) {
+		call(0x005AFDD3, 0x005AFE37, PATCH_JUMP);
+	}
 
 	// do not update escalators
 	call(0x0054F435, 0x0054F453, PATCH_JUMP);

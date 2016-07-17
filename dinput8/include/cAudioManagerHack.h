@@ -10,4 +10,5 @@ public:
 	bool ProcessFrontEndHack(unsigned char);
 	static void ProcessFrontEndHackProxy();
 	void ProcessLoopingScriptObjectHack(unsigned char);
+	unsigned int __thiscall cAudioManagerHack::GetPlayerTalkSfx(CPed *ped, unsigned short type);
 };

@@ -24,4 +24,5 @@ public:
 	static void FlyboyCheat();
 	static void GripCheat();
 	static void VehicleCheat();
+	static void VehicleReverseCheat();
 };

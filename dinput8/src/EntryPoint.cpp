@@ -107,6 +107,30 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			return FALSE;
 		}
 
+		// debug modes
+		{
+			const char *debugKeys[11] =
+			{
+				"MasterDebug",
+				"MasterExtras1",
+				"MasterExtras2",
+				"MasterPackagesCompleted",
+				"MasterParamedicCompleted",
+				"MasterVigilanteCompleted",
+				"MasterFirefighterCompleted",
+				"MasterIEGaragesCompleted",
+				"Master100Completed",
+				"SkipHelp",
+				"ViceCity"
+			};
+
+			for (int i = 0; i < 11; i++) {
+				if (GetPrivateProfileInt("Debug", debugKeys[i], 0, "./gta-lc.ini")) {
+					CRunningScriptHack::debugMode |= (1 << i);
+				}
+			}
+		}
+
 		if (!cAudioManagerHack::initialise() ||
 			!CFontHack::initialise() ||
 			//!CHudHack::initialise() ||

@@ -34,7 +34,7 @@ static void CamControl();
 unsigned long camControlOther = vcversion::AdjustOffset(0x00472BF9);
 unsigned long camControlCar = vcversion::AdjustOffset(0x00472C02);
 
-int debugMode;
+int CRunningScriptHack::debugMode;
 
 bool CRunningScriptHack::initialise()
 {
@@ -72,27 +72,6 @@ bool CRunningScriptHack::initialise()
 	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005F394C)) = 80;
 	*reinterpret_cast<float *>(vcversion::AdjustOffset(0x005F3973)) = 90.0;
 	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005F55CA)) = 0x2B;
-	
-	// debug modes
-	const char *debugKeys[11] =
-	{
-		"MasterDebug",
-		"MasterExtras1",
-		"MasterExtras2",
-		"MasterPackagesCompleted",
-		"MasterParamedicCompleted",
-		"MasterVigilanteCompleted",
-		"MasterFirefighterCompleted",
-		"MasterIEGaragesCompleted",
-		"Master100Completed",
-		"SkipHelp",
-		"ViceCity"
-	};
-	for (int i = 0; i < 11; i++) {
-		if (GetPrivateProfileInt("Debug", debugKeys[i], 0, "./gta-lc.ini")) {
-			debugMode |= (1 << i);
-		}
-	}
 
 	return true;
 }
@@ -349,7 +328,7 @@ bool CRunningScriptHack::_0421_force_rain()
 bool CRunningScriptHack::_0422_does_garage_contain_car()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	auto VehiclePoolGetStruct = (uintptr_t(__thiscall *)(void *, int))vcversion::AdjustOffset(0x451C70);
+	auto VehiclePoolGetStruct = (CVehicle *(__thiscall *)(void *, int))vcversion::AdjustOffset(0x451C70);
 	void **carPool = (void **)vcversion::AdjustOffset(0xA0FDE4);
 	this->UpdateCompareFlag(CGarages::garages[ScriptParams[0].int32].IsEntityEntirelyInside3D(VehiclePoolGetStruct(*carPool, ScriptParams[1].int32), 0.0));
 	return 0;
