@@ -43,4 +43,5 @@ namespace VCGlobals
 
 	CPlayerPed *FindPlayerPed();
 	CVehicle *FindPlayerVehicle();
+	CVector *FindPlayerCoors(CVector *);
 }

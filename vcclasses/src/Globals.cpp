@@ -28,4 +28,10 @@ namespace VCGlobals
 	{
 		return g_pFindPlayerVehicle();
 	}
+
+	CVector *(*g_pFindPlayerCoors)() = *reinterpret_cast<CVector *(*)()>(vcversion::AdjustOffset(0x004BC240));
+	CVector *FindPlayerCoors(CVector *)
+	{
+		return g_pFindPlayerCoors();
+	}
 }

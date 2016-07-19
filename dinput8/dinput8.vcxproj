@@ -149,6 +149,7 @@
     <ClCompile Include="src\CRunningScriptHack.cpp" />
     <ClCompile Include="src\CScrollBarHack.cpp" />
     <ClCompile Include="src\CTowerClockHack.cpp" />
+    <ClCompile Include="src\CWantedHack.cpp" />
     <ClCompile Include="src\EntryPoint.cpp" />
     <ClCompile Include="src\SilentCall.cpp" />
   </ItemGroup>
@@ -168,6 +169,7 @@
     <ClInclude Include="include\CRunningScriptHack.h" />
     <ClInclude Include="include\CScrollBarHack.h" />
     <ClInclude Include="include\CTowerClockHack.h" />
+    <ClInclude Include="include\CWantedHack.h" />
     <ClInclude Include="include\SilentCall.h" />
     <ClInclude Include="include\Utils.h" />
     <ClInclude Include="include\Vehicles.h" />

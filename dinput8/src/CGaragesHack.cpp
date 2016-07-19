@@ -46,7 +46,10 @@ int carsToCollect[2][16] =
 	}
 };
 
-unsigned long updateEndJump = vcversion::AdjustOffset(0x00433E62);
+unsigned long updateType7EndJump = vcversion::AdjustOffset(0x00433FF0);
+unsigned long updateType7ProceedJump = vcversion::AdjustOffset(0x0043221E);
+unsigned long updateType14EndJump = vcversion::AdjustOffset(0x00434010);
+unsigned long updateType14ProceedJump = vcversion::AdjustOffset(0x00432C8E);
 
 bool CGaragesHack::initialise()
 {
@@ -63,11 +66,11 @@ bool CGaragesHack::initialise()
 	bool(__thiscall CGarageHack::* function3)(int) = &CGarageHack::HasThisCarBeenCollected;
 	call(0x004326DC, (unsigned long &)function3, PATCH_NOTHING);
 
-	// add type 7 garage
-	*(unsigned long *)(vcversion::AdjustOffset(0x00687B54)) = (unsigned long)&CGarageHack::UpdateProxy;
-
-	// partial fix to type 14 garage
-	*(unsigned char *)(vcversion::AdjustOffset(0x00432D52)) = 0xEB;
+	// additional garage types
+	void(__thiscall CGarageHack::* function4)(void) = &CGarageHack::UpdateType7HackProxy;
+	call(0x00432217, (unsigned long &)function4, PATCH_JUMP);
+	void(__thiscall CGarageHack::* function5)(void) = &CGarageHack::UpdateType14HackProxy;
+	call(0x00432C87, (unsigned long &)function5, PATCH_JUMP);
 
 	return true;
 }
@@ -150,20 +153,26 @@ bool CGarageHack::HasThisCarNotBeenCollected(int model)
 	return false;
 }
 
-void __declspec(naked) CGarageHack::UpdateProxy(void)
+void __declspec(naked) CGarageHack::UpdateType7HackProxy(void)
 {
 	__asm
 	{
+		movzx ecx, byte ptr [ebp]
+		cmp ecx, 7
+		jnz proceed
 		mov ecx, ebp
-		call Update
-		jmp updateEndJump
+		call CGarageHack::UpdateType7Hack
+		jmp updateType7EndJump
+	proceed:
+		movzx eax, byte ptr [ebp+1]
+		cmp eax, 3
+		jmp updateType7ProceedJump
 	}
 }
 
-void CGarageHack::Update(void)
+void CGarageHack::UpdateType7Hack(void)
 {
 	CVehicle *vehicle = VCGlobals::FindPlayerVehicle();
-	auto UpdateDoor = (void(__thiscall *)(CGarage *))vcversion::AdjustOffset(0x0042F030);
 	float multiplier = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x00975424));
 	float speed;
 
@@ -174,17 +183,16 @@ void CGarageHack::Update(void)
 			this->targetVehicle->RegisterReference((CEntity **)&this->targetVehicle);
 		}
 		if (this->targetVehicle &&
-			IsEntityEntirelyInside3D(this->targetVehicle, 0.0) &&
-			!IsAnyOtherCarTouchingGarage(this->targetVehicle) &&
-			IsEntityEntirelyOutside(VCGlobals::FindPlayerPed(), 2.0)) {
+			this->IsEntityEntirelyInside3D(this->targetVehicle, 0.0) &&
+			!this->IsAnyOtherCarTouchingGarage(this->targetVehicle) &&
+			this->IsEntityEntirelyOutside(VCGlobals::FindPlayerPed(), 2.0)) {
 			*(unsigned short *)(CPad::GetPad(0) + 0xF0) |= 4;
 			VCGlobals::FindPlayerPed()->wanted->activity |= 1;
 			this->doorState = 2; // closing
 			return;
 		}
 		CVector pos;
-		auto FindPlayerCoors = (CVector *(__cdecl *)(CVector *))vcversion::AdjustOffset(0x004BC240);
-		CVector *ppos = FindPlayerCoors(&pos);
+		CVector *ppos = VCGlobals::FindPlayerCoors(&pos);
 		if (abs(ppos->x - (this->lowerX + this->upperX) / 2) > 25.0 ||
 			abs(ppos->y - (this->lowerY + this->upperY) / 2) > 25.0 ||
 			ppos->z > this->ceilingHeight) {
@@ -209,11 +217,9 @@ void CGarageHack::Update(void)
 				VCGlobals::FindPlayerPed()->wanted->activity &= 0xFE;
 				int reward = 2;
 				if (this->modelToCollect == CAR_SECURICA) {
-					reward = 5000 - (500 * CGarages::bankVansCollected);
-					CGarages::bankVansCollected++;
+					reward = 5000 - 500 * CGarages::bankVansCollected++;
 				} else if (this->modelToCollect == CAR_POLICE) {
-					reward = 5000 - (500 * CGarages::policeCarsCollected);
-					CGarages::policeCarsCollected++;
+					reward = 5000 - 500 * CGarages::policeCarsCollected++;
 				}
 				if (!reward) {
 					CGarages::TriggerMessage("GA_11", -1, 4000, -1);
@@ -223,14 +229,13 @@ void CGarageHack::Update(void)
 				}
 			}
 		}
-		UpdateDoor(this);
+		this->UpdateDoor();
 	}
 	
 	// closed
 	else if (this->doorState == 0) {
 		if (vehicle && vehicle->model == this->modelToCollect) {
-			auto ProximityToDoor = (float(__thiscall *)(CGarage *, float, float))vcversion::AdjustOffset(0x0042E800);
-			if (ProximityToDoor(this, vehicle->x, vehicle->y) < 64.0) {
+			if (this->ProximityToGarageArea(vehicle->x, vehicle->y) < 64.0) {
 				this->doorState = 3; // opening
 			}
 		}
@@ -249,6 +254,125 @@ void CGarageHack::Update(void)
 			this->doorState = 1; // opened
 			VCGlobals::DMAudio.PlayOneShot(cDMAudio::garageEntity, 0x4B, 1.0);
 		}
-		UpdateDoor(this);
+		this->UpdateDoor();
 	}
+}
+
+void __declspec(naked) CGarageHack::UpdateType14HackProxy(void)
+{
+	__asm
+	{
+		movzx ecx, byte ptr [ebp]
+		cmp ecx, 14
+		jnz proceed
+		mov ecx, ebp
+		call CGarageHack::UpdateType14Hack
+		jmp updateType14EndJump
+	proceed:
+		movzx eax, byte ptr [ebp+1]
+		cmp eax, 5
+		jmp updateType14ProceedJump
+	}
+}
+
+void CGarageHack::UpdateType14Hack(void)
+{
+	CVehicle *vehicle = VCGlobals::FindPlayerVehicle();
+	float multiplier = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x00975424));
+	unsigned int timeInMilliseconds = *reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x00974B2C));
+	float speed;
+
+	// opened
+	if (this->doorState == 1) {
+		CVector pos;
+		CVector *ppos = VCGlobals::FindPlayerCoors(&pos);
+		if ((abs(ppos->x - (this->lowerX + this->upperX) / 2) > 30.0 ||
+			abs(ppos->y - (this->lowerY + this->upperY) / 2) > 30.0) &&
+			!this->IsAnyOtherCarTouchingGarage(0)) {
+			this->doorState = 2; // closing
+			this->closedUnserviced = 1;
+			return;
+		}
+		if (this->targetVehicle &&
+			this->targetVehicle == vehicle &&
+			this->IsStaticPlayerCarEntirelyInside() &&
+			!this->IsAnyCarBlockingDoor()) {
+			*(unsigned short *)(CPad::GetPad(0) + 0xF0) |= 4;
+			VCGlobals::FindPlayerPed()->wanted->activity |= 1;
+			this->doorState = 2; // closing
+			this->closedUnserviced = 0;
+		}
+	}
+
+	// closing
+	else if (this->doorState == 2) {
+		speed = this->rotatingDoor ? 0.02f : 0.04f;
+		this->doorCurrentHeight -= speed * multiplier;
+		if (this->doorCurrentHeight < 0.0) {
+			this->doorCurrentHeight = 0.0;
+			this->doorState = 0; // closed
+			VCGlobals::DMAudio.PlayOneShot(cDMAudio::garageEntity, 0x4A, 1.0);
+			if (!this->closedUnserviced) {
+				if (this->targetVehicle) {
+					this->doorState = 5; // closed and serviced
+					this->gameTimeToOpen = timeInMilliseconds + 2000;
+					this->targetVehicle = 0;
+				} else {
+					this->doorState = 0; // closed
+				}
+				*(unsigned short *)(CPad::GetPad(0) + 0xF0) &= 0xFFFB;
+				VCGlobals::FindPlayerPed()->wanted->activity &= 0xFE;
+			} else {
+				this->doorState = 0; // closed
+			}
+		}
+		this->UpdateDoor();
+	}
+
+	// closed
+	else if (this->doorState == 0) {
+		if (this->targetVehicle && vehicle == this->targetVehicle) {
+			if (this->ProximityToGarageArea(vehicle->x, vehicle->y) < 289.0) {
+				this->doorState = 3; // opening
+			}
+		}
+	}
+
+	// opening
+	else if (this->doorState == 3) {
+		speed = this->rotatingDoor ? 0.015f : 0.035f;
+		this->doorCurrentHeight += speed * multiplier;
+		if (this->doorCurrentHeight > this->doorMaximumHeight) {
+			this->doorCurrentHeight = this->doorMaximumHeight;
+			this->doorState = 1; // opened
+			VCGlobals::DMAudio.PlayOneShot(cDMAudio::garageEntity, 0x4B, 1.0);
+		}
+		this->UpdateDoor();
+	}
+
+	// closed and serviced
+	else if (this->doorState == 5) {
+		if (this->type == 14 && timeInMilliseconds > this->gameTimeToOpen) {
+			this->doorState = 3; // opening
+		}
+	}
+}
+
+float CGarageHack::ProximityToGarageArea(float x, float y)
+{
+	if (x < this->lowerX) {
+		x -= lowerX;
+	} else if (x > this->upperX) {
+		x -= upperX;
+	} else {
+		x = 0;
+	}
+	if (y < this->lowerY) {
+		y -= lowerY;
+	} else if (y > this->upperY) {
+		y -= upperY;
+	} else {
+		y = 0;
+	}
+	return x * x + y * y;
 }

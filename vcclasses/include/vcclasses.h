@@ -534,8 +534,8 @@ public:
 	unsigned char activity;           // 0x74
 	unsigned char status;             // 0x75
 	unsigned char countCollected;     // 0x76
-	unsigned char isCrusher;          // 0x77
-	unsigned char isMilitary;         // 0x78
+	bool          isCrusher;          // 0x77
+	bool          isMilitary;         // 0x78
 	unsigned char unk3;               // 0x79
 	unsigned char isNotCab;           // 0x7A
 	unsigned char padding;            // 0x7B
@@ -661,30 +661,35 @@ class CGarage
 public:
 	unsigned char type;              // 0x00
 	unsigned char doorState;         // 0x01
-	unsigned char space1[0x06];
+	unsigned char space1[0x02];
+	unsigned char closedUnserviced;  // 0x04
+	unsigned char space2[0x03];
 	unsigned int  modelToCollect;    // 0x08
-	unsigned char space2[0x0D];
+	unsigned char space3[0x0D];
 	unsigned char rotatingDoor;      // 0x19
-	unsigned char space3[0x1E];
+	unsigned char space4[0x1E];
 	float         ceilingHeight;     // 0x38
-	unsigned char space4[0x08];
+	unsigned char space5[0x08];
 	float         lowerX;            // 0x44
 	float         upperX;            // 0x48
 	float         lowerY;            // 0x4C
 	float         upperY;            // 0x50
 	float         doorCurrentHeight; // 0x54
 	float         doorMaximumHeight; // 0x58
-	unsigned char space5[0x10];
+	unsigned char space6[0x10];
 	float         centerHeight;      // 0x6C
-	unsigned char space6[0x04];
-	unsigned int  gameTimeToOpen;    // 0x74
 	unsigned char space7[0x04];
+	unsigned int  gameTimeToOpen;    // 0x74
+	unsigned char space8[0x04];
 	CVehicle *    targetVehicle;     // 0x7C
-	unsigned char space8[0x28];
+	unsigned char space9[0x28];
 
 	bool IsEntityEntirelyInside3D(CEntity *, float);
 	bool IsEntityEntirelyOutside(CEntity *, float);
 	bool IsAnyOtherCarTouchingGarage(CVehicle *);
+	bool IsStaticPlayerCarEntirelyInside(void);
+	bool IsAnyCarBlockingDoor(void);
+	void UpdateDoor(void);
 };
 
 //########################################################################
@@ -711,13 +716,13 @@ class CExplosion
 public:
 	struct Explosion
 	{
-		unsigned int  type;         // 0x00
+		int           type;         // 0x00
 		float         x;            // 0x04
 		float         y;            // 0x08
 		float         z;            // 0x0C
 		unsigned char space1[0x14];
 		unsigned char activity;     // 0x24
-		unsigned char space2[0x10];
+		unsigned char space2[0x13];
 	};
 	static Explosion *explosions;
 };

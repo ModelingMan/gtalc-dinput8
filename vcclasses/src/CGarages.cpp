@@ -10,6 +10,9 @@ static unsigned long g_TriggerMessage = vcversion::AdjustOffset(0x0042EDE0);
 static unsigned long g_IsEntityEntirelyInside3D = vcversion::AdjustOffset(0x00430630);
 static unsigned long g_IsEntityEntirelyOutside = vcversion::AdjustOffset(0x00430430);
 static unsigned long g_IsAnyOtherCarTouchingGarage = vcversion::AdjustOffset(0x0042FDB0);
+static unsigned long g_IsStaticPlayerCarEntirelyInside = vcversion::AdjustOffset(0x004308A0);
+static unsigned long g_IsAnyCarBlockingDoor = vcversion::AdjustOffset(0x0042F6A0);
+static unsigned long g_UpdateDoor = vcversion::AdjustOffset(0x0042F030);
 
 __declspec(naked) void CGarages::TriggerMessage(char *, short, unsigned short, short)
 {
@@ -29,4 +32,19 @@ __declspec(naked) bool CGarage::IsEntityEntirelyOutside(CEntity *, float)
 __declspec(naked) bool CGarage::IsAnyOtherCarTouchingGarage(CVehicle *)
 {
 	__asm jmp g_IsAnyOtherCarTouchingGarage;
+}
+
+__declspec(naked) bool CGarage::IsStaticPlayerCarEntirelyInside(void)
+{
+	__asm jmp g_IsStaticPlayerCarEntirelyInside;
+}
+
+__declspec(naked) bool CGarage::IsAnyCarBlockingDoor(void)
+{
+	__asm jmp g_IsAnyCarBlockingDoor;
+}
+
+__declspec(naked) void CGarage::UpdateDoor(void)
+{
+	__asm jmp g_UpdateDoor;
 }
