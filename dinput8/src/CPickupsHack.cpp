@@ -37,6 +37,13 @@ bool CPickupsHack::initialise()
 	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x006881C8)) = 0xFF0000; // color 38
 	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x006881D0)) = 0;        // color 39
 
+	// pickups light glow
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x0043F52B)) = 0x10;
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x0043EC03)) = 0x10;
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x0043E983)) = 0x10;
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x0043EECB)) = 0x10;
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x0043F842)) = 0x10;
+
 	return true;
 }
 

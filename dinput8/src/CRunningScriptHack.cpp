@@ -73,6 +73,22 @@ bool CRunningScriptHack::initialise()
 	*reinterpret_cast<float *>(vcversion::AdjustOffset(0x005F3973)) = 90.0;
 	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005F55CA)) = 0x2B;
 
+	// horizon ships
+	if (!(CRunningScriptHack::debugMode & DEBUG_VICECITY)) {
+		*reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x005BC5BC)) = 0xE990;
+	}
+
+	// cylindrical marker colors
+	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x00458E82)) = 0x000080;
+	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x00689CA8)) = 0xFF8000;
+	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x00568E45)) = 0x000080;
+	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x00698D58)) = 0xFF8000;
+	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x004C3F99)) = 0x000080;
+	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x0068F958)) = 0xFF8000;
+
+	// undo ocean change
+	*reinterpret_cast<float *>(vcversion::AdjustOffset(0x69CD70)) = 70.0;
+
 	return true;
 }
 

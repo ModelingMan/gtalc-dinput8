@@ -72,6 +72,10 @@ bool CGaragesHack::initialise()
 	void(__thiscall CGarageHack::* function5)(void) = &CGarageHack::UpdateType14HackProxy;
 	call(0x00432C87, (unsigned long &)function5, PATCH_JUMP);
 
+	// bomb shop reward
+	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x004318BB)) = 1000;
+	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x00431BC4)) = -1000;
+
 	return true;
 }
 
@@ -269,8 +273,8 @@ void __declspec(naked) CGarageHack::UpdateType14HackProxy(void)
 		call CGarageHack::UpdateType14Hack
 		jmp updateType14EndJump
 	proceed:
-		movzx eax, byte ptr [ebp+1]
-		cmp eax, 5
+		movzx ecx, byte ptr [ebp+1]
+		cmp ecx, 5
 		jmp updateType14ProceedJump
 	}
 }
