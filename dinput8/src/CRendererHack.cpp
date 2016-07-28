@@ -6,8 +6,8 @@
 #include <fstream>
 #include <string>
 
-unsigned long RenderEverythingBarRoadsIntermediate = vcversion::AdjustOffset(0x004C9FA8);
-unsigned long RenderEverythingBarRoadsEndJump = vcversion::AdjustOffset(0x004C9F90);
+unsigned long renderEverythingBarRoadsIntermediate = vcversion::AdjustOffset(0x004C9FA8);
+unsigned long renderEverythingBarRoadsEndJump = vcversion::AdjustOffset(0x004C9F90);
 bool isStateOne = false;
 char buildings[8000] = {};
 
@@ -64,9 +64,9 @@ void __declspec(naked) CRendererHack::RenderEverythingBarRoadsHackProxy(void)
 		and al, 7
 		cmp al, 1
 		jnz intermediate
-		jmp RenderEverythingBarRoadsEndJump
+		jmp renderEverythingBarRoadsEndJump
 	intermediate:
-		jmp RenderEverythingBarRoadsIntermediate
+		jmp renderEverythingBarRoadsIntermediate
 	}
 }
 

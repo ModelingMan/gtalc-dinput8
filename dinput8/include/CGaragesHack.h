@@ -15,9 +15,9 @@ public:
 	void MarkThisCarAsCollectedForCraig(int model);
 	bool HasThisCarBeenCollected(int model);
 	bool HasThisCarNotBeenCollected(int model);
-	void UpdateType7HackProxy(void);
+	static void UpdateType7HackProxy(void);
 	void UpdateType7Hack(void);
-	void UpdateType14HackProxy(void);
+	static void UpdateType14HackProxy(void);
 	void UpdateType14Hack(void);
 	float ProximityToGarageArea(float x, float y);
 };

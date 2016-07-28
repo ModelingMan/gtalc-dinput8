@@ -34,6 +34,16 @@ static void CamControl();
 unsigned long camControlOther = vcversion::AdjustOffset(0x00472BF9);
 unsigned long camControlCar = vcversion::AdjustOffset(0x00472C02);
 
+// GameLogicUpdate
+static void GameLogicUpdate();
+unsigned long gameLogicUpdateEndJump = vcversion::AdjustOffset(0x0042BC6D);
+
+// AutomobilePreRender
+static void AutomobilePreRender();
+unsigned long preRenderMatchAmbulan = vcversion::AdjustOffset(0x0058BE77);
+unsigned long preRenderMatchFbiranch = vcversion::AdjustOffset(0x0058C8F0);
+unsigned long preRenderNoMatch = vcversion::AdjustOffset(0x0058BE34);
+
 int CRunningScriptHack::debugMode;
 
 bool CRunningScriptHack::initialise()
@@ -89,6 +99,15 @@ bool CRunningScriptHack::initialise()
 	// undo ocean change
 	*reinterpret_cast<float *>(vcversion::AdjustOffset(0x69CD70)) = 70.0;
 
+	// taxi cash
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005B8AB6)) = 25;
+
+	// hospital cost
+	call(0x0042BC64, &GameLogicUpdate, PATCH_JUMP);
+
+	// FBI Rancher roof light
+	call(0x0058BE2F, &AutomobilePreRender, PATCH_JUMP);
+	
 	return true;
 }
 
@@ -423,5 +442,32 @@ void __declspec(naked) CamControl()
 		jmp camControlOther
 	car:
 		jmp camControlCar
+	}
+}
+
+void __declspec(naked) GameLogicUpdate()
+{
+	__asm
+	{
+		mov eax, dword ptr [ebx+0A0h] // get current cash
+		add eax, 0FFFFFC18h           // subtract 1000
+		jmp gameLogicUpdateEndJump
+	}
+}
+
+void __declspec(naked) AutomobilePreRender()
+{
+	__asm
+	{
+		sub ecx, 9 // ambulan
+		jz matchAmbulan
+		dec ecx    // fbiranch
+		jz matchFbiranch
+		inc ecx    // resume before change
+		jmp preRenderNoMatch
+	matchAmbulan:
+		jmp preRenderMatchAmbulan
+	matchFbiranch:
+		jmp preRenderMatchFbiranch
 	}
 }

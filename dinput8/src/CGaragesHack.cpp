@@ -6,7 +6,7 @@
 
 #include <math.h>
 
-int carsToCollect[2][16] =
+const int carsToCollect[2][16] =
 {
 	{
 		CAR_SECURICA,
@@ -67,10 +67,8 @@ bool CGaragesHack::initialise()
 	call(0x004326DC, (unsigned long &)function3, PATCH_NOTHING);
 
 	// additional garage types
-	void(__thiscall CGarageHack::* function4)(void) = &CGarageHack::UpdateType7HackProxy;
-	call(0x00432217, (unsigned long &)function4, PATCH_JUMP);
-	void(__thiscall CGarageHack::* function5)(void) = &CGarageHack::UpdateType14HackProxy;
-	call(0x00432C87, (unsigned long &)function5, PATCH_JUMP);
+	call(0x00432217, &CGarageHack::UpdateType7HackProxy, PATCH_JUMP);
+	call(0x00432C87, &CGarageHack::UpdateType14HackProxy, PATCH_JUMP);
 
 	// bomb shop reward
 	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x004318BB)) = 1000;

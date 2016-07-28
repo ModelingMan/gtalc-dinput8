@@ -4,7 +4,6 @@
 #include "SilentCall.h"
 
 // RenderPickUpText
-static void RenderPickUpText();
 unsigned long pickupText0Jump = vcversion::AdjustOffset(0x0043E649);
 unsigned long pickupTextGetTextJump = vcversion::AdjustOffset(0x0043E6FD);
 char text[53][8] =
@@ -13,7 +12,6 @@ char text[53][8] =
 };
 
 // DoPickUpEffects
-static void DoPickUpEffects();
 unsigned long adrenalineModel = vcversion::AdjustOffset(0x0068E924);
 unsigned long cameraModel = vcversion::AdjustOffset(0x0068E940);
 unsigned long bodyarmourModel = vcversion::AdjustOffset(0x0068E928);
@@ -27,10 +25,10 @@ unsigned long pickupEffectNoMatchJump = vcversion::AdjustOffset(0x0043F246);
 
 bool CPickupsHack::initialise()
 {
-	call(0x0043E639, &RenderPickUpText, PATCH_JUMP);
+	call(0x0043E639, &RenderPickUpTextHack, PATCH_JUMP);
 
 	// non-weapon pickup effects
-	call(0x0043F0F5, &DoPickUpEffects, PATCH_JUMP);
+	call(0x0043F0F5, &DoPickUpEffectsHack, PATCH_JUMP);
 
 	// pickup colors, blue-green-red
 	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x006881C0)) = 0x80FF80; // color 37
@@ -44,10 +42,15 @@ bool CPickupsHack::initialise()
 	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x0043EECB)) = 0x10;
 	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x0043F842)) = 0x10;
 
+	// package rewards
+	call(0x00441293, &CPickupsHack::UpdateHack, PATCH_CALL);
+	*reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x00441298)) = 0x9090;
+	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x004412DC)) = 1000000;
+
 	return true;
 }
 
-void __declspec(naked) RenderPickUpText()
+void __declspec(naked) CPickupsHack::RenderPickUpTextHack()
 {
 	__asm
 	{
@@ -64,7 +67,7 @@ void __declspec(naked) RenderPickUpText()
 	}
 }
 
-void __declspec(naked) DoPickUpEffects()
+void __declspec(naked) CPickupsHack::DoPickUpEffectsHack()
 {
 	__asm
 	{
@@ -139,4 +142,9 @@ void __declspec(naked) DoPickUpEffects()
 	endNoMatch:
 		jmp pickupEffectNoMatchJump
 	}
+}
+
+void CPickupsHack::UpdateHack()
+{
+	CWorld::Players[VCGlobals::currentPlayer].m_Money += 1000;
 }

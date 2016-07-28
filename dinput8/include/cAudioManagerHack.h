@@ -10,5 +10,8 @@ public:
 	bool ProcessFrontEndHack(unsigned char);
 	static void ProcessFrontEndHackProxy();
 	void ProcessLoopingScriptObjectHack(unsigned char);
-	unsigned int __thiscall cAudioManagerHack::GetPlayerTalkSfx(CPed *ped, unsigned short type);
+	unsigned int GetPlayerTalkSfx(CPed *ped, unsigned short type);
+	static void InitialiseAudioZoneArray();
+	static void SetupSuspectLastSeenReportHackProxy();
+	static int SetupSuspectLastSeenReportHack(int model);
 };

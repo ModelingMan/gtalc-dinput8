@@ -13,6 +13,7 @@ namespace VCGlobals
 	extern char *ScrollCharSet;
 
 	extern float &timeScale;
+	extern unsigned char &currentPlayer;
 
 	union ScriptParameter
 	{

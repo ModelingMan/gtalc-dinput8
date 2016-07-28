@@ -124,7 +124,7 @@ void CPadHack::WeaponCheat()
 void CPadHack::MoneyCheat()
 {
 	char gxtKey[8] = "CHEAT6";
-	CWorld::Players->m_Money += 250000;
+	CWorld::Players[VCGlobals::currentPlayer].m_Money += 250000;
 	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 

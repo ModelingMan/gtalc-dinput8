@@ -3,11 +3,149 @@
 #include "Globals.h"
 #include "vcversion.h"
 #include "SilentCall.h"
+#include "Vehicles.h"
 #include <math.h>
 #include <fstream>
 
+#define REPORT_AMBULANCE     234
+#define REPORT_VAN           235
+#define REPORT_TRUCK         236
+#define REPORT_ECONOMY       237
+#define REPORT_SPORTSCAR     238
+#define REPORT_BUGGY         239
+#define REPORT_TAXI          240
+#define REPORT_CRUISER       241
+#define REPORT_BUS           242
+#define REPORT_COUPE         243
+#define REPORT_FIRETRUCK     244
+#define REPORT_BOAT          245
+#define REPORT_PICKUP        246
+#define REPORT_ICECREAMTRUCK 247
+#define REPORT_LIMO          248
+#define REPORT_POLICECAR     249
+#define REPORT_CONVERTIBLE   250
+#define REPORT_SUBWAYCAR     251
+#define REPORT_TANK          252
+#define REPORT_NONE          0
+
+#define REPORT_LIBERTYCITY     210
+#define REPORT_PORTLAND        211
+#define REPORT_STAUNTONISLAND  212
+#define REPORT_SHORESIDEVALE   213
+#define REPORT_ROCKFORD        214
+#define REPORT_FORTSTAUNTON    215
+#define REPORT_ASPATRIA        216
+#define REPORT_TORRINGTON      217
+#define REPORT_BEDFORDPOINT    218
+#define REPORT_NEWPORT         219
+#define REPORT_BELLEVILLE      220
+#define REPORT_LIBERTYCAMPUS   221
+#define REPORT_COCHRANE        222
+#define REPORT_PIKECREEK       223
+#define REPORT_CEDARGROVE      253
+#define REPORT_WICHITAGARDENS  254
+#define REPORT_FRANCISINTL     255
+#define REPORT_CALLAHANPOINT   256
+#define REPORT_ATLANTICQUAYS   257
+#define REPORT_PORTLANDHARBOR  258
+#define REPORT_TRENTON         259
+#define REPORT_CHINATOWN       260
+#define REPORT_REDLIGHT        261
+#define REPORT_HEPBURNHEIGHTS  262
+#define REPORT_SAINTMARKS      263
+#define REPORT_HARWOOD         264
+#define REPORT_PORTLANDBEACH   265
+#define REPORT_PORTLANDVIEW    466
+
+#define TOTAL_AUDIO_ZONES 36
+
+struct PoliceRadioZone
+{
+	const char zone[8];
+	int sfx;
+	char padding[4];
+};
+
+PoliceRadioZone policeRadioZones[TOTAL_AUDIO_ZONES] =
+{
+	{ "HOSPI_2", REPORT_ROCKFORD,       0 },
+	{ "CONSTRU", REPORT_FORTSTAUNTON,   0 },
+	{ "STADIUM", REPORT_ASPATRIA,       0 },
+	{ "YAKUSA",  REPORT_TORRINGTON,     0 },
+	{ "SHOPING", REPORT_BEDFORDPOINT,   0 },
+	{ "COM_EAS", REPORT_NEWPORT,        0 },
+	{ "PARK",    REPORT_BELLEVILLE,     0 },
+	{ "UNIVERS", REPORT_LIBERTYCAMPUS,  0 },
+	{ "BIG_DAM", REPORT_COCHRANE,       0 },
+	{ "SUB_IND", REPORT_PIKECREEK,      0 },
+	{ "SWANKS",  REPORT_CEDARGROVE,     0 },
+	{ "PROJECT", REPORT_WICHITAGARDENS, 0 },
+	{ "AIRPORT", REPORT_FRANCISINTL,    0 },
+	{ "PORT_W",  REPORT_CALLAHANPOINT,  0 },
+	{ "PORT_S",  REPORT_ATLANTICQUAYS,  0 },
+	{ "PORT_E",  REPORT_PORTLANDHARBOR, 0 },
+	{ "PORT_I",  REPORT_TRENTON,        0 },
+	{ "CHINA",   REPORT_CHINATOWN,      0 },
+	{ "REDLIGH", REPORT_REDLIGHT,       0 },
+	{ "TOWERS",  REPORT_HEPBURNHEIGHTS, 0 },
+	{ "LITTLEI", REPORT_SAINTMARKS,     0 },
+	{ "HARWOOD", REPORT_HARWOOD,        0 },
+	{ "EASTBAY", REPORT_PORTLANDBEACH,  0 },
+	{ "S_VIEW",  REPORT_PORTLANDVIEW,   0 },
+	{ "CITYZON", REPORT_LIBERTYCITY,    0 },
+	{ "IND_ZON", REPORT_PORTLAND,       0 },
+	{ "COM_ZON", REPORT_STAUNTONISLAND, 0 },
+	{ "SUB_ZON", REPORT_SHORESIDEVALE,  0 },
+	{ "SUB_ZO2", REPORT_SHORESIDEVALE,  0 },
+	{ "SUB_ZO3", REPORT_SHORESIDEVALE,  0 },
+	{ "A",       REPORT_ROCKFORD,       0 },
+	{ "A",       REPORT_ROCKFORD,       0 },
+	{ "A",       REPORT_ROCKFORD,       0 },
+	{ "A",       REPORT_ROCKFORD,       0 },
+	{ "A",       REPORT_ROCKFORD,       0 },
+	{ 0,         0,                     0 }
+};
+
+// this must be changed if navig.zon is modified
+short audioZones[TOTAL_AUDIO_ZONES] =
+{
+	0x001F,
+	0x001E,
+	0x0010,
+	0x0011,
+	0x0012,
+	0x0014,
+	0x0015,
+	0x001D,
+	0x0017,
+	0x0018,
+	0x0019,
+	0x001A,
+	0x001B,
+	0x001C,
+	0x0016,
+	0x000E,
+	0x0013,
+	0x000F,
+	0x0002,
+	0x0003,
+	0x0004,
+	0x0005,
+	0x0006,
+	0x0007,
+	0x0008,
+	0x0009,
+	0x000A,
+	0x000B,
+	0x000C,
+	0x000D,
+	0x0000
+};
+
 unsigned long JumpTableForFrontEnd = vcversion::AdjustOffset(0x006B28B8);
 unsigned long OffsetIfWeHackedFrontEnd = vcversion::AdjustOffset(0x005DBE5E);
+unsigned long setupSuspectLastSeenReportMatch = vcversion::AdjustOffset(0x005FD6B8);
+unsigned long setupSuspectLastSeenReportNoMatch = vcversion::AdjustOffset(0x005FD6B0);
 
 bool cAudioManagerHack::initialise()
 {
@@ -65,7 +203,7 @@ bool cAudioManagerHack::initialise()
 			{ 271,  7, 1, 10706, 27, 13596, 1 }, // police
 			{ 270,  6, 2, 17260, 27, 13000, 2 }, // enforcer
 			{ 270,  6, 5,  8670, 52,  9935, 0 }, // securica
-			{ 274, 10, 6, 10400, 52,  9400, 1 }, // washing
+			{ 271,  7, 1, 10500, 52,  9100, 1 }, // washing
 			{ 268,  0, 0, 26513, 27, 13596, 1 }, // predator
 			{ 272,  8, 3, 11652, 52, 10554, 3 }, // bus
 			{ 272,  8, 7, 29711, 52,  8000, 2 }, // rhino
@@ -162,6 +300,28 @@ bool cAudioManagerHack::initialise()
 	unsigned int(__thiscall cAudioManagerHack::* function)(CPed *, unsigned short) = &cAudioManagerHack::GetPlayerTalkSfx;
 	call(0x005EA204, (unsigned long &)function, PATCH_NOTHING);
 
+	// suspect last seen report, requires modification of sfx
+	call(0x005FD58C, &cAudioManagerHack::SetupSuspectLastSeenReportHackProxy, PATCH_JUMP);
+
+	// set up crime report
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005FDBFF)) = TOTAL_AUDIO_ZONES;
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005FDC4A)) = TOTAL_AUDIO_ZONES;
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005FDC4F)) = TOTAL_AUDIO_ZONES;
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FDC27)) = (unsigned long)&policeRadioZones + 4;
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FDC2F)) = (unsigned long)&policeRadioZones;
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FDC3D)) = (unsigned long)&policeRadioZones + 8;
+
+	// play suspect last seen
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005FCF39)) = TOTAL_AUDIO_ZONES;
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005FCF87)) = TOTAL_AUDIO_ZONES;
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005FCF8C)) = TOTAL_AUDIO_ZONES;
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FCF5F)) = (unsigned long)&policeRadioZones + 4;
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FCF67)) = (unsigned long)&policeRadioZones;
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FCF75)) = (unsigned long)&policeRadioZones + 8;
+
+	// do not use game's audio zone array
+	call(0x004DDAEB, &cAudioManagerHack::InitialiseAudioZoneArray, PATCH_NOTHING);
+	
 	return true;
 }
 
@@ -310,4 +470,113 @@ unsigned int __thiscall cAudioManagerHack::GetPlayerTalkSfx(CPed *ped, unsigned 
 	}
 	VCGlobals::AudioManager.GetPedCommentSfxFromRange(store, (unsigned long)ped + 0x5E0, start, range);
 	return store;
+}
+
+void cAudioManagerHack::InitialiseAudioZoneArray()
+{
+	*reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x00A10A46)) = TOTAL_AUDIO_ZONES - 5;
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004DC392)) = (unsigned long)&audioZones;
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FCF49)) = (unsigned long)&audioZones;
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FDC0F)) = (unsigned long)&audioZones;
+}
+
+void __declspec(naked) cAudioManagerHack::SetupSuspectLastSeenReportHackProxy()
+{
+	__asm
+	{
+		push eax
+		call cAudioManagerHack::SetupSuspectLastSeenReportHack
+		add esp, 4
+		mov esi, eax  // get report sfx
+		test eax, eax // compare sfx with 0
+		jz noMatch
+		jmp setupSuspectLastSeenReportMatch
+	noMatch:
+		jmp setupSuspectLastSeenReportNoMatch
+	}
+}
+
+int cAudioManagerHack::SetupSuspectLastSeenReportHack(int model)
+{
+	switch (model) {
+	case CAR_AMBULAN:
+		return REPORT_AMBULANCE;
+	case BOAT_DINGHY:
+	case BOAT_GHOST:
+	case BOAT_JETMAX:
+	case BOAT_MARQUIS:
+	case BOAT_PREDATOR:
+	case BOAT_REEFER:
+	case BOAT_RIO:
+	case BOAT_SPEEDER:
+	case BOAT_SQUALO:
+	case BOAT_TROPIC:
+		return REPORT_BOAT;
+	case CAR_BFINJECT:
+		return REPORT_BUGGY;
+	case CAR_BUS:
+	case CAR_COACH:
+		return REPORT_BUS;
+	case CAR_COMET:
+	case CAR_IDAHO:
+	case CAR_STALLION:
+		return REPORT_CONVERTIBLE;
+	case CAR_CORPSE:
+	case CAR_ESPERANT:
+	case CAR_MANANA:
+		return REPORT_COUPE;
+	case CAR_BLISTA:
+	case CAR_LANDSTAL:
+		return REPORT_CRUISER;
+	case CAR_FBICAR:
+	case CAR_KURUMA:
+	case CAR_PEREN:
+	case CAR_REGINA:
+	case CAR_SENTINEL:
+	case CAR_WASHING:
+		return REPORT_ECONOMY;
+	case CAR_FIRETRUK:
+		return REPORT_FIRETRUCK;
+	case CAR_MRWHOOP:
+		return REPORT_ICECREAMTRUCK;
+	case CAR_LOVEFIST:
+	case CAR_STRETCH:
+		return REPORT_LIMO;
+	case CAR_BOBCAT:
+	case CAR_PATRIOT:
+		return REPORT_PICKUP;
+	case CAR_POLICE:
+		return REPORT_POLICECAR;
+	case CAR_BANSHEE:
+	case CAR_CHEETAH:
+	case CAR_HOTRING:
+	case CAR_INFERNUS:
+	case CAR_PHOENIX:
+	case CAR_STINGER:
+		return REPORT_SPORTSCAR;
+	case CAR_RHINO:
+		return REPORT_TANK;
+	case CAR_BORGNINE:
+	case CAR_CABBIE:
+	case CAR_TAXI:
+	case CAR_ZEBRA:
+		return REPORT_TAXI;
+	case CAR_BARRACKS:
+	case CAR_FLATBED:
+	case CAR_PACKER:
+	case CAR_TRASH:
+		return REPORT_TRUCK;
+	case CAR_ENFORCER:
+	case CAR_MOONBEAM:
+	case CAR_MRWONGS:
+	case CAR_MULE:
+	case CAR_PANLANT:
+	case CAR_PONY:
+	case CAR_RUMPO:
+	case CAR_SECURICA:
+	case CAR_TOYZ:
+	case CAR_YANKEE:
+		return REPORT_VAN;
+	}
+	return REPORT_NONE;
 }
