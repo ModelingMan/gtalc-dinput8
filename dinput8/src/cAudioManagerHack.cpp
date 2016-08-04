@@ -4,7 +4,6 @@
 #include "vcversion.h"
 #include "SilentCall.h"
 #include "Vehicles.h"
-#include <math.h>
 #include <fstream>
 
 #define REPORT_AMBULANCE     234

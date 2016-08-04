@@ -179,8 +179,8 @@ void CGarageHack::UpdateType7Hack(void)
 	float speed;
 
 	// opened
-	if (this->doorState == 1) {
-		if (vehicle && vehicle->model == this->modelToCollect) {
+	if (this->state == 1) {
+		if (vehicle && vehicle->modelIndex == this->targetModel) {
 			this->targetVehicle = vehicle;
 			this->targetVehicle->RegisterReference((CEntity **)&this->targetVehicle);
 		}
@@ -190,7 +190,7 @@ void CGarageHack::UpdateType7Hack(void)
 			this->IsEntityEntirelyOutside(VCGlobals::FindPlayerPed(), 2.0)) {
 			*(unsigned short *)(CPad::GetPad(0) + 0xF0) |= 4;
 			VCGlobals::FindPlayerPed()->wanted->activity |= 1;
-			this->doorState = 2; // closing
+			this->state = 2; // closing
 			return;
 		}
 		CVector pos;
@@ -198,18 +198,18 @@ void CGarageHack::UpdateType7Hack(void)
 		if (abs(ppos->x - (this->lowerX + this->upperX) / 2) > 25.0 ||
 			abs(ppos->y - (this->lowerY + this->upperY) / 2) > 25.0 ||
 			ppos->z > this->ceilingHeight) {
-			this->doorState = 2; // closing
+			this->state = 2; // closing
 			this->targetVehicle = 0;
 		}
 	}
 	
 	// closing
-	else if (this->doorState == 2) {
+	else if (this->state == 2) {
 		speed = this->rotatingDoor ? 0.02f : 0.04f;
 		this->doorCurrentHeight -= speed * multiplier;
 		if (this->doorCurrentHeight < 0.0) {
 			this->doorCurrentHeight = 0.0;
-			this->doorState = 0; // closed
+			this->state = 0; // closed
 			VCGlobals::DMAudio.PlayOneShot(cDMAudio::garageEntity, 0x4A, 1.0);
 			if (this->targetVehicle) {
 				auto DestroyVehicleAndDriverAndPassengers = (void(__cdecl *)(CVehicle *))vcversion::AdjustOffset(0x005B7E80);
@@ -218,9 +218,9 @@ void CGarageHack::UpdateType7Hack(void)
 				*(unsigned short *)(CPad::GetPad(0) + 0xF0) &= 0xFFFB;
 				VCGlobals::FindPlayerPed()->wanted->activity &= 0xFE;
 				int reward = 2;
-				if (this->modelToCollect == CAR_SECURICA) {
+				if (this->targetModel == CAR_SECURICA) {
 					reward = 5000 - 500 * CGarages::bankVansCollected++;
-				} else if (this->modelToCollect == CAR_POLICE) {
+				} else if (this->targetModel == CAR_POLICE) {
 					reward = 5000 - 500 * CGarages::policeCarsCollected++;
 				}
 				if (!reward) {
@@ -235,17 +235,17 @@ void CGarageHack::UpdateType7Hack(void)
 	}
 	
 	// closed
-	else if (this->doorState == 0) {
-		if (vehicle && vehicle->model == this->modelToCollect) {
+	else if (this->state == 0) {
+		if (vehicle && vehicle->modelIndex == this->targetModel) {
 			if (this->ProximityToGarageArea(vehicle->x, vehicle->y) < 64.0) {
-				this->doorState = 3; // opening
+				this->state = 3; // opening
 			}
 		}
 	}
 	
 	// opening
-	else if (this->doorState == 3) {
-		if (vehicle && vehicle->model == this->modelToCollect) {
+	else if (this->state == 3) {
+		if (vehicle && vehicle->modelIndex == this->targetModel) {
 			this->targetVehicle = vehicle;
 			this->targetVehicle->RegisterReference((CEntity **)&this->targetVehicle);
 		}
@@ -253,7 +253,7 @@ void CGarageHack::UpdateType7Hack(void)
 		this->doorCurrentHeight += speed * multiplier;
 		if (this->doorCurrentHeight > this->doorMaximumHeight) {
 			this->doorCurrentHeight = this->doorMaximumHeight;
-			this->doorState = 1; // opened
+			this->state = 1; // opened
 			VCGlobals::DMAudio.PlayOneShot(cDMAudio::garageEntity, 0x4B, 1.0);
 		}
 		this->UpdateDoor();
@@ -281,17 +281,16 @@ void CGarageHack::UpdateType14Hack(void)
 {
 	CVehicle *vehicle = VCGlobals::FindPlayerVehicle();
 	float multiplier = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x00975424));
-	unsigned int timeInMilliseconds = *reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x00974B2C));
 	float speed;
 
 	// opened
-	if (this->doorState == 1) {
+	if (this->state == 1) {
 		CVector pos;
 		CVector *ppos = VCGlobals::FindPlayerCoors(&pos);
 		if ((abs(ppos->x - (this->lowerX + this->upperX) / 2) > 30.0 ||
 			abs(ppos->y - (this->lowerY + this->upperY) / 2) > 30.0) &&
 			!this->IsAnyOtherCarTouchingGarage(0)) {
-			this->doorState = 2; // closing
+			this->state = 2; // closing
 			this->closedUnserviced = 1;
 			return;
 		}
@@ -301,61 +300,61 @@ void CGarageHack::UpdateType14Hack(void)
 			!this->IsAnyCarBlockingDoor()) {
 			*(unsigned short *)(CPad::GetPad(0) + 0xF0) |= 4;
 			VCGlobals::FindPlayerPed()->wanted->activity |= 1;
-			this->doorState = 2; // closing
+			this->state = 2; // closing
 			this->closedUnserviced = 0;
 		}
 	}
 
 	// closing
-	else if (this->doorState == 2) {
+	else if (this->state == 2) {
 		speed = this->rotatingDoor ? 0.02f : 0.04f;
 		this->doorCurrentHeight -= speed * multiplier;
 		if (this->doorCurrentHeight < 0.0) {
 			this->doorCurrentHeight = 0.0;
-			this->doorState = 0; // closed
+			this->state = 0; // closed
 			VCGlobals::DMAudio.PlayOneShot(cDMAudio::garageEntity, 0x4A, 1.0);
 			if (!this->closedUnserviced) {
 				if (this->targetVehicle) {
-					this->doorState = 5; // closed and serviced
-					this->gameTimeToOpen = timeInMilliseconds + 2000;
+					this->state = 5; // closed and serviced
+					this->gameTimeToOpen = CTimer::m_snTimeInMilliseconds + 2000;
 					this->targetVehicle = 0;
 				} else {
-					this->doorState = 0; // closed
+					this->state = 0; // closed
 				}
 				*(unsigned short *)(CPad::GetPad(0) + 0xF0) &= 0xFFFB;
 				VCGlobals::FindPlayerPed()->wanted->activity &= 0xFE;
 			} else {
-				this->doorState = 0; // closed
+				this->state = 0; // closed
 			}
 		}
 		this->UpdateDoor();
 	}
 
 	// closed
-	else if (this->doorState == 0) {
+	else if (this->state == 0) {
 		if (this->targetVehicle && vehicle == this->targetVehicle) {
 			if (this->ProximityToGarageArea(vehicle->x, vehicle->y) < 289.0) {
-				this->doorState = 3; // opening
+				this->state = 3; // opening
 			}
 		}
 	}
 
 	// opening
-	else if (this->doorState == 3) {
+	else if (this->state == 3) {
 		speed = this->rotatingDoor ? 0.015f : 0.035f;
 		this->doorCurrentHeight += speed * multiplier;
 		if (this->doorCurrentHeight > this->doorMaximumHeight) {
 			this->doorCurrentHeight = this->doorMaximumHeight;
-			this->doorState = 1; // opened
+			this->state = 1; // opened
 			VCGlobals::DMAudio.PlayOneShot(cDMAudio::garageEntity, 0x4B, 1.0);
 		}
 		this->UpdateDoor();
 	}
 
 	// closed and serviced
-	else if (this->doorState == 5) {
-		if (this->type == 14 && timeInMilliseconds > this->gameTimeToOpen) {
-			this->doorState = 3; // opening
+	else if (this->state == 5) {
+		if (this->type == 14 && CTimer::m_snTimeInMilliseconds > this->gameTimeToOpen) {
+			this->state = 3; // opening
 		}
 	}
 }

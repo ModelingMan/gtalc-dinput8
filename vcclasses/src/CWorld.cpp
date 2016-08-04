@@ -4,8 +4,20 @@
 CPlayerInfo *CWorld::Players = reinterpret_cast<CPlayerInfo *>(vcversion::AdjustOffset(0x0094AD28));
 
 static unsigned long g_FindGroundZForCoord = vcversion::AdjustOffset(0x004D5540);
+static unsigned long g_Remove = vcversion::AdjustOffset(0x004DB310);
+static unsigned long g_Add = vcversion::AdjustOffset(0x004DB3F0);
 
 __declspec(naked) float CWorld::FindGroundZForCoord(float, float)
 {
 	__asm jmp g_FindGroundZForCoord;
+}
+
+__declspec(naked) void CWorld::Remove(CEntity *)
+{
+	__asm jmp g_Remove;
+}
+
+__declspec(naked) void CWorld::Add(CEntity *)
+{
+	__asm jmp g_Add;
 }

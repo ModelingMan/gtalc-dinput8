@@ -327,9 +327,7 @@ bool CRunningScriptHack::_0368_activate_military_crane()
 bool CRunningScriptHack::_03A0_is_crane_lifting_car()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 3);
-	auto VehiclePoolGetStruct = (uintptr_t(__thiscall *)(void *, int))vcversion::AdjustOffset(0x451C70);
-	void **carPool = (void **)vcversion::AdjustOffset(0xA0FDE4);
-	this->UpdateCompareFlag(CCranesHack::IsThisCarPickedUp(ScriptParams[0].float32, ScriptParams[1].float32, VehiclePoolGetStruct(*carPool, ScriptParams[2].int32)));
+	this->UpdateCompareFlag(CCranesHack::IsThisCarPickedUp(ScriptParams[0].float32, ScriptParams[1].float32, CPools::ms_pVehiclePool->GetAt(ScriptParams[2].int32)));
 	return 0;
 }
 
@@ -363,9 +361,7 @@ bool CRunningScriptHack::_0421_force_rain()
 bool CRunningScriptHack::_0422_does_garage_contain_car()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	auto VehiclePoolGetStruct = (CVehicle *(__thiscall *)(void *, int))vcversion::AdjustOffset(0x451C70);
-	void **carPool = (void **)vcversion::AdjustOffset(0xA0FDE4);
-	this->UpdateCompareFlag(CGarages::garages[ScriptParams[0].int32].IsEntityEntirelyInside3D(VehiclePoolGetStruct(*carPool, ScriptParams[1].int32), 0.0));
+	this->UpdateCompareFlag(CGarages::garages[ScriptParams[0].int32].IsEntityEntirelyInside3D(CPools::ms_pVehiclePool->GetAt(ScriptParams[1].int32), 0.0));
 	return 0;
 }
 

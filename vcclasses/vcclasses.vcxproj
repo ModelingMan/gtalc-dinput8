@@ -33,9 +33,12 @@
     <ClCompile Include="src\CGarages.cpp" />
     <ClCompile Include="src\CGeneral.cpp" />
     <ClCompile Include="src\CHud.cpp" />
+    <ClCompile Include="src\CMatrix.cpp" />
     <ClCompile Include="src\CMessages.cpp" />
     <ClCompile Include="src\CPad.cpp" />
     <ClCompile Include="src\CPed.cpp" />
+    <ClCompile Include="src\CPhysical.cpp" />
+    <ClCompile Include="src\CPools.cpp" />
     <ClCompile Include="src\CRunningScript.cpp" />
     <ClCompile Include="src\cSampleManager.cpp" />
     <ClCompile Include="src\CScrollBar.cpp" />
@@ -47,6 +50,7 @@
     <ClCompile Include="src\CTimer.cpp" />
     <ClCompile Include="src\CTxdStore.cpp" />
     <ClCompile Include="src\CUserDisplay.cpp" />
+    <ClCompile Include="src\CVehicle.cpp" />
     <ClCompile Include="src\CWanted.cpp" />
     <ClCompile Include="src\CWeather.cpp" />
     <ClCompile Include="src\CWorld.cpp" />

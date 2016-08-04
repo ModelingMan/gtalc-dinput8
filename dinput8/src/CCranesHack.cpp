@@ -80,7 +80,7 @@ bool CCranesHack::DoesMilitaryCraneHaveThisOneAlready(unsigned int model)
 	return false;
 }
 
-bool CCranesHack::IsThisCarPickedUp(float positionX, float positionY, unsigned int vehicle)
+bool CCranesHack::IsThisCarPickedUp(float positionX, float positionY, CVehicle *vehicle)
 {
 	float craneObjectX, craneObjectY, distance;
 	if (numCranes > 0) {
@@ -185,7 +185,7 @@ void CCranesHack::AddThisOneCrane(unsigned int entity)
 		cranes[index].object = entity;
 		cranes[index].activity = 0;
 		// initialise rotation
-		cranes[index].armCurrentRotation = (float)(numCranes);
+		cranes[index].armCurrentRotation = (float)numCranes;
 		while (cranes[index].armCurrentRotation > 6.283) {
 			cranes[index].armCurrentRotation -= 6.283;
 		}

@@ -60,6 +60,10 @@ public:
 	unsigned int pad2;
 	CVector pos;
 	unsigned int pad3;
+
+	void SetRotate(float, float, float);
+	void SetRotateZOnly(float);
+	void UpdateRW(void);
 };
 
 //########################################################################
@@ -215,7 +219,12 @@ public:
 class CMessages
 {
 public:
+	static void AddMessageJumpQWithNumber(wchar_t *, unsigned int, unsigned short, int, int, int, int, int, int);
+	static void AddMessageWithNumber(wchar_t *, unsigned int, unsigned short, int, int, int, int, int, int);
+	static void InsertNumberInString(wchar_t *, int, int, int, int, int, int, wchar_t *);
 	static void AddToPreviousBriefArray(wchar_t *, int, int, int, int, int, int, unsigned short *);
+	static void AddBigMessageQ(wchar_t *, unsigned int, unsigned short);
+	static void AddBigMessage(wchar_t *, unsigned int, unsigned short);
 };
 
 //########################################################################
@@ -254,12 +263,14 @@ protected:
 class CWanted
 {
 public:
-	unsigned char space1[0x001E];
+	unsigned int  counter;        // 0x00
+	unsigned char space1[0x001A];
 	unsigned char activity;       // 0x1E
 	unsigned char space2;
 	int           level;          // 0x20
 
 	void SetWantedLevelCheat(int);
+	void UpdateWantedLevel(void);
 };
 
 //########################################################################
@@ -269,32 +280,83 @@ public:
 class CEntity
 {
 public:
+	void UpdateRwFrame(void);
 	void RegisterReference(CEntity **);
+};
+
+//########################################################################
+//# CPhysical
+//########################################################################
+
+class CPhysical : public CEntity
+{
+public:
+	bool GetHasCollidedWith(CEntity *);
+};
+
+//########################################################################
+//# CVehicle
+//########################################################################
+
+class CVehicle : public CPhysical
+{
+public:
+	unsigned char  space1[0x0034];
+	float          x;                      // 0x034
+	float          y;                      // 0x038
+	float          z;                      // 0x03C
+	unsigned char  space2[0x0010];
+	unsigned char  availability;           // 0x050
+	unsigned char  space3[0x000B];
+	unsigned short modelIndex;             // 0x05C
+	unsigned char  space4[0x0013];
+	float          forceX;                 // 0x070
+	float          forceY;                 // 0x074
+	float          forceZ;                 // 0x078
+	unsigned char  space5[0x003C];
+	float          mass;                   // 0x0B8
+	float          turnResistance;         // 0x0BC
+	float          accelerationResistance; // 0x0C0
+	unsigned char  space6[0x00DC];
+	unsigned char  firstColour;            // 0x1A0
+	unsigned char  secondColour;           // 0x1A1
+	unsigned char  space7[0x005C];
+	unsigned char  bombState;              // 0x1FE
+	unsigned char  space8[0x0005];
+	float          health;                 // 0x204
+	unsigned char  space9[0x0028];
+	unsigned int   lock;                   // 0x230
+	unsigned char  space10[0x0068];
+	unsigned int   type;                   // 0x29C
+	float          damageManager;          // 0x2A0
+	unsigned char  space11[0x02BC];
+	float          burningDuration;        // 0x560
+	unsigned char  space12[0x0061];
+	unsigned char  numberOfWheelsOnGround; // 0x5C5
+
+	bool IsSphereTouchingVehicle(float, float, float, float);
+};
+
+//########################################################################
+//# CAutomobile
+//########################################################################
+
+class CAutomobile : public CVehicle
+{
+
 };
 
 //########################################################################
 //# CPed
 //########################################################################
 
-class CPed : public CEntity
+class CPed : public CPhysical
 {
 public:
+	void SetAmmo(int, unsigned int);
 	void GiveWeapon(int, unsigned int, bool);
-};
-
-//########################################################################
-//# CPlayerInfo
-//########################################################################
-
-class CPlayerInfo
-{
-public:
-	unsigned char space1[0x00A0];
-	unsigned int m_Money;
-	unsigned int m_MoneyCounter;
-	unsigned int m_HiddenPackagesFound;
-	unsigned int m_TotalHiddenPackages;
-	unsigned char space2[0x00C0];
+	bool IsPedInControl(void);
+	void Say(unsigned short);
 };
 
 //########################################################################
@@ -311,6 +373,78 @@ public:
 	float armour;                 // 0x358
 	unsigned char space3[0x0298];
 	CWanted *wanted;              // 0x5F4
+};
+
+//########################################################################
+//# CObject
+//########################################################################
+
+class CObject : public CPhysical
+{
+
+};
+
+//########################################################################
+//# CCutsceneHead
+//########################################################################
+
+class CCutsceneHead : public CObject
+{
+
+};
+
+//########################################################################
+//# CBuilding
+//########################################################################
+
+class CBuilding : public CEntity
+{
+
+};
+
+//########################################################################
+//# CPool
+//########################################################################
+
+template <class T1, class T2 = T1>
+class CPool
+{
+public:
+	T2 *           entities;   // 0x00
+	unsigned char *flags;      // 0x04
+	int            totalCount; // 0x08
+
+	int GetIndex(T1 *);
+	T1 *GetAt(int);
+};
+
+//########################################################################
+//# CPools
+//########################################################################
+
+class CPools
+{
+public:
+	static CPool<CObject, CCutsceneHead> *&ms_pObjectPool;
+	static CPool<CBuilding> *&ms_pBuildingPool;
+	static CPool<CPed, CPlayerPed> *&ms_pPedPool;
+	static CPool<CVehicle, CAutomobile> *&ms_pVehiclePool;
+};
+
+//########################################################################
+//# CPlayerInfo
+//########################################################################
+
+class CPlayerInfo
+{
+public:
+	CPlayerPed *playerEntity;
+	unsigned char space1[0x009C];
+	unsigned int m_Money;
+	unsigned int m_MoneyCounter;
+	unsigned int m_HiddenPackagesFound;
+	unsigned int m_TotalHiddenPackages;
+	unsigned char space2[0x00C0];
 };
 
 //########################################################################
@@ -449,6 +583,8 @@ class CWorld
 public:
 	static CPlayerInfo *Players;
 	static float FindGroundZForCoord(float x, float y);
+	static void Remove(CEntity *);
+	static void Add(CEntity *);
 };
 
 //########################################################################
@@ -489,10 +625,11 @@ public:
 class CSprite
 {
 public:
-	static void InitSpriteBuffer();
-	static bool CalcScreenCoors(const RwV3d &, RwV3d *, float *, float *, bool);
+	static void RenderOneXLUSprite(float, float, float, float, float, unsigned char, unsigned char, unsigned char, short, float, unsigned char);
 	static void RenderBufferedOneXLUSprite(float, float, float, float, float, unsigned char, unsigned char, unsigned char, short, float, unsigned char);
+	static void InitSpriteBuffer();
 	static void FlushSpriteBuffer();
+	static bool CalcScreenCoors(const RwV3d &, RwV3d *, float *, float *, bool);
 };
 
 //########################################################################
@@ -529,7 +666,7 @@ public:
 	float         hookCurrentZ;       // 0x60
 	float         unk1;               // 0x64
 	float         unk2;               // 0x68
-	unsigned int  vehicle;            // 0x6C, pointer to vehicle to be picked up
+	CVehicle *    vehicle;            // 0x6C
 	unsigned int  timer;              // 0x70
 	unsigned char activity;           // 0x74
 	unsigned char status;             // 0x75
@@ -561,39 +698,6 @@ class CGeneral
 {
 public:
 	static float GetATanOfXY(float, float);
-};
-
-//########################################################################
-//# CAutomobile
-//########################################################################
-
-class CAutomobile : public CEntity
-{
-
-};
-
-//########################################################################
-//# CVehicle
-//########################################################################
-
-class CVehicle : public CAutomobile
-{
-public:
-	unsigned char  space1[0x0034];
-	float          x;               // 0x034
-	float          y;               // 0x038
-	float          z;               // 0x03C
-	unsigned char  space2[0x0010];
-	unsigned char  availability;    // 0x050
-	unsigned char  space3[0x000B];
-	unsigned short model;           // 0x05C
-	unsigned char  space4[0x01A6];
-	float          health;          // 0x204
-	unsigned char  space5[0x0094];
-	unsigned int   type;            // 0x29C
-	float          damageManager;   // 0x2A0
-	unsigned char  space6[0x02BC];
-	float          burningDuration; // 0x560
 };
 
 //########################################################################
@@ -659,37 +763,59 @@ public:
 class CGarage
 {
 public:
-	unsigned char type;              // 0x00
-	unsigned char doorState;         // 0x01
-	unsigned char space1[0x02];
-	unsigned char closedUnserviced;  // 0x04
-	unsigned char space2[0x03];
-	unsigned int  modelToCollect;    // 0x08
-	unsigned char space3[0x0D];
-	unsigned char rotatingDoor;      // 0x19
-	unsigned char space4[0x1E];
-	float         ceilingHeight;     // 0x38
-	unsigned char space5[0x08];
-	float         lowerX;            // 0x44
-	float         upperX;            // 0x48
-	float         lowerY;            // 0x4C
-	float         upperY;            // 0x50
-	float         doorCurrentHeight; // 0x54
-	float         doorMaximumHeight; // 0x58
-	unsigned char space6[0x10];
-	float         centerHeight;      // 0x6C
-	unsigned char space7[0x04];
-	unsigned int  gameTimeToOpen;    // 0x74
-	unsigned char space8[0x04];
-	CVehicle *    targetVehicle;     // 0x7C
-	unsigned char space9[0x28];
+	unsigned char type;               // 0x00
+	unsigned char state;              // 0x01
+	unsigned char maxCarsInSave;      // 0x02
+	unsigned char unk1;               // 0x03
+	unsigned char closedUnserviced;   // 0x04
+	unsigned char isDeactive;         // 0x05
+	unsigned char hasResprayHappened; // 0x06
+	unsigned char padding1;           // 0x07
+	unsigned int  targetModel;        // 0x08
+	unsigned long doorObject;         // 0x0C
+	unsigned long crusherTopObject;   // 0x10
+	unsigned char unk2;               // 0x14
+	unsigned char unk3;               // 0x15
+	unsigned char doorInDummys;       // 0x16
+	unsigned char crusherTopInDummys; // 0x17
+	unsigned char unk4;               // 0x18
+	unsigned char rotatingDoor;       // 0x19
+	unsigned char leaveCameraAlone;   // 0x1A
+	unsigned char padding2;           // 0x1B
+	float         positionX;          // 0x1C
+	float         positionY;          // 0x20
+	float         positionZ;          // 0x24
+	float         rotationX;          // 0x28
+	float         rotationY;          // 0x2C
+	float         rotationZ;          // 0x30
+	float         rotationW;          // 0x34
+	float         ceilingHeight;      // 0x38
+	float         unk5;               // 0x3C
+	float         unk6;               // 0x40
+	float         lowerX;             // 0x44
+	float         upperX;             // 0x48
+	float         lowerY;             // 0x4C
+	float         upperY;             // 0x50
+	float         doorCurrentHeight;  // 0x54
+	float         doorMaximumHeight;  // 0x58
+	float         doorX;              // 0x5C
+	float         doorY;              // 0x60
+	float         crusherTopX;        // 0x64
+	float         crusherTopY;        // 0x68
+	float         doorZ;              // 0x6C
+	float         crusherTopZ;        // 0x70
+	unsigned int  gameTimeToOpen;     // 0x74
+	unsigned char unk7;               // 0x78
+	unsigned char padding3[3];        // 0x79
+	CVehicle *    targetVehicle;      // 0x7C
+	unsigned char unk8[0x28];
 
-	bool IsEntityEntirelyInside3D(CEntity *, float);
-	bool IsEntityEntirelyOutside(CEntity *, float);
-	bool IsAnyOtherCarTouchingGarage(CVehicle *);
-	bool IsStaticPlayerCarEntirelyInside(void);
 	bool IsAnyCarBlockingDoor(void);
 	void UpdateDoor(void);
+	bool IsAnyOtherCarTouchingGarage(CVehicle *);
+	bool IsEntityEntirelyOutside(CEntity *, float);
+	bool IsEntityEntirelyInside3D(CEntity *, float);
+	bool IsStaticPlayerCarEntirelyInside(void);
 };
 
 //########################################################################
@@ -705,6 +831,7 @@ public:
 	static CGarage *garages;
 
 	static void TriggerMessage(char *, short, unsigned short, short);
+	static void ChangeGarageType(short, unsigned char, unsigned int);
 };
 
 //########################################################################
@@ -716,13 +843,21 @@ class CExplosion
 public:
 	struct Explosion
 	{
-		int           type;         // 0x00
-		float         x;            // 0x04
-		float         y;            // 0x08
-		float         z;            // 0x0C
-		unsigned char space1[0x14];
-		unsigned char activity;     // 0x24
-		unsigned char space2[0x13];
+		int           type;                   // 0x00
+		CVector       position;               // 0x04
+		float         radius;                 // 0x10
+		float         expansionRate;          // 0x14
+		CEntity *     owner;                  // 0x18
+		CEntity *     victim;                 // 0x1C
+		unsigned int  timeExpire;             // 0x20
+		unsigned char counter;                // 0x24
+		unsigned char isCounterInitialised;   // 0x25
+		unsigned char noVehicleJetExplosion;  // 0x26
+		unsigned char hasSound;               // 0x27
+		unsigned int  timeVehicleExplosion;   // 0x28
+		unsigned int  timeExtendEffect;       // 0x2C
+		float         force;                  // 0x30
+		float         molotovGroundZ;         // 0x34
 	};
 	static Explosion *explosions;
 };
