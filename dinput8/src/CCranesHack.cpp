@@ -167,7 +167,7 @@ void CCranesHack::ActivateCrane(float pickupX1, float pickupX2, float pickupY1, 
 	cranes[index].armDropoffHeight = dropoffZ;
 }
 
-void CCranesHack::AddThisOneCrane(unsigned long entity)
+void CCranesHack::AddThisOneCrane(CEntity *entity)
 {
 	// reset orientation
 	*(float *)((unsigned long)entity + 4) = 1.0;
@@ -182,7 +182,7 @@ void CCranesHack::AddThisOneCrane(unsigned long entity)
 	// add crane to array
 	if (numCranes < 8) {
 		int index = numCranes;
-		cranes[index].object = entity;
+		cranes[index].object = (unsigned long)entity;
 		cranes[index].activity = 0;
 		// initialise rotation
 		cranes[index].armCurrentRotation = (float)numCranes;
@@ -226,7 +226,7 @@ void CCranesHack::InitCranes()
 		if (((*(char *)(buildingValidities + i)) & 0x80) != 0x80) { // is building in array valid
 			unsigned short buildingModel = *(unsigned short *)(buildingObjects + i * 0x64 + 0x5C); // pointer to building model
 			if (buildingModel == 882 || buildingModel == 883 || buildingModel == 893) {
-				AddThisOneCrane(buildingObjects + i * 0x64);
+				AddThisOneCrane((CBuilding *)(buildingObjects + i * 0x64));
 			}
 		}
 	}

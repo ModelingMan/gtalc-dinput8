@@ -260,7 +260,7 @@ bool CRunningScriptHack::_024C_set_phone_message()
 	char text[8];
 	strcpy_s(text, reinterpret_cast<char *>(&CTheScripts::ScriptSpace[this->m_dwScriptIP]));
 	this->m_dwScriptIP += 8;
-	VCGlobals::ThePhoneInfo->SetPhoneMessage_JustOnce(ScriptParams[0].int32, TheText.Get(text), 0, 0, 0, 0, 0);
+	VCGlobals::ThePhoneInfo.SetPhoneMessage_JustOnce(ScriptParams[0].int32, TheText.Get(text), 0, 0, 0, 0, 0);
 	return 0;
 }
 
@@ -332,7 +332,7 @@ bool CRunningScriptHack::_03A0_is_crane_lifting_car()
 bool CRunningScriptHack::_03C2_is_phone_displaying_message()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
-	this->UpdateCompareFlag((unsigned long)&VCGlobals::ThePhoneInfo->phones[ScriptParams[0].int32] == *(unsigned long *)vcversion::AdjustOffset(0x007030E8));
+	this->UpdateCompareFlag((unsigned long)&VCGlobals::ThePhoneInfo.phones[ScriptParams[0].int32] == *(unsigned long *)vcversion::AdjustOffset(0x007030E8));
 	return 0;
 }
 

@@ -8,8 +8,8 @@ namespace VCGlobals
 	cDMAudio &DMAudio = *reinterpret_cast<cDMAudio *>(vcversion::AdjustOffset(0x00A10B8A));
 	cSampleManager &SampleManager = *reinterpret_cast<cSampleManager *>(vcversion::AdjustOffset(0x00983B90));
 	cAudioManager &AudioManager = *reinterpret_cast<cAudioManager *>(vcversion::AdjustOffset(0x0078D718));
-	CPickup *ThePickup = reinterpret_cast<CPickup *>(vcversion::AdjustOffset(0x00945D30));
-	CPhoneInfo *ThePhoneInfo = reinterpret_cast<CPhoneInfo *>(vcversion::AdjustOffset(0x00817CF0));
+	CPhoneInfo &ThePhoneInfo = *reinterpret_cast<CPhoneInfo *>(vcversion::AdjustOffset(0x00817CF0));
+	CMissionCleanup &TheMissionCleanup = *reinterpret_cast<CMissionCleanup *>(vcversion::AdjustOffset(0x0097F060));
 
 	char *ScrollCharSet = reinterpret_cast<char *>(vcversion::AdjustOffset(0x00696674));
 

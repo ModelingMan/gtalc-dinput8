@@ -9,8 +9,8 @@ namespace VCGlobals
 	extern cDMAudio &DMAudio;
 	extern cSampleManager &SampleManager;
 	extern cAudioManager &AudioManager;
-	extern CPickup *ThePickup;
-	extern CPhoneInfo *ThePhoneInfo;
+	extern CPhoneInfo &ThePhoneInfo;
+	extern CMissionCleanup &TheMissionCleanup;
 
 	extern char *ScrollCharSet;
 

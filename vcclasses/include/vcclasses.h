@@ -332,13 +332,15 @@ public:
 	unsigned char  space7[0x007C];
 	unsigned char  firstColour;            // 0x1A0
 	unsigned char  secondColour;           // 0x1A1
-	unsigned char  space8[0x005B];
+	unsigned char  space8[0x0059];
+	unsigned char  field_1FB;              // 0x1FB
+	unsigned char  field_1FC;              // 0x1FC
 	unsigned char  field_1FD;              // 0x1FD
 	unsigned char  bombState;              // 0x1FE
 	unsigned char  space9[0x0005];
 	float          health;                 // 0x204
 	unsigned char  space10[0x0008];
-	CEntity *      bombOwner;              // 0x210
+	CEntity        *bombOwner;             // 0x210
 	unsigned char  space11[0x01C];
 	unsigned int   lock;                   // 0x230
 	unsigned char  space12[0x0068];
@@ -377,7 +379,7 @@ public:
 	float         health;         // 0x354
 	float         armour;         // 0x358
 	unsigned char space4[0x004C];
-	CVehicle *    vehicle;        // 0x3A8
+	CVehicle      *vehicle;       // 0x3A8
 	unsigned char isInAnyVehicle; // 0x3AC
 	unsigned char space5[0x005B];
 	struct Weapon
@@ -390,7 +392,7 @@ public:
 		unsigned int unk2;  // 0x14
 	} weapons[10];                // 0x408
 	unsigned char space6[0x00FC];
-	CWanted *     wanted;         // 0x5F4
+	CWanted       *wanted;        // 0x5F4
 
 	void SetAmmo(int, unsigned int);
 	void GrantAmmo(int, unsigned int);
@@ -443,9 +445,9 @@ template <class T1, class T2 = T1>
 class CPool
 {
 public:
-	T2 *           entities;   // 0x00
+	T2            *entities;   // 0x00
 	unsigned char *flags;      // 0x04
-	int            totalCount; // 0x08
+	int           totalCount;  // 0x08
 
 	int GetIndex(T1 *);
 	T1 *GetAt(int);
@@ -843,7 +845,7 @@ public:
 	unsigned int  gameTimeToOpen;     // 0x74
 	unsigned char unk7;               // 0x78
 	unsigned char padding3[3];        // 0x79
-	CVehicle *    targetVehicle;      // 0x7C
+	CVehicle      *targetVehicle;     // 0x7C
 	unsigned char unk8[0x28];
 
 	bool IsAnyCarBlockingDoor(void);
@@ -884,8 +886,8 @@ public:
 		CVector       position;               // 0x04
 		float         radius;                 // 0x10
 		float         expansionRate;          // 0x14
-		CEntity *     owner;                  // 0x18
-		CEntity *     victim;                 // 0x1C
+		CEntity       *owner;                 // 0x18
+		CEntity       *victim;                // 0x1C
 		unsigned int  timeExpire;             // 0x20
 		unsigned char counter;                // 0x24
 		unsigned char isCounterInitialised;   // 0x25
@@ -942,7 +944,7 @@ class CPickup
 {
 public:
 	unsigned char space1[0x10];
-	CObject *     object;       // 0x10
+	CObject       *object;      // 0x10
 	unsigned char space2[0x20];
 };
 
@@ -955,6 +957,7 @@ class CPickups
 public:
 	static int GetActualPickupIndex(int);
 	static int GenerateNewOne(CVector, unsigned int, unsigned int, unsigned int, unsigned char, unsigned char, char *);
+	static CPickup *pickups;
 };
 
 //########################################################################
@@ -1006,6 +1009,36 @@ class CWeaponInfo
 {
 public:
 	static unsigned long GetWeaponInfo(int);
+};
+
+//########################################################################
+//# CMissionCleanup
+//########################################################################
+
+class CMissionCleanup
+{
+public:
+	void RemoveEntityFromList(int, unsigned char);
+};
+
+//########################################################################
+//# CProjectileInfo
+//########################################################################
+
+class CProjectileInfo
+{
+public:
+	struct ProjectileInfo
+	{
+		unsigned int  weaponType;          // 0x00
+		unsigned long thrower;             // 0x04
+		unsigned int  timeToExpire;        // 0x08
+		unsigned char doesProjectileExist; // 0x0C
+		unsigned char padding[3];          // 0x0D
+		CVector       position;            // 0x10
+	};
+
+	static ProjectileInfo *projectiles;
 };
 
 #endif
