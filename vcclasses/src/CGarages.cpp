@@ -4,6 +4,7 @@
 int *CGarages::carsCollected = reinterpret_cast<int *>(vcversion::AdjustOffset(0x007D52F8));
 int &CGarages::bankVansCollected = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x00978714));
 int &CGarages::policeCarsCollected = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x00A0D8B8));
+unsigned char &CGarages::bombsAreFree = *reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x00A10B32));
 CGarage *CGarages::garages = reinterpret_cast<CGarage *>(vcversion::AdjustOffset(0x00812668));
 
 static unsigned long g_TriggerMessage = vcversion::AdjustOffset(0x0042EDE0);

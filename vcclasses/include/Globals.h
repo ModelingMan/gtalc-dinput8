@@ -4,11 +4,13 @@
 
 namespace VCGlobals
 {
-	extern CCamera& TheCamera;
-	extern CText& TheText;
-	extern cDMAudio& DMAudio;
-	extern cSampleManager& SampleManager;
+	extern CCamera &TheCamera;
+	extern CText &TheText;
+	extern cDMAudio &DMAudio;
+	extern cSampleManager &SampleManager;
 	extern cAudioManager &AudioManager;
+	extern CPickup *ThePickup;
+	extern CPhoneInfo *ThePhoneInfo;
 
 	extern char *ScrollCharSet;
 

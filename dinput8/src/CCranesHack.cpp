@@ -85,8 +85,8 @@ bool CCranesHack::IsThisCarPickedUp(float positionX, float positionY, CVehicle *
 	float craneObjectX, craneObjectY, distance;
 	if (numCranes > 0) {
 		for (int i = 0; i < numCranes; i++) {
-			craneObjectX = *(float *)(cranes[i].object + 0x34);
-			craneObjectY = *(float *)(cranes[i].object + 0x38);
+			craneObjectX = *(float *)((unsigned long)cranes[i].object + 0x34);
+			craneObjectY = *(float *)((unsigned long)cranes[i].object + 0x38);
 			distance = sqrt(pow(positionX - craneObjectX, 2) + pow(positionY - craneObjectY, 2));
 			if (distance < 100.0 && cranes[i].vehicle == vehicle && (cranes[i].status == 2 || cranes[i].status == 4)) {
 				return true;
@@ -103,8 +103,8 @@ void CCranesHack::DeActivateCrane(float positionX, float positionY)
 	minDistance = 100.0;
 	if (numCranes > 0) {
 		for (int i = 0; i < numCranes; i++) {
-			craneObjectX = *(float *)(cranes[i].object + 0x34);
-			craneObjectY = *(float *)(cranes[i].object + 0x38);
+			craneObjectX = *(float *)((unsigned long)cranes[i].object + 0x34);
+			craneObjectY = *(float *)((unsigned long)cranes[i].object + 0x38);
 			distance = sqrt(pow(positionX - craneObjectX, 2) + pow(positionY - craneObjectY, 2));
 			if (distance < minDistance) {
 				index = i;
@@ -124,8 +124,8 @@ void CCranesHack::ActivateCrane(float pickupX1, float pickupX2, float pickupY1, 
 	minDistance = 100.0;
 	if (numCranes > 0) {
 		for (int i = 0; i < numCranes; i++) {
-			craneObjectX = *(float *)(cranes[i].object + 0x34);
-			craneObjectY = *(float *)(cranes[i].object + 0x38);
+			craneObjectX = *(float *)((unsigned long)cranes[i].object + 0x34);
+			craneObjectY = *(float *)((unsigned long)cranes[i].object + 0x38);
 			distance = sqrt(pow(positionX - craneObjectX, 2) + pow(positionY - craneObjectY, 2));
 			if (distance < minDistance) {
 				index = i;
@@ -151,8 +151,8 @@ void CCranesHack::ActivateCrane(float pickupX1, float pickupX2, float pickupY1, 
 	cranes[index].status = 0;
 	pickupCenterX = (pickupX1 + pickupX2) / 2;
 	pickupCenterY = (pickupY1 + pickupY2) / 2;
-	craneObjectX = *(float *)(cranes[index].object + 0x34);
-	craneObjectY = *(float *)(cranes[index].object + 0x38);
+	craneObjectX = *(float *)((unsigned long)cranes[index].object + 0x34);
+	craneObjectY = *(float *)((unsigned long)cranes[index].object + 0x38);
 	if (isCrusher) {
 		cranes[index].armPickupHeight = -0.95099998f + OFFSETHEIGHT;
 	} else if (isMilitary) {
@@ -167,18 +167,18 @@ void CCranesHack::ActivateCrane(float pickupX1, float pickupX2, float pickupY1, 
 	cranes[index].armDropoffHeight = dropoffZ;
 }
 
-void CCranesHack::AddThisOneCrane(unsigned int entity)
+void CCranesHack::AddThisOneCrane(unsigned long entity)
 {
 	// reset orientation
-	*(float *)(entity + 4) = 1.0;
-	*(float *)(entity + 8) = 0.0;
-	*(float *)(entity + 0xC) = 0.0;
-	*(float *)(entity + 0x14) = 0.0;
-	*(float *)(entity + 0x18) = 1.0;
-	*(float *)(entity + 0x1C) = 0.0;
-	*(float *)(entity + 0x24) = 0.0;
-	*(float *)(entity + 0x28) = 0.0;
-	*(float *)(entity + 0x2C) = 1.0;
+	*(float *)((unsigned long)entity + 4) = 1.0;
+	*(float *)((unsigned long)entity + 8) = 0.0;
+	*(float *)((unsigned long)entity + 0xC) = 0.0;
+	*(float *)((unsigned long)entity + 0x14) = 0.0;
+	*(float *)((unsigned long)entity + 0x18) = 1.0;
+	*(float *)((unsigned long)entity + 0x1C) = 0.0;
+	*(float *)((unsigned long)entity + 0x24) = 0.0;
+	*(float *)((unsigned long)entity + 0x28) = 0.0;
+	*(float *)((unsigned long)entity + 0x2C) = 1.0;
 	// add crane to array
 	if (numCranes < 8) {
 		int index = numCranes;
@@ -194,20 +194,20 @@ void CCranesHack::AddThisOneCrane(unsigned int entity)
 		cranes[index].timer = 0;
 		cranes[index].status = 0;
 		cranes[index].unk3 = 0;
-		cranes[index].isNotCab = *(unsigned short *)(entity + 0x5C) == 893 ? 0 : 1;
+		cranes[index].isNotCab = *(unsigned short *)((unsigned long)entity + 0x5C) == 893 ? 0 : 1;
 		cranes[index].hook = 0;
 		// new! magnet for cranes!
-		if (cranes[index].isNotCab || *(float *)(entity + 0x38) > 0.0) {
+		if (cranes[index].isNotCab || *(float *)((unsigned long)entity + 0x38) > 0.0) {
 			auto allocateObject = (unsigned int(__cdecl *)(unsigned int))vcversion::AdjustOffset(0x004E4070);
-			unsigned int object = allocateObject(0x194);
+			unsigned long object = allocateObject(0x194);
 			if (object) {
-				auto createObject = (unsigned int(__thiscall *)(int, int, bool))vcversion::AdjustOffset(0x004E41B0);
+				auto createObject = (unsigned int(__thiscall *)(unsigned long, int, bool))vcversion::AdjustOffset(0x004E41B0);
 				object = createObject(object, 1365, false);
 			}
-			*(unsigned char *)(object + 0x16C) = 2;
-			*(unsigned char *)(object + 0x51) = *(unsigned char *)(object + 0x51) & 0xFE;
-			*(unsigned char *)(object + 0x52) = (*(unsigned char *)(object + 0x52) & 0xFD) | 2;
-			*(unsigned char *)(object + 0x11A) = *(unsigned char *)(object + 0x11A) & 0xFD;
+			*(unsigned char *)((unsigned long)object + 0x16C) = 2;
+			*(unsigned char *)((unsigned long)object + 0x51) = *(unsigned char *)((unsigned long)object + 0x51) & 0xFE;
+			*(unsigned char *)((unsigned long)object + 0x52) = (*(unsigned char *)((unsigned long)object + 0x52) & 0xFD) | 2;
+			*(unsigned char *)((unsigned long)object + 0x11A) = *(unsigned char *)((unsigned long)object + 0x11A) & 0xFD;
 			cranes[index].hook = object;
 		}
 		numCranes++;

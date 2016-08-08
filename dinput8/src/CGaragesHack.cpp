@@ -72,7 +72,7 @@ bool CGaragesHack::initialise()
 
 	// bomb shop reward
 	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x004318BB)) = 1000;
-	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x00431BC4)) = -1000;
+	*reinterpret_cast<int *>(vcversion::AdjustOffset(0x00431BC4)) = -1000;
 
 	return true;
 }
@@ -226,7 +226,7 @@ void CGarageHack::UpdateType7Hack(void)
 				if (!reward) {
 					CGarages::TriggerMessage("GA_11", -1, 4000, -1);
 				} else {
-					CGarages::TriggerMessage("GA_10", reward, 4000, -1);
+					CGarages::TriggerMessage("GA_10", (short)reward, 4000, -1);
 					CWorld::Players->m_Money += reward;
 				}
 			}

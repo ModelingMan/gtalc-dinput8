@@ -1,3 +1,10 @@
+/*************************************************************************
+	vcclasses
+
+	Developed for the Grand Theft Auto: Liberty City project
+	http://gtaforums.com/forum/333-
+*************************************************************************/
+
 #ifndef __VCCLASSES_H__
 #define __VCCLASSES_H__
 
@@ -73,33 +80,33 @@ public:
 class cAudioManager
 {
 protected:
-	unsigned char space1[0x14];		//0x0000
-	unsigned int m_Unk13;			//0x0014
-	unsigned int m_Unk7;			//0x0018
-	unsigned int m_SampleID;		//0x001C
-	unsigned char m_Unk0;			//0x0020
-	unsigned char m_Unk1;			//0x0021
-	unsigned char space2[0x02];		//0x0022
-	unsigned int m_Unk2;			//0x0024
-	unsigned int m_Frequency;		//0x0028
-	unsigned char m_Volume;			//0x002C
-	unsigned char space3[0x03];		//0x002D
-	float m_Unk3;					//0x0030
-	unsigned int m_Unk8;			//0x0034
-	unsigned int m_LoopStartOff;	//0x0038
-	unsigned int m_LoopEndOff;		//0x003C
-	unsigned char m_Unk11;			//0x0040
-	unsigned char space6[0x03];		//0x0041
-	float m_Unk4;					//0x0044
-	float m_Unk5;					//0x0048
-	unsigned char m_Unk9;			//0x004C
-	unsigned char space8[0x03];		//0x004D
-	CVector m_Position;				//0x0050
-	unsigned char m_Unk10;			//0x005C
-	unsigned char space5;			//0x005D
-	unsigned char m_Unk12;			//0x005E
-	unsigned char space7[0x05];		//0x005F
-	unsigned int m_Unk6;			//0x0064
+	unsigned char space1[0x14];     // 0x0000
+	unsigned int m_Unk13;           // 0x0014
+	unsigned int m_Unk7;            // 0x0018
+	unsigned int m_SampleID;        // 0x001C
+	unsigned char m_Unk0;           // 0x0020
+	unsigned char m_Unk1;           // 0x0021
+	unsigned char space2[0x02];     // 0x0022
+	unsigned int m_Unk2;            // 0x0024
+	unsigned int m_Frequency;       // 0x0028
+	unsigned char m_Volume;         // 0x002C
+	unsigned char space3[0x03];     // 0x002D
+	float m_Unk3;                   // 0x0030
+	unsigned int m_Unk8;            // 0x0034
+	unsigned int m_LoopStartOff;    // 0x0038
+	unsigned int m_LoopEndOff;      // 0x003C
+	unsigned char m_Unk11;          // 0x0040
+	unsigned char space6[0x03];     // 0x0041
+	float m_Unk4;                   // 0x0044
+	float m_Unk5;                   // 0x0048
+	unsigned char m_Unk9;           // 0x004C
+	unsigned char space8[0x03];     // 0x004D
+	CVector m_Position;             // 0x0050
+	unsigned char m_Unk10;          // 0x005C
+	unsigned char space5;           // 0x005D
+	unsigned char m_Unk12;          // 0x005E
+	unsigned char space7[0x05];     // 0x005F
+	unsigned int m_Unk6;            // 0x0064
 	unsigned char spaceend[0x54F0];
 
 public:
@@ -132,6 +139,7 @@ class CCamera : public CPlaceable
 protected:
 
 public:
+	void CamShake(float, float, float, float);
 };
 
 //########################################################################
@@ -209,7 +217,7 @@ public:
 class CHud
 {
 public:
-	static void SetHelpMessage(wchar_t*, bool, bool);
+	static void SetHelpMessage(wchar_t *, bool, bool);
 };
 
 //########################################################################
@@ -236,24 +244,24 @@ class CPager
 protected:
 	struct Pager
 	{
-		wchar_t*		Text;		// Pointer to pager message
-		unsigned short	Delay;		// How fast the text scrolls
-		unsigned short	Scroll;		// Index of start letter of currently scrolling text
-		unsigned short	TextLength;	// Length of the pager message
-		unsigned short	Unk1;
-		unsigned int	Unk2;
-		unsigned short	Unk3;
-		unsigned short	Unk4;
-		unsigned int	Unk5;
-		unsigned int	Unk6;
-		unsigned int	Unk7;
-		unsigned int	Unk8;
-		unsigned int	Unk9;
-		unsigned int	Unk10;
+		wchar_t*       Text;       // Pointer to pager message
+		unsigned short Delay;      // How fast the text scrolls
+		unsigned short Scroll;     // Index of start letter of currently scrolling text
+		unsigned short TextLength; // Length of the pager message
+		unsigned short Unk1;
+		unsigned int   Unk2;
+		unsigned short Unk3;
+		unsigned short Unk4;
+		unsigned int   Unk5;
+		unsigned int   Unk6;
+		unsigned int   Unk7;
+		unsigned int   Unk8;
+		unsigned int   Unk9;
+		unsigned int   Unk10;
 	};
 
-	unsigned int MaxLength;	// Maximum length of the pager message. (DEF: 8)
-	Pager Pagers[8];	// Queue of a maximum of 8 pager messages.
+	unsigned int MaxLength; // Maximum length of the pager message. (DEF: 8)
+	Pager Pagers[8];        // Queue of a maximum of 8 pager messages.
 };
 
 //########################################################################
@@ -306,10 +314,12 @@ public:
 	float          y;                      // 0x038
 	float          z;                      // 0x03C
 	unsigned char  space2[0x0010];
-	unsigned char  availability;           // 0x050
-	unsigned char  space3[0x000B];
+	unsigned char  status;                 // 0x050
+	unsigned char  field_051;              // 0x051
+	unsigned char  field_052;              // 0x052
+	unsigned char  space3[0x0009];
 	unsigned short modelIndex;             // 0x05C
-	unsigned char  space4[0x0013];
+	unsigned char  space4[0x0012];
 	float          forceX;                 // 0x070
 	float          forceY;                 // 0x074
 	float          forceZ;                 // 0x078
@@ -317,21 +327,26 @@ public:
 	float          mass;                   // 0x0B8
 	float          turnResistance;         // 0x0BC
 	float          accelerationResistance; // 0x0C0
-	unsigned char  space6[0x00DC];
+	unsigned char  space6[0x005C];
+	unsigned long  handlingData;           // 0x120
+	unsigned char  space7[0x007C];
 	unsigned char  firstColour;            // 0x1A0
 	unsigned char  secondColour;           // 0x1A1
-	unsigned char  space7[0x005C];
+	unsigned char  space8[0x005B];
+	unsigned char  field_1FD;              // 0x1FD
 	unsigned char  bombState;              // 0x1FE
-	unsigned char  space8[0x0005];
+	unsigned char  space9[0x0005];
 	float          health;                 // 0x204
-	unsigned char  space9[0x0028];
+	unsigned char  space10[0x0008];
+	CEntity *      bombOwner;              // 0x210
+	unsigned char  space11[0x01C];
 	unsigned int   lock;                   // 0x230
-	unsigned char  space10[0x0068];
+	unsigned char  space12[0x0068];
 	unsigned int   type;                   // 0x29C
 	float          damageManager;          // 0x2A0
-	unsigned char  space11[0x02BC];
+	unsigned char  space13[0x02BC];
 	float          burningDuration;        // 0x560
-	unsigned char  space12[0x0061];
+	unsigned char  space14[0x0061];
 	unsigned char  numberOfWheelsOnGround; // 0x5C5
 
 	bool IsSphereTouchingVehicle(float, float, float, float);
@@ -343,7 +358,8 @@ public:
 
 class CAutomobile : public CVehicle
 {
-
+public:
+	static unsigned char &m_sAllTaxiLights;
 };
 
 //########################################################################
@@ -353,7 +369,31 @@ class CAutomobile : public CVehicle
 class CPed : public CPhysical
 {
 public:
+	unsigned char space1[0x0244];
+	unsigned int  state;          // 0x244
+	unsigned char space2[0x0004];
+	unsigned int  moveState;      // 0x24C
+	unsigned char space3[0x0104];
+	float         health;         // 0x354
+	float         armour;         // 0x358
+	unsigned char space4[0x004C];
+	CVehicle *    vehicle;        // 0x3A8
+	unsigned char isInAnyVehicle; // 0x3AC
+	unsigned char space5[0x005B];
+	struct Weapon
+	{
+		unsigned int type;  // 0x00
+		unsigned int state; // 0x04
+		unsigned int clip;  // 0x08
+		unsigned int ammo;  // 0x0C
+		unsigned int unk1;  // 0x10
+		unsigned int unk2;  // 0x14
+	} weapons[10];                // 0x408
+	unsigned char space6[0x00FC];
+	CWanted *     wanted;         // 0x5F4
+
 	void SetAmmo(int, unsigned int);
+	void GrantAmmo(int, unsigned int);
 	void GiveWeapon(int, unsigned int, bool);
 	bool IsPedInControl(void);
 	void Say(unsigned short);
@@ -366,13 +406,6 @@ public:
 class CPlayerPed : public CPed
 {
 public:
-	unsigned char space1[0x0244];
-	unsigned int state;           // 0x244
-	unsigned char space2[0x010C];
-	float health;                 // 0x354
-	float armour;                 // 0x358
-	unsigned char space3[0x0298];
-	CWanted *wanted;              // 0x5F4
 };
 
 //########################################################################
@@ -455,24 +488,24 @@ class CRunningScript
 {
 protected:
 	// Thanks to CyQ, PatrickW and spookie for this info.
-	void *m_pNext;						//0x00
-	void *m_pPrev;						//0x04
-	char m_strName[8];					//0x08
-	unsigned int m_dwScriptIP;			//0x10
-	unsigned int m_dwReturnStack[6];	//0x14
-	unsigned short m_dwStackPointer;	//0x2C
-	unsigned char pad1[2];				//0x2E
-	unsigned int m_dwLocalVar[18];		//0x30
-	bool m_bStartNewScript;				//0x78
-	bool m_bJumpFlag;					//0x79
-	bool m_bWorky;						//0x7A
-	bool m_bAwake;						//0x7B
-	unsigned int m_dwWakeTime;			//0x7C
-	unsigned short m_wIfParam;			//0x80
-	bool m_bNotFlag;					//0x82
-	bool m_bWastedBustedCheck;			//0x83
-	bool m_bWastedBustedFlag;			//0x84
-	bool m_bMissionThread;				//0x85
+	void *m_pNext;                   // 0x00
+	void *m_pPrev;                   // 0x04
+	char m_strName[8];               // 0x08
+	unsigned int m_dwScriptIP;       // 0x10
+	unsigned int m_dwReturnStack[6]; // 0x14
+	unsigned short m_dwStackPointer; // 0x2C
+	unsigned char pad1[2];           // 0x2E
+	unsigned int m_dwLocalVar[18];   // 0x30
+	bool m_bStartNewScript;          // 0x78
+	bool m_bJumpFlag;                // 0x79
+	bool m_bWorky;                   // 0x7A
+	bool m_bAwake;                   // 0x7B
+	unsigned int m_dwWakeTime;       // 0x7C
+	unsigned short m_wIfParam;       // 0x80
+	bool m_bNotFlag;                 // 0x82
+	bool m_bWastedBustedCheck;       // 0x83
+	bool m_bWastedBustedFlag;        // 0x84
+	bool m_bMissionThread;           // 0x85
 
 	static unsigned long m_pCollectParameters;
 	static unsigned long m_pProcessOneCommand;
@@ -484,6 +517,7 @@ public:
 	void CollectParameters(unsigned int *scriptIP, int paramCount);
 	bool ProcessOneCommand();
 	void UpdateCompareFlag(bool flag);
+	short GetPadState(unsigned short, unsigned short);
 };
 
 //########################################################################
@@ -594,24 +628,24 @@ public:
 class CScrollBar
 {
 public:
-	unsigned long count;			//0x0
-	char *text;						//0x4
-	float xStart;					//0x8
-	float yStart;					//0x0C
-	float zStart;					//0x10
-	unsigned long charCount;		//0x14
-	unsigned long textLength;		//0x18
-	float xEndOffset;				//0x1C
-	float yEndOffset;				//0x20
-	float zEndOffset;				//0x24
-	float thickness;				//0x28
-	unsigned char letterBuffer[40];	//0x2C
-	unsigned char messageSet;		//0x54
-	bool draw;						//0x55
-	unsigned char r;				//0x56
-	unsigned char g;				//0x57
-	unsigned char b;				//0x58
-	unsigned char padding[7];		//0x59
+	unsigned long count;            // 0x00
+	char *text;                     // 0x04
+	float xStart;                   // 0x08
+	float yStart;                   // 0x0C
+	float zStart;                   // 0x10
+	unsigned long charCount;        // 0x14
+	unsigned long textLength;       // 0x18
+	float xEndOffset;               // 0x1C
+	float yEndOffset;               // 0x20
+	float zEndOffset;               // 0x24
+	float thickness;                // 0x28
+	unsigned char letterBuffer[40]; // 0x2C
+	unsigned char messageSet;       // 0x54
+	bool draw;                      // 0x55
+	unsigned char r;                // 0x56
+	unsigned char g;                // 0x57
+	unsigned char b;                // 0x58
+	unsigned char padding[7];       // 0x59
 
 	void Init(float xStart, float yStart, float zStart, float xEndOffset, float yEndOffset, float zEndOffset,
 		unsigned char messages, unsigned char red, unsigned char green, unsigned char blue, float thickness);
@@ -639,8 +673,8 @@ public:
 class CCrane
 {
 public:
-	unsigned int  object;             // 0x00, pointer to crane object
-	unsigned int  hook;               // 0x04, pointer to hook object
+	unsigned long object;             // 0x00, pointer to crane object
+	unsigned long hook;               // 0x04, pointer to hook object
 	float         pickupX1;           // 0x08
 	float         pickupX2;           // 0x0C
 	float         pickupY1;           // 0x10
@@ -719,6 +753,8 @@ public:
 class CWeather
 {
 public:
+	static unsigned char &bScriptsForceRain;
+	
 	static void ForceWeatherNow(short);
 };
 
@@ -768,7 +804,7 @@ public:
 	unsigned char maxCarsInSave;      // 0x02
 	unsigned char unk1;               // 0x03
 	unsigned char closedUnserviced;   // 0x04
-	unsigned char isDeactive;         // 0x05
+	unsigned char isInactive;         // 0x05
 	unsigned char hasResprayHappened; // 0x06
 	unsigned char padding1;           // 0x07
 	unsigned int  targetModel;        // 0x08
@@ -828,6 +864,7 @@ public:
 	static int *carsCollected;
 	static int &bankVansCollected;
 	static int &policeCarsCollected;
+	static unsigned char &bombsAreFree;
 	static CGarage *garages;
 
 	static void TriggerMessage(char *, short, unsigned short, short);
@@ -870,6 +907,105 @@ class CPad
 {
 public:
 	static unsigned long GetPad(int);
+};
+
+//########################################################################
+//# CDarkel
+//########################################################################
+
+class CDarkel
+{
+public:
+	static void StartFrenzy(int, int, unsigned short, int, wchar_t *, int, int, int, bool, bool);
+	static void ResetOnPlayerDeath(void);
+};
+
+//########################################################################
+//# CRadar
+//########################################################################
+
+class CRadar
+{
+public:
+	static void SetBlipSprite(int, int);
+	static void ChangeBlipScale(int, int);
+	static int SetEntityBlip(int, int, int, int);
+	static int SetShortRangeCoordBlip(int, float, float, float, int, int);
+	static int GetActualBlipArrayIndex(int);
+};
+
+//########################################################################
+//# CPickup
+//########################################################################
+
+class CPickup
+{
+public:
+	unsigned char space1[0x10];
+	CObject *     object;       // 0x10
+	unsigned char space2[0x20];
+};
+
+//########################################################################
+//# CPickups
+//########################################################################
+
+class CPickups
+{
+public:
+	static int GetActualPickupIndex(int);
+	static int GenerateNewOne(CVector, unsigned int, unsigned int, unsigned int, unsigned char, unsigned char, char *);
+};
+
+//########################################################################
+//# CPhoneInfo
+//########################################################################
+
+class CPhoneInfo
+{
+public:
+	unsigned int numberOfPhones;
+	unsigned int numberOfActivePhones;
+	struct CPhone
+	{
+		CVector       position;            // 0x00
+		wchar_t       *message1;           // 0x0C
+		wchar_t       *message2;           // 0x10
+		wchar_t       *message3;           // 0x14
+		wchar_t       *message4;           // 0x18
+		wchar_t       *message5;           // 0x1C
+		wchar_t       *message6;           // 0x20
+		unsigned int  timeMessageEnded;    // 0x24
+		unsigned int  object;              // 0x28
+		unsigned int  state;               // 0x2C
+		unsigned char isPlayerWithinRange; // 0x30
+		unsigned char padding[3];          // 0x31
+	} phones[50];
+
+	void SetPhoneMessage_JustOnce(int, wchar_t *, wchar_t *, wchar_t *, wchar_t *, wchar_t *, wchar_t *);
+};
+
+//########################################################################
+//# CRestart
+//########################################################################
+
+class CRestart
+{
+public:
+	static unsigned char &OverridePoliceStationLevel;
+	static unsigned char &OverrideHospitalLevel;
+
+	static void OverrideNextRestart(CVector const &, float);
+};
+
+//########################################################################
+//# CWeaponInfo
+//########################################################################
+
+class CWeaponInfo
+{
+public:
+	static unsigned long GetWeaponInfo(int);
 };
 
 #endif

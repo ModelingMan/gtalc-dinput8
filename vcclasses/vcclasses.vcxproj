@@ -22,9 +22,11 @@
   <ItemGroup>
     <ClCompile Include="src\cAudioManager.cpp" />
     <ClCompile Include="src\CAutomobile.cpp" />
+    <ClCompile Include="src\CCamera.cpp" />
     <ClCompile Include="src\CClock.cpp" />
     <ClCompile Include="src\CCranes.cpp" />
     <ClCompile Include="src\CDamageManager.cpp" />
+    <ClCompile Include="src\CDarkel.cpp" />
     <ClCompile Include="src\cDMAudio.cpp" />
     <ClCompile Include="src\CEntity.cpp" />
     <ClCompile Include="src\CExplosion.cpp" />
@@ -37,8 +39,12 @@
     <ClCompile Include="src\CMessages.cpp" />
     <ClCompile Include="src\CPad.cpp" />
     <ClCompile Include="src\CPed.cpp" />
+    <ClCompile Include="src\CPhoneInfo.cpp" />
     <ClCompile Include="src\CPhysical.cpp" />
+    <ClCompile Include="src\CPickups.cpp" />
     <ClCompile Include="src\CPools.cpp" />
+    <ClCompile Include="src\CRadar.cpp" />
+    <ClCompile Include="src\CRestart.cpp" />
     <ClCompile Include="src\CRunningScript.cpp" />
     <ClCompile Include="src\cSampleManager.cpp" />
     <ClCompile Include="src\CScrollBar.cpp" />
@@ -52,6 +58,7 @@
     <ClCompile Include="src\CUserDisplay.cpp" />
     <ClCompile Include="src\CVehicle.cpp" />
     <ClCompile Include="src\CWanted.cpp" />
+    <ClCompile Include="src\CWeaponInfo.cpp" />
     <ClCompile Include="src\CWeather.cpp" />
     <ClCompile Include="src\CWorld.cpp" />
     <ClCompile Include="src\Globals.cpp" />

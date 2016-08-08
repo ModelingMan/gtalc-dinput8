@@ -47,6 +47,24 @@
     <ClCompile Include="src\CCranesHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CExplosionHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CGaragesHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPadHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPickupsHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CWantedHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SilentCall.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CRunningScriptHack.h">
@@ -85,12 +103,36 @@
     <ClInclude Include="include\CCranesHack.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\CExplosionHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CGaragesHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CPadHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CPickupsHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CWantedHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SilentCall.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Vehicles.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="dinput8.def">
       <Filter>src</Filter>
     </None>
     <None Include="include\ScrollBarMessages.inc">
+      <Filter>include</Filter>
+    </None>
+    <None Include="include\PickupText.inc">
       <Filter>include</Filter>
     </None>
   </ItemGroup>

@@ -62,7 +62,7 @@ struct PoliceRadioZone
 {
 	const char zone[8];
 	int sfx;
-	char padding[4];
+	int padding;
 };
 
 PoliceRadioZone policeRadioZones[TOTAL_AUDIO_ZONES] =

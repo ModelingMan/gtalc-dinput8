@@ -82,5 +82,71 @@
     <ClCompile Include="src\CCranes.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CAutomobile.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CDamageManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CEntity.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CExplosion.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CFireManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CGarages.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPad.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPed.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CStreaming.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CWanted.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CWeather.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPools.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CMatrix.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPhysical.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CVehicle.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCamera.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CDarkel.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CRadar.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPickups.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPhoneInfo.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CRestart.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CWeaponInfo.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
