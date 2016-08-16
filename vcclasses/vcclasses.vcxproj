@@ -37,12 +37,14 @@
     <ClCompile Include="src\CHud.cpp" />
     <ClCompile Include="src\CMatrix.cpp" />
     <ClCompile Include="src\CMessages.cpp" />
+    <ClCompile Include="src\CMissionCleanup.cpp" />
     <ClCompile Include="src\CPad.cpp" />
     <ClCompile Include="src\CPed.cpp" />
     <ClCompile Include="src\CPhoneInfo.cpp" />
     <ClCompile Include="src\CPhysical.cpp" />
     <ClCompile Include="src\CPickups.cpp" />
     <ClCompile Include="src\CPools.cpp" />
+    <ClCompile Include="src\CProjectileInfo.cpp" />
     <ClCompile Include="src\CRadar.cpp" />
     <ClCompile Include="src\CRestart.cpp" />
     <ClCompile Include="src\CRunningScript.cpp" />
@@ -53,6 +55,7 @@
     <ClCompile Include="src\CStreaming.cpp" />
     <ClCompile Include="src\CText.cpp" />
     <ClCompile Include="src\CTheScripts.cpp" />
+    <ClCompile Include="src\CTheZones.cpp" />
     <ClCompile Include="src\CTimer.cpp" />
     <ClCompile Include="src\CTxdStore.cpp" />
     <ClCompile Include="src\CUserDisplay.cpp" />

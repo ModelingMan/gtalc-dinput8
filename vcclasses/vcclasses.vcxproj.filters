@@ -148,5 +148,14 @@
     <ClCompile Include="src\CWeaponInfo.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CMissionCleanup.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CProjectileInfo.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CTheZones.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

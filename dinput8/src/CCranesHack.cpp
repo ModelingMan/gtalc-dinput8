@@ -82,14 +82,14 @@ bool CCranesHack::DoesMilitaryCraneHaveThisOneAlready(unsigned int model)
 
 bool CCranesHack::IsThisCarPickedUp(float positionX, float positionY, CVehicle *vehicle)
 {
-	float craneObjectX, craneObjectY, distance;
+	float distance;
 	if (numCranes > 0) {
 		for (int i = 0; i < numCranes; i++) {
-			craneObjectX = *(float *)((unsigned long)cranes[i].object + 0x34);
-			craneObjectY = *(float *)((unsigned long)cranes[i].object + 0x38);
-			distance = sqrt(pow(positionX - craneObjectX, 2) + pow(positionY - craneObjectY, 2));
-			if (distance < 100.0 && cranes[i].vehicle == vehicle && (cranes[i].status == 2 || cranes[i].status == 4)) {
-				return true;
+			if (cranes[i].object) {
+				distance = sqrt(pow(positionX - cranes[i].object->matrix.pos.x, 2) + pow(positionY - cranes[i].object->matrix.pos.y, 2));
+				if (distance < 100.0 && cranes[i].vehicle == vehicle && (cranes[i].status == 2 || cranes[i].status == 4)) {
+					return true;
+				}
 			}
 		}
 	}
@@ -99,16 +99,16 @@ bool CCranesHack::IsThisCarPickedUp(float positionX, float positionY, CVehicle *
 void CCranesHack::DeActivateCrane(float positionX, float positionY)
 {
 	int index = -1;
-	float craneObjectX, craneObjectY, minDistance, distance;
+	float minDistance, distance;
 	minDistance = 100.0;
 	if (numCranes > 0) {
 		for (int i = 0; i < numCranes; i++) {
-			craneObjectX = *(float *)((unsigned long)cranes[i].object + 0x34);
-			craneObjectY = *(float *)((unsigned long)cranes[i].object + 0x38);
-			distance = sqrt(pow(positionX - craneObjectX, 2) + pow(positionY - craneObjectY, 2));
-			if (distance < minDistance) {
-				index = i;
-				minDistance = distance;
+			if (cranes[i].object) {
+				distance = sqrt(pow(positionX - cranes[i].object->matrix.pos.x, 2) + pow(positionY - cranes[i].object->matrix.pos.y, 2));
+				if (distance < minDistance) {
+					index = i;
+					minDistance = distance;
+				}
 			}
 		}
 	}
@@ -124,12 +124,12 @@ void CCranesHack::ActivateCrane(float pickupX1, float pickupX2, float pickupY1, 
 	minDistance = 100.0;
 	if (numCranes > 0) {
 		for (int i = 0; i < numCranes; i++) {
-			craneObjectX = *(float *)((unsigned long)cranes[i].object + 0x34);
-			craneObjectY = *(float *)((unsigned long)cranes[i].object + 0x38);
-			distance = sqrt(pow(positionX - craneObjectX, 2) + pow(positionY - craneObjectY, 2));
-			if (distance < minDistance) {
-				index = i;
-				minDistance = distance;
+			if (cranes[i].object) {
+				distance = sqrt(pow(positionX - cranes[i].object->matrix.pos.x, 2) + pow(positionY - cranes[i].object->matrix.pos.y, 2));
+				if (distance < minDistance) {
+					index = i;
+					minDistance = distance;
+				}
 			}
 		}
 	}
@@ -151,8 +151,8 @@ void CCranesHack::ActivateCrane(float pickupX1, float pickupX2, float pickupY1, 
 	cranes[index].status = 0;
 	pickupCenterX = (pickupX1 + pickupX2) / 2;
 	pickupCenterY = (pickupY1 + pickupY2) / 2;
-	craneObjectX = *(float *)((unsigned long)cranes[index].object + 0x34);
-	craneObjectY = *(float *)((unsigned long)cranes[index].object + 0x38);
+	craneObjectX = cranes[index].object->matrix.pos.x;
+	craneObjectY = cranes[index].object->matrix.pos.y;
 	if (isCrusher) {
 		cranes[index].armPickupHeight = -0.95099998f + OFFSETHEIGHT;
 	} else if (isMilitary) {
@@ -182,7 +182,7 @@ void CCranesHack::AddThisOneCrane(CEntity *entity)
 	// add crane to array
 	if (numCranes < 8) {
 		int index = numCranes;
-		cranes[index].object = (unsigned long)entity;
+		cranes[index].object = entity;
 		cranes[index].activity = 0;
 		// initialise rotation
 		cranes[index].armCurrentRotation = (float)numCranes;
@@ -194,10 +194,10 @@ void CCranesHack::AddThisOneCrane(CEntity *entity)
 		cranes[index].timer = 0;
 		cranes[index].status = 0;
 		cranes[index].unk3 = 0;
-		cranes[index].isNotCab = *(unsigned short *)((unsigned long)entity + 0x5C) == 893 ? 0 : 1;
+		cranes[index].isNotCab = entity->modelIndex == 893 ? 0 : 1;
 		cranes[index].hook = 0;
 		// new! magnet for cranes!
-		if (cranes[index].isNotCab || *(float *)((unsigned long)entity + 0x38) > 0.0) {
+		if (cranes[index].isNotCab || entity->matrix.pos.y > 0.0) {
 			auto allocateObject = (unsigned int(__cdecl *)(unsigned int))vcversion::AdjustOffset(0x004E4070);
 			unsigned long object = allocateObject(0x194);
 			if (object) {
@@ -218,15 +218,11 @@ void CCranesHack::InitCranes()
 {
 	carsCollectedMilitaryCrane = 0;
 	numCranes = 0;
-	unsigned int buildings = *(unsigned int *)vcversion::AdjustOffset(0x0097F240);
-	unsigned int buildingObjects = *(unsigned int *)buildings; // pointer to entity array of buildings
-	unsigned int buildingValidities = *(unsigned int *)(buildings + 4); // pointer to char array of valid and invalid buildings
-	int numberOfBuildings = *(int *)(buildings + 8); // number of buildings
-	for (int i = 0; i < numberOfBuildings; i++) {
-		if (((*(char *)(buildingValidities + i)) & 0x80) != 0x80) { // is building in array valid
-			unsigned short buildingModel = *(unsigned short *)(buildingObjects + i * 0x64 + 0x5C); // pointer to building model
-			if (buildingModel == 882 || buildingModel == 883 || buildingModel == 893) {
-				AddThisOneCrane((CBuilding *)(buildingObjects + i * 0x64));
+	for (int i = 0; i < CPools::ms_pBuildingPool->totalCount; i++) {
+		if ((CPools::ms_pBuildingPool->flags[i] & 0x80) != 0x80) {
+			unsigned short model = CPools::ms_pBuildingPool->entities[i].modelIndex;
+			if (model == 882 || model == 883 || model == 893) {
+				CCranesHack::AddThisOneCrane(&CPools::ms_pBuildingPool->entities[i]);
 			}
 		}
 	}

@@ -1,8 +1,8 @@
 /*************************************************************************
-	vcclasses
+    vcclasses
 
-	Developed for the Grand Theft Auto: Liberty City project
-	http://gtaforums.com/forum/333-
+    Developed for the Grand Theft Auto: Liberty City project
+    http://gtaforums.com/forum/333-
 *************************************************************************/
 
 #ifndef __VCCLASSES_H__
@@ -59,14 +59,14 @@ public:
 class CMatrix
 {
 public:
-	CVector right;
-	unsigned int flags;
-	CVector up;
-	unsigned int pad1;
-	CVector at;
-	unsigned int pad2;
-	CVector pos;
-	unsigned int pad3;
+	CVector right;      // 0x00
+	unsigned int flags; // 0x0C
+	CVector up;         // 0x10
+	unsigned int pad1;  // 0x1C
+	CVector at;         // 0x20
+	unsigned int pad2;  // 0x2C
+	CVector pos;        // 0x30
+	unsigned int pad3;  // 0x3C
 
 	void SetRotate(float, float, float);
 	void SetRotateZOnly(float);
@@ -118,15 +118,24 @@ public:
 };
 
 //########################################################################
+//# VirtualTable
+//########################################################################
+
+class VirtualTable
+{
+public:
+	unsigned long vtbl; // 0x00
+};
+
+//########################################################################
 //# CPlaceable
 //########################################################################
 
-class CPlaceable
+class CPlaceable : public VirtualTable
 {
-protected:
-	CMatrix matrix;
-
 public:
+	CMatrix matrix;     // 0x04
+
 	CMatrix &GetMatrix() { return matrix; }
 };
 
@@ -285,9 +294,18 @@ public:
 //# CEntity
 //########################################################################
 
-class CEntity
+class CEntity : public CPlaceable
 {
 public:
+	unsigned char  espace1[0x000C];
+	unsigned char  status;                 // 0x050
+	unsigned char  field_051;              // 0x051
+	unsigned char  field_052;              // 0x052
+	unsigned char  espace2[0x0009];
+	unsigned short modelIndex;             // 0x05C
+	unsigned char  espace3[0x0006];
+	// 0x064
+
 	void UpdateRwFrame(void);
 	void RegisterReference(CEntity **);
 };
@@ -299,6 +317,20 @@ public:
 class CPhysical : public CEntity
 {
 public:
+	unsigned char  pspace1[0x000C];
+	float          forceX;                 // 0x070
+	float          forceY;                 // 0x074
+	float          forceZ;                 // 0x078
+	unsigned char  pspace2[0x003C];
+	float          mass;                   // 0x0B8
+	float          turnResistance;         // 0x0BC
+	float          accelerationResistance; // 0x0C0
+	unsigned char  pspace3[0x003C];
+	float          speed;                  // 0x100
+	unsigned char  pspace4[0x0019];
+	char           originLevel;            // 0x11D
+	unsigned char  pspace5[0x0002];
+
 	bool GetHasCollidedWith(CEntity *);
 };
 
@@ -309,46 +341,40 @@ public:
 class CVehicle : public CPhysical
 {
 public:
-	unsigned char  space1[0x0034];
-	float          x;                      // 0x034
-	float          y;                      // 0x038
-	float          z;                      // 0x03C
-	unsigned char  space2[0x0010];
-	unsigned char  status;                 // 0x050
-	unsigned char  field_051;              // 0x051
-	unsigned char  field_052;              // 0x052
-	unsigned char  space3[0x0009];
-	unsigned short modelIndex;             // 0x05C
-	unsigned char  space4[0x0012];
-	float          forceX;                 // 0x070
-	float          forceY;                 // 0x074
-	float          forceZ;                 // 0x078
-	unsigned char  space5[0x003C];
-	float          mass;                   // 0x0B8
-	float          turnResistance;         // 0x0BC
-	float          accelerationResistance; // 0x0C0
-	unsigned char  space6[0x005C];
 	unsigned long  handlingData;           // 0x120
-	unsigned char  space7[0x007C];
+	unsigned char  space1[0x0032];
+	unsigned char  targetBehavior;         // 0x156
+	unsigned char  space2[0x0009];
+	unsigned char  cruiseSpeed;            // 0x160
+	unsigned char  space3[0x003B];
+	CEntity        *targetEntity;          // 0x19C
 	unsigned char  firstColour;            // 0x1A0
 	unsigned char  secondColour;           // 0x1A1
-	unsigned char  space8[0x0059];
+	unsigned char  space4[0x0057];
+	unsigned char  field_1F9;              // 0x1F9
+	unsigned char  field_1FA;              // 0x1FA
 	unsigned char  field_1FB;              // 0x1FB
 	unsigned char  field_1FC;              // 0x1FC
 	unsigned char  field_1FD;              // 0x1FD
 	unsigned char  bombState;              // 0x1FE
-	unsigned char  space9[0x0005];
+	unsigned char  field_1FF;              // 0x1FF
+	unsigned char  field_200;              // 0x200
+	unsigned char  powerPillsCarried;      // 0x201
+	unsigned char  field_202;              // 0x202
+	unsigned char  field_203;              // 0x203
 	float          health;                 // 0x204
-	unsigned char  space10[0x0008];
+	unsigned char  space5[0x0008];
 	CEntity        *bombOwner;             // 0x210
-	unsigned char  space11[0x01C];
+	unsigned char  space6[0x01C];
 	unsigned int   lock;                   // 0x230
-	unsigned char  space12[0x0068];
+	unsigned char  space7[0x0068];
 	unsigned int   type;                   // 0x29C
 	float          damageManager;          // 0x2A0
-	unsigned char  space13[0x02BC];
+	unsigned char  space8[0x025D];
+	unsigned char  field_501;              // 0x501
+	unsigned char  space9[0x005E];
 	float          burningDuration;        // 0x560
-	unsigned char  space14[0x0061];
+	unsigned char  space10[0x0061];
 	unsigned char  numberOfWheelsOnGround; // 0x5C5
 
 	bool IsSphereTouchingVehicle(float, float, float, float);
@@ -371,7 +397,7 @@ public:
 class CPed : public CPhysical
 {
 public:
-	unsigned char space1[0x0244];
+	unsigned char space1[0x0124];
 	unsigned int  state;          // 0x244
 	unsigned char space2[0x0004];
 	unsigned int  moveState;      // 0x24C
@@ -434,7 +460,7 @@ class CCutsceneHead : public CObject
 
 class CBuilding : public CEntity
 {
-
+	// 0x64
 };
 
 //########################################################################
@@ -473,13 +499,18 @@ public:
 class CPlayerInfo
 {
 public:
-	CPlayerPed *playerEntity;
+	CPlayerPed    *playerEntity;         // 0x000
 	unsigned char space1[0x009C];
-	unsigned int m_Money;
-	unsigned int m_MoneyCounter;
-	unsigned int m_HiddenPackagesFound;
-	unsigned int m_TotalHiddenPackages;
-	unsigned char space2[0x00C0];
+	unsigned int  m_Money;               // 0x0A0
+	unsigned int  m_MoneyCounter;        // 0x0A4
+	unsigned int  m_HiddenPackagesFound; // 0x0A8
+	unsigned int  m_TotalHiddenPackages; // 0x0AC
+	unsigned char space2[0x001C];
+	unsigned char deathArrestState;      // 0x0CC
+	unsigned char space3[0x0003];
+	unsigned int  timeDeathArrest;       // 0x0D0
+	unsigned char space4[0x009C];
+	// 0x170
 };
 
 //########################################################################
@@ -509,13 +540,10 @@ protected:
 	bool m_bWastedBustedFlag;        // 0x84
 	bool m_bMissionThread;           // 0x85
 
-	static unsigned long m_pCollectParameters;
-	static unsigned long m_pProcessOneCommand;
-	static unsigned long m_pUpdateCompareFlag;
-
 	template <class T>
 	T SCM_Read(bool bIncreaseIP);
 public:
+	void StoreParameters(unsigned int *, short);
 	void CollectParameters(unsigned int *scriptIP, int paramCount);
 	bool ProcessOneCommand();
 	void UpdateCompareFlag(bool flag);
@@ -580,8 +608,10 @@ public:
 class CTimer
 {
 public:
-	static unsigned int& m_snTimeInMilliseconds;
-	static unsigned int& m_FrameCounter;
+	static unsigned int &m_snTimeInMilliseconds;
+	static float &ms_fTimeStep;
+	static float &ms_fTimeScale;
+	static unsigned int &m_FrameCounter;
 };
 
 //########################################################################
@@ -675,7 +705,7 @@ public:
 class CCrane
 {
 public:
-	unsigned long object;             // 0x00, pointer to crane object
+	CEntity       *object;            // 0x00
 	unsigned long hook;               // 0x04, pointer to hook object
 	float         pickupX1;           // 0x08
 	float         pickupX2;           // 0x0C
@@ -1039,6 +1069,16 @@ public:
 	};
 
 	static ProjectileInfo *projectiles;
+};
+
+//########################################################################
+//# CTheZones
+//########################################################################
+
+class CTheZones
+{
+public:
+	static int GetLevelFromPosition(CVector const *);
 };
 
 #endif

@@ -175,7 +175,6 @@ void __declspec(naked) CGarageHack::UpdateType7HackProxy(void)
 void CGarageHack::UpdateType7Hack(void)
 {
 	CVehicle *vehicle = VCGlobals::FindPlayerVehicle();
-	float multiplier = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x00975424));
 	float speed;
 
 	// opened
@@ -206,7 +205,7 @@ void CGarageHack::UpdateType7Hack(void)
 	// closing
 	else if (this->state == 2) {
 		speed = this->rotatingDoor ? 0.02f : 0.04f;
-		this->doorCurrentHeight -= speed * multiplier;
+		this->doorCurrentHeight -= speed * CTimer::ms_fTimeStep;
 		if (this->doorCurrentHeight < 0.0) {
 			this->doorCurrentHeight = 0.0;
 			this->state = 0; // closed
@@ -237,7 +236,7 @@ void CGarageHack::UpdateType7Hack(void)
 	// closed
 	else if (this->state == 0) {
 		if (vehicle && vehicle->modelIndex == this->targetModel) {
-			if (this->ProximityToGarageArea(vehicle->x, vehicle->y) < 64.0) {
+			if (this->ProximityToGarageArea(vehicle->matrix.pos.x, vehicle->matrix.pos.y) < 64.0) {
 				this->state = 3; // opening
 			}
 		}
@@ -250,7 +249,7 @@ void CGarageHack::UpdateType7Hack(void)
 			this->targetVehicle->RegisterReference((CEntity **)&this->targetVehicle);
 		}
 		speed = this->rotatingDoor ? 0.015f : 0.035f;
-		this->doorCurrentHeight += speed * multiplier;
+		this->doorCurrentHeight += speed * CTimer::ms_fTimeStep;
 		if (this->doorCurrentHeight > this->doorMaximumHeight) {
 			this->doorCurrentHeight = this->doorMaximumHeight;
 			this->state = 1; // opened
@@ -280,7 +279,6 @@ void __declspec(naked) CGarageHack::UpdateType14HackProxy(void)
 void CGarageHack::UpdateType14Hack(void)
 {
 	CVehicle *vehicle = VCGlobals::FindPlayerVehicle();
-	float multiplier = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x00975424));
 	float speed;
 
 	// opened
@@ -308,7 +306,7 @@ void CGarageHack::UpdateType14Hack(void)
 	// closing
 	else if (this->state == 2) {
 		speed = this->rotatingDoor ? 0.02f : 0.04f;
-		this->doorCurrentHeight -= speed * multiplier;
+		this->doorCurrentHeight -= speed * CTimer::ms_fTimeStep;
 		if (this->doorCurrentHeight < 0.0) {
 			this->doorCurrentHeight = 0.0;
 			this->state = 0; // closed
@@ -333,7 +331,7 @@ void CGarageHack::UpdateType14Hack(void)
 	// closed
 	else if (this->state == 0) {
 		if (this->targetVehicle && vehicle == this->targetVehicle) {
-			if (this->ProximityToGarageArea(vehicle->x, vehicle->y) < 289.0) {
+			if (this->ProximityToGarageArea(vehicle->matrix.pos.x, vehicle->matrix.pos.y) < 289.0) {
 				this->state = 3; // opening
 			}
 		}
@@ -342,7 +340,7 @@ void CGarageHack::UpdateType14Hack(void)
 	// opening
 	else if (this->state == 3) {
 		speed = this->rotatingDoor ? 0.015f : 0.035f;
-		this->doorCurrentHeight += speed * multiplier;
+		this->doorCurrentHeight += speed * CTimer::ms_fTimeStep;
 		if (this->doorCurrentHeight > this->doorMaximumHeight) {
 			this->doorCurrentHeight = this->doorMaximumHeight;
 			this->state = 1; // opened

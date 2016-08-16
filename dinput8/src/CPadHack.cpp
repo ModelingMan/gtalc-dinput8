@@ -203,8 +203,8 @@ void CPadHack::ArmEverybodyCheat()
 void CPadHack::FastTimeCheat()
 {
 	char gxtKey[8] = "CHEAT1";
-	if (VCGlobals::timeScale < 4.0) {
-		VCGlobals::timeScale *= 2;
+	if (CTimer::ms_fTimeScale < 4.0) {
+		CTimer::ms_fTimeScale *= 2;
 	}
 	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
@@ -212,8 +212,8 @@ void CPadHack::FastTimeCheat()
 void CPadHack::SlowTimeCheat()
 {
 	char gxtKey[8] = "CHEAT1";
-	if (VCGlobals::timeScale > 0.25) {
-		VCGlobals::timeScale /= 2;
+	if (CTimer::ms_fTimeScale > 0.25) {
+		CTimer::ms_fTimeScale /= 2;
 	}
 	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }

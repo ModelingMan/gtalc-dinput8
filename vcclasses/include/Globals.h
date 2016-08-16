@@ -14,8 +14,9 @@ namespace VCGlobals
 
 	extern char *ScrollCharSet;
 
-	extern float &timeScale;
 	extern unsigned char &currentPlayer;
+	extern unsigned int &MI_CARMINE;
+	extern unsigned int &MI_NAUTICALMINE;
 
 	union ScriptParameter
 	{
