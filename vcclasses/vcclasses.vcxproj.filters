@@ -157,5 +157,11 @@
     <ClCompile Include="src\CTheZones.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CStats.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPlaceable.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

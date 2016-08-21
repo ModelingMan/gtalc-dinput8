@@ -131,8 +131,7 @@ void CPadHack::MoneyCheat()
 void CPadHack::HealthCheat()
 {
 	char gxtKey[8] = "CHEAT3";
-	float maxHealth = (float)*(unsigned char *)vcversion::AdjustOffset(0x0094AE6B);
-	VCGlobals::FindPlayerPed()->health = maxHealth;
+	VCGlobals::FindPlayerPed()->health = (float)CWorld::Players[VCGlobals::currentPlayer].maxHealth;
 	if (CVehicle *vehicle = VCGlobals::FindPlayerVehicle()) {
 		vehicle->health = 1000.0;
 		if (!vehicle->type) {
@@ -176,15 +175,11 @@ void CPadHack::TankCheat()
 void CPadHack::BlowUpCarsCheat()
 {
 	char gxtKey[8] = "CHEAT1";
-	unsigned int vehicles = *(unsigned int *)vcversion::AdjustOffset(0x00A0FDE4);
-	unsigned int vehicleObjects = *(unsigned int *)vehicles; // pointer to entity array of vehicles
-	unsigned int vehicleValidities = *(unsigned int *)(vehicles + 4); // pointer to char array of valid and invalid vehicles
-	int numberOfVehicles = *(int *)(vehicles + 8); // number of vehicles
-	for (int i = 0; i < numberOfVehicles; i++) {
-		if (((*(char *)(vehicleValidities + i)) & 0x80) != 0x80) { // is vehicle in array valid
-			unsigned long *vehicle = (unsigned long *)(vehicleObjects + i * 0x5DC); // pointer to vehicle
+	for (int i = 0; i < CPools::ms_pVehiclePool->totalCount; i++) {
+		if ((CPools::ms_pVehiclePool->flags[i] & 0x80) != 0x80) {
+			CVehicle *vehicle = &CPools::ms_pVehiclePool->entities[i];
 			if (vehicle) {
-				auto BlowUpCar = (void(__thiscall *)(unsigned long *, int))*(unsigned long *)(*vehicle + 0x80);
+				auto BlowUpCar = (void(__thiscall *)(CVehicle *, int))*(unsigned long *)(vehicle->vtbl + 0x80);
 				BlowUpCar(vehicle, 0);
 			}
 		}
@@ -196,7 +191,7 @@ void CPadHack::ArmEverybodyCheat()
 {
 	char gxtKey[8] = "CHEAT1";
 	unsigned char &c = *(unsigned char *)vcversion::AdjustOffset(0x00A10AB3);
-	c = c == 0 ? 1 : 0;
+	c = !c;
 	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
@@ -221,8 +216,7 @@ void CPadHack::SlowTimeCheat()
 void CPadHack::ArmourCheat()
 {
 	char gxtKey[8] = "CHEAT4";
-	float maxArmour = (float)*(unsigned char *)vcversion::AdjustOffset(0x0094AE6C);
-	VCGlobals::FindPlayerPed()->armour = maxArmour;
+	VCGlobals::FindPlayerPed()->armour = (float)CWorld::Players[VCGlobals::currentPlayer].maxArmour;
 	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
@@ -258,7 +252,7 @@ void CPadHack::TimeTravelCheat()
 {
 	char gxtKey[8] = "CHEAT1";
 	unsigned char &c = *(unsigned char *)vcversion::AdjustOffset(0x00A10B87);
-	c = c == 0 ? 1 : 0;
+	c = !c;
 	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
@@ -266,7 +260,7 @@ void CPadHack::WheelsOnlyCheat()
 {
 	char gxtKey[8] = "CHEAT1";
 	unsigned char &c = *(unsigned char *)vcversion::AdjustOffset(0x00A10B30);
-	c = c == 0 ? 1 : 0;
+	c = !c;
 	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
@@ -274,7 +268,7 @@ void CPadHack::FlyboyCheat()
 {
 	char gxtKey[8] = "CHEAT1";
 	unsigned char &c = *(unsigned char *)vcversion::AdjustOffset(0x00A10B28);
-	c = c == 0 ? 1 : 0;
+	c = !c;
 	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
@@ -282,7 +276,7 @@ void CPadHack::GripCheat()
 {
 	char gxtKey[8] = "CHEAT1";
 	unsigned char &c = *(unsigned char *)vcversion::AdjustOffset(0x00A10B0F);
-	c = c == 0 ? 1 : 0;
+	c = !c;
 	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 

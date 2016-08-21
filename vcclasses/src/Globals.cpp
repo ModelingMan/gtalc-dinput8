@@ -18,8 +18,10 @@ namespace VCGlobals
 	RsGlobalType &Globals = *reinterpret_cast<RsGlobalType *>(vcversion::AdjustOffset(0x009B48D8));
 
 	unsigned char &currentPlayer = *reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x00A10AFB));
-	unsigned int &MI_CARMINE = *reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x0068E8B0));
-	unsigned int &MI_NAUTICALMINE = *reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x0068E910));
+	unsigned short &MI_CARMINE = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E8B0));
+	unsigned short &MI_NAUTICALMINE = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E910));
+	unsigned short &MI_LITTLEHA_POLICE = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E9A0));
+	unsigned short &MI_OD_LIGHTBEAM = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E9B4));
 	
 	CPlayerPed *(*g_pFindPlayerPed)() = *reinterpret_cast<CPlayerPed *(*)()>(vcversion::AdjustOffset(0x004BC120));
 	CPlayerPed *FindPlayerPed()

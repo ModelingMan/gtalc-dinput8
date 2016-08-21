@@ -3,6 +3,7 @@
 #include "CScrollBarHack.h"
 #include "CCranesHack.h"
 #include "CExplosionHack.h"
+#include "CProjectileInfoHack.h"
 #include "Globals.h"
 #include "vcclasses.h"
 #include "vcversion.h"
@@ -123,86 +124,51 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 	{
 	case 0x014D:
 		return this->_014D_text_pager();
-
-	case 0x01EE:
-		return this->_01EE_activate_crane();
-		break;
-
-	case 0x01EF:
-		return this->_01EF_deactivate_crane();
-		break;
-
-	case 0x024C:
-		return this->_024C_set_phone_message();
-		break;
-
-	case 0x02BD:
-		return this->_02BD_is_debug_mode();
-		break;
-
-	case 0x02FB:
-		return this->_02FB_activate_crusher_crane();
-		break;
-
 	case 0x034A:	// set_portland_complete
 		CScrollBarHack::ms_PortlandComplete = true;
 		break;
-
 	case 0x034B:	// set_staunton_complete
 		CScrollBarHack::ms_StauntonComplete = true;
 		break;
-
 	case 0x034C:	// set_shoreside_complete
 		CScrollBarHack::ms_ShoresideComplete = true;
 		break;
 
+	// additional opcodes
+	case 0x01EE:
+		return this->_01EE_activate_crane();
+	case 0x01EF:
+		return this->_01EF_deactivate_crane();
+	case 0x024C:
+		return this->_024C_set_phone_message();
+	case 0x02BD:
+		return this->_02BD_is_debug_mode();
+	case 0x02FB:
+		return this->_02FB_activate_crusher_crane();
 	case 0x0351:
 		return this->_0351_is_nasty_game();
-		break;
-
 	case 0x0356:
 		return this->_0356_is_explosion_in_area();
-		break;
-
 	case 0x0368:
 		return this->_0368_activate_military_crane();
-		break;
-
 	case 0x03A0:
 		return this->_03A0_is_crane_lifting_car();
-		break;
-
 	case 0x03C2:
 		return this->_03C2_is_phone_displaying_message();
-		break;
-
 	case 0x03EC:
 		return this->_03EC_has_military_crane_collected_all_cars();
-		break;
-
 	case 0x0410:
 		return this->_0410_set_gang_ped_model_preference();
-		break;
-
 	case 0x0421:
 		return this->_0421_force_rain();
-		break;
-
 	case 0x0422:
 		return this->_0422_does_garage_contain_car();
-		break;
-
 	case 0x042A:
 		return this->_042A_is_threat_for_ped_type();
-		break;
-
 	case 0x0444:
 		return this->_0444_set_script_fire_audio();
-		break;
-
 	case 0x0447:
 		return this->_0447_is_player_lifting_a_phone();
-		break;
 	}
 
 	CTheScripts::CommandsExecuted--;
@@ -338,7 +304,7 @@ bool CRunningScriptHack::_03C2_is_phone_displaying_message()
 
 bool CRunningScriptHack::_03EC_has_military_crane_collected_all_cars()
 {
-	this->UpdateCompareFlag(CCranes::carsCollectedMilitaryCrane == MILITARYCRANETOTAL);
+	this->UpdateCompareFlag(CCranes::CarsCollectedMilitaryCrane == MILITARYCRANETOTAL);
 	return 0;
 }
 
@@ -359,7 +325,8 @@ bool CRunningScriptHack::_0421_force_rain()
 bool CRunningScriptHack::_0422_does_garage_contain_car()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	this->UpdateCompareFlag(CGarages::garages[ScriptParams[0].int32].IsEntityEntirelyInside3D(CPools::ms_pVehiclePool->GetAt(ScriptParams[1].int32), 0.0));
+	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[1].int32);
+	this->UpdateCompareFlag(vehicle && CGarages::garages[ScriptParams[0].int32].IsEntityEntirelyInside3D(vehicle, 0.0));
 	return 0;
 }
 

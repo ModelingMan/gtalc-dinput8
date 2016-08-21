@@ -118,25 +118,45 @@ public:
 };
 
 //########################################################################
-//# VirtualTable
-//########################################################################
-
-class VirtualTable
-{
-public:
-	unsigned long vtbl; // 0x00
-};
-
-//########################################################################
 //# CPlaceable
 //########################################################################
 
-class CPlaceable : public VirtualTable
+class CPlaceable
 {
 public:
-	CMatrix matrix;     // 0x04
+	CMatrix matrix;
 
-	CMatrix &GetMatrix() { return matrix; }
+	bool IsWithinArea(float, float, float, float, float, float);
+	bool IsWithinArea(float, float, float, float);
+};
+
+//########################################################################
+//# CEntity
+//########################################################################
+
+class CEntity // public CPlaceable
+{
+public:
+	unsigned long  vtbl;                   // 0x000
+	CPlaceable     placeable;              // 0x004, offset due to virtual table
+	unsigned char  espace1[0x0008];
+	unsigned long  RpClump;                // 0x04C
+	unsigned char  status;                 // 0x050
+	unsigned char  field_051;              // 0x051
+	unsigned char  field_052;              // 0x052
+	unsigned char  espace2[0x0009];
+	unsigned short modelIndex;             // 0x05C
+	unsigned char  espace3[0x0006];
+	// 0x064
+
+	void UpdateRwFrame(void);
+	void RegisterReference(CEntity **);
+
+	CMatrix &GetMatrix() { return placeable.matrix; }
+	CVector &GetPos() { return placeable.matrix.pos; }
+	float &GetX() { return placeable.matrix.pos.x; }
+	float &GetY() { return placeable.matrix.pos.y; }
+	float &GetZ() { return placeable.matrix.pos.z; }
 };
 
 //########################################################################
@@ -145,10 +165,9 @@ public:
 
 class CCamera : public CPlaceable
 {
-protected:
-
 public:
 	void CamShake(float, float, float, float);
+	CMatrix &GetMatrix() { return matrix; }
 };
 
 //########################################################################
@@ -280,34 +299,19 @@ protected:
 class CWanted
 {
 public:
-	unsigned int  counter;        // 0x00
-	unsigned char space1[0x001A];
-	unsigned char activity;       // 0x1E
-	unsigned char space2;
-	int           level;          // 0x20
+	unsigned int  counter;                    // 0x000
+	unsigned char space1[0x014];
+	unsigned char numberOfPoliceInPursuit;    // 0x018
+	unsigned char maxNumberOfPoliceInPursuit; // 0x019
+	unsigned char space2[0x004];
+	unsigned char activity;                   // 0x01E
+	unsigned char space3;
+	int           level;                      // 0x020
+	unsigned char space4[0x1C4];
+	unsigned long policeInPursuit[10];        // 0x1E8
 
 	void SetWantedLevelCheat(int);
 	void UpdateWantedLevel(void);
-};
-
-//########################################################################
-//# CEntity
-//########################################################################
-
-class CEntity : public CPlaceable
-{
-public:
-	unsigned char  espace1[0x000C];
-	unsigned char  status;                 // 0x050
-	unsigned char  field_051;              // 0x051
-	unsigned char  field_052;              // 0x052
-	unsigned char  espace2[0x0009];
-	unsigned short modelIndex;             // 0x05C
-	unsigned char  espace3[0x0006];
-	// 0x064
-
-	void UpdateRwFrame(void);
-	void RegisterReference(CEntity **);
 };
 
 //########################################################################
@@ -317,6 +321,7 @@ public:
 class CPhysical : public CEntity
 {
 public:
+	// 0x064
 	unsigned char  pspace1[0x000C];
 	float          forceX;                 // 0x070
 	float          forceY;                 // 0x074
@@ -327,9 +332,12 @@ public:
 	float          accelerationResistance; // 0x0C0
 	unsigned char  pspace3[0x003C];
 	float          speed;                  // 0x100
-	unsigned char  pspace4[0x0019];
-	char           originLevel;            // 0x11D
+	unsigned char  pspace4[0x0016];
+	unsigned char  field_11A;              // 0x11A
 	unsigned char  pspace5[0x0002];
+	char           originLevel;            // 0x11D
+	unsigned char  pspace6[0x0002];
+	// 0x120
 
 	bool GetHasCollidedWith(CEntity *);
 };
@@ -341,6 +349,7 @@ public:
 class CVehicle : public CPhysical
 {
 public:
+	// 0x120
 	unsigned long  handlingData;           // 0x120
 	unsigned char  space1[0x0032];
 	unsigned char  targetBehavior;         // 0x156
@@ -350,7 +359,9 @@ public:
 	CEntity        *targetEntity;          // 0x19C
 	unsigned char  firstColour;            // 0x1A0
 	unsigned char  secondColour;           // 0x1A1
-	unsigned char  space4[0x0057];
+	unsigned char  space4[0x000A];
+	class CPed     *passengers[8];         // 0x1AC
+	unsigned char  space5[0x02D];
 	unsigned char  field_1F9;              // 0x1F9
 	unsigned char  field_1FA;              // 0x1FA
 	unsigned char  field_1FB;              // 0x1FB
@@ -363,19 +374,21 @@ public:
 	unsigned char  field_202;              // 0x202
 	unsigned char  field_203;              // 0x203
 	float          health;                 // 0x204
-	unsigned char  space5[0x0008];
+	unsigned char  space6[0x0008];
 	CEntity        *bombOwner;             // 0x210
-	unsigned char  space6[0x01C];
+	unsigned char  space7[0x01C];
 	unsigned int   lock;                   // 0x230
-	unsigned char  space7[0x0068];
+	unsigned char  space8[0x0068];
 	unsigned int   type;                   // 0x29C
 	float          damageManager;          // 0x2A0
-	unsigned char  space8[0x025D];
+	unsigned char  space9[0x025D];
 	unsigned char  field_501;              // 0x501
-	unsigned char  space9[0x005E];
+	unsigned char  space10[0x005E];
 	float          burningDuration;        // 0x560
-	unsigned char  space10[0x0061];
+	unsigned char  space11[0x0061];
 	unsigned char  numberOfWheelsOnGround; // 0x5C5
+	unsigned char  space12[0x0016];
+	// 0x5DC
 
 	bool IsSphereTouchingVehicle(float, float, float, float);
 };
@@ -397,17 +410,20 @@ public:
 class CPed : public CPhysical
 {
 public:
-	unsigned char space1[0x0124];
+	// 0x120
+	unsigned char space1[0x002E];
+	unsigned char field_14E;      // 0x14E
+	unsigned char space2[0x00F5];
 	unsigned int  state;          // 0x244
-	unsigned char space2[0x0004];
+	unsigned char space3[0x0004];
 	unsigned int  moveState;      // 0x24C
-	unsigned char space3[0x0104];
+	unsigned char space4[0x0104];
 	float         health;         // 0x354
 	float         armour;         // 0x358
-	unsigned char space4[0x004C];
+	unsigned char space5[0x004C];
 	CVehicle      *vehicle;       // 0x3A8
 	unsigned char isInAnyVehicle; // 0x3AC
-	unsigned char space5[0x005B];
+	unsigned char space6[0x005B];
 	struct Weapon
 	{
 		unsigned int type;  // 0x00
@@ -417,8 +433,12 @@ public:
 		unsigned int unk1;  // 0x10
 		unsigned int unk2;  // 0x14
 	} weapons[10];                // 0x408
-	unsigned char space6[0x00FC];
+	unsigned char space7[0x00FC];
 	CWanted       *wanted;        // 0x5F4
+	unsigned char space8[0x0040];
+	unsigned char drunkenness;    // 0x638
+	unsigned char space9[0x009F];
+	// 0x6D8
 
 	void SetAmmo(int, unsigned int);
 	void GrantAmmo(int, unsigned int);
@@ -509,7 +529,12 @@ public:
 	unsigned char deathArrestState;      // 0x0CC
 	unsigned char space3[0x0003];
 	unsigned int  timeDeathArrest;       // 0x0D0
-	unsigned char space4[0x009C];
+	unsigned char space4[0x006F];
+	unsigned char maxHealth;             // 0x143
+	unsigned char maxArmour;             // 0x144
+	unsigned char getOutOfJailFree;      // 0x145
+	unsigned char freeHealthCare;        // 0x146
+	unsigned char space5[0x0029];
 	// 0x170
 };
 
@@ -599,6 +624,8 @@ class CTheScripts
 public:
 	static unsigned short& CommandsExecuted;
 	static unsigned char *ScriptSpace;
+
+	static void HighlightImportantArea(unsigned int, float, float, float, float, float);
 };
 
 //########################################################################
@@ -641,6 +668,16 @@ public:
 };
 
 //########################################################################
+//# CColPoint
+//########################################################################
+
+class CColPoint
+{
+public:
+	unsigned char space1[40];
+};
+
+//########################################################################
 //# CWorld
 //########################################################################
 
@@ -649,6 +686,7 @@ class CWorld
 public:
 	static CPlayerInfo *Players;
 	static float FindGroundZForCoord(float x, float y);
+	static bool ProcessVerticalLine(CVector const &, float, CColPoint &, CEntity *&, bool, bool, bool, bool, bool, bool, unsigned long);
 	static void Remove(CEntity *);
 	static void Add(CEntity *);
 };
@@ -732,7 +770,7 @@ public:
 	float         hookCurrentZ;       // 0x60
 	float         unk1;               // 0x64
 	float         unk2;               // 0x68
-	CVehicle *    vehicle;            // 0x6C
+	CVehicle      *vehicle;           // 0x6C
 	unsigned int  timer;              // 0x70
 	unsigned char activity;           // 0x74
 	unsigned char status;             // 0x75
@@ -751,8 +789,8 @@ public:
 class CCranes
 {
 public:
-	static int &carsCollectedMilitaryCrane;
-	static int &numCranes;
+	static int &CarsCollectedMilitaryCrane;
+	static int &NumCranes;
 	static CCrane *cranes;
 };
 
@@ -894,9 +932,9 @@ class CGarages
 {
 public:
 	static int *carsCollected;
-	static int &bankVansCollected;
-	static int &policeCarsCollected;
-	static unsigned char &bombsAreFree;
+	static int &BankVansCollected;
+	static int &PoliceCarsCollected;
+	static unsigned char &BombsAreFree;
 	static CGarage *garages;
 
 	static void TriggerMessage(char *, short, unsigned short, short);
@@ -1079,6 +1117,22 @@ class CTheZones
 {
 public:
 	static int GetLevelFromPosition(CVector const *);
+};
+
+//########################################################################
+//# CStats
+//########################################################################
+
+class CStats
+{
+public:
+	static float &ShootingRangeRank;
+	static float &GarbagePickups;
+	static float &LoanSharkVisits;
+	static float &TopShootingRangeScore;
+	static float &MovieStunts;
+
+	static void AnotherKillFrenzyPassed(void);
 };
 
 #endif

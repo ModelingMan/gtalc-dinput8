@@ -14,38 +14,23 @@ public:
 
 	bool _014D_text_pager();
 
+	// additional opcodes
 	bool _01EE_activate_crane();
-
 	bool _01EF_deactivate_crane();
-
 	bool _024C_set_phone_message();
-
 	bool _02BD_is_debug_mode();
-
 	bool _02FB_activate_crusher_crane();
-
 	bool _0351_is_nasty_game();
-
 	bool _0356_is_explosion_in_area();
-
 	bool _0368_activate_military_crane();
-
 	bool _03A0_is_crane_lifting_car();
-
 	bool _03C2_is_phone_displaying_message();
-
 	bool _03EC_has_military_crane_collected_all_cars();
-
 	bool _0410_set_gang_ped_model_preference();
-
 	bool _0421_force_rain();
-
 	bool _0422_does_garage_contain_car();
-
 	bool _042A_is_threat_for_ped_type();
-
 	bool _0444_set_script_fire_audio();
-
 	bool _0447_is_player_lifting_a_phone();
 
 	static int debugMode;

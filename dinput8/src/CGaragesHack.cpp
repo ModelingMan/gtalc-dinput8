@@ -218,9 +218,9 @@ void CGarageHack::UpdateType7Hack(void)
 				VCGlobals::FindPlayerPed()->wanted->activity &= 0xFE;
 				int reward = 2;
 				if (this->targetModel == CAR_SECURICA) {
-					reward = 5000 - 500 * CGarages::bankVansCollected++;
+					reward = 5000 - 500 * CGarages::BankVansCollected++;
 				} else if (this->targetModel == CAR_POLICE) {
-					reward = 5000 - 500 * CGarages::policeCarsCollected++;
+					reward = 5000 - 500 * CGarages::PoliceCarsCollected++;
 				}
 				if (!reward) {
 					CGarages::TriggerMessage("GA_11", -1, 4000, -1);
@@ -236,7 +236,7 @@ void CGarageHack::UpdateType7Hack(void)
 	// closed
 	else if (this->state == 0) {
 		if (vehicle && vehicle->modelIndex == this->targetModel) {
-			if (this->ProximityToGarageArea(vehicle->matrix.pos.x, vehicle->matrix.pos.y) < 64.0) {
+			if (this->ProximityToGarageArea(vehicle->GetX(), vehicle->GetY()) < 64.0) {
 				this->state = 3; // opening
 			}
 		}
@@ -331,7 +331,7 @@ void CGarageHack::UpdateType14Hack(void)
 	// closed
 	else if (this->state == 0) {
 		if (this->targetVehicle && vehicle == this->targetVehicle) {
-			if (this->ProximityToGarageArea(vehicle->matrix.pos.x, vehicle->matrix.pos.y) < 289.0) {
+			if (this->ProximityToGarageArea(vehicle->GetX(), vehicle->GetY()) < 289.0) {
 				this->state = 3; // opening
 			}
 		}

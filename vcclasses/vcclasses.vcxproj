@@ -43,6 +43,7 @@
     <ClCompile Include="src\CPhoneInfo.cpp" />
     <ClCompile Include="src\CPhysical.cpp" />
     <ClCompile Include="src\CPickups.cpp" />
+    <ClCompile Include="src\CPlaceable.cpp" />
     <ClCompile Include="src\CPools.cpp" />
     <ClCompile Include="src\CProjectileInfo.cpp" />
     <ClCompile Include="src\CRadar.cpp" />
@@ -52,6 +53,7 @@
     <ClCompile Include="src\CScrollBar.cpp" />
     <ClCompile Include="src\CSprite.cpp" />
     <ClCompile Include="src\CSprite2d.cpp" />
+    <ClCompile Include="src\CStats.cpp" />
     <ClCompile Include="src\CStreaming.cpp" />
     <ClCompile Include="src\CText.cpp" />
     <ClCompile Include="src\CTheScripts.cpp" />

@@ -15,8 +15,10 @@ namespace VCGlobals
 	extern char *ScrollCharSet;
 
 	extern unsigned char &currentPlayer;
-	extern unsigned int &MI_CARMINE;
-	extern unsigned int &MI_NAUTICALMINE;
+	extern unsigned short &MI_CARMINE;
+	extern unsigned short &MI_NAUTICALMINE;
+	extern unsigned short &MI_LITTLEHA_POLICE;
+	extern unsigned short &MI_OD_LIGHTBEAM;
 
 	union ScriptParameter
 	{
