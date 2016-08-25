@@ -13,6 +13,9 @@ public:
 	bool ProcessOneCommandHack();
 
 	bool _014D_text_pager();
+	bool _034A_industrial_passed();
+	bool _034B_commercial_passed();
+	bool _034C_suburban_passed();
 
 	// additional opcodes
 	bool _01EE_activate_crane();
@@ -32,6 +35,41 @@ public:
 	bool _042A_is_threat_for_ped_type();
 	bool _0444_set_script_fire_audio();
 	bool _0447_is_player_lifting_a_phone();
+
+	bool _00AC_is_car_still_alive();
+	bool _0130_has_player_been_arrested();
+	bool _0178_is_player_touching_object();
+	bool _021D_set_free_bombs();
+	bool _0228_is_car_armed_with_bomb();
+	bool _0240_flash_object();
+	bool _0242_arm_car_with_bomb();
+	bool _0255_restart_critical_mission();
+	bool _0299_activate_garage();
+	bool _029C_is_boat();
+	bool _02A0_is_char_stopped();
+	bool _02B9_deactivate_garage();
+	bool _02C3_start_pacman_race();
+	bool _02C5_get_number_of_power_pills_eaten();
+	bool _02C6_clear_pacman();
+	bool _02C7_start_pacman_scramble();
+	bool _02C8_get_number_of_power_pills_carried();
+	bool _02C9_clear_number_of_power_pills_carried();
+	bool _02D9_clear_number_of_power_pills_eaten();
+	bool _02EE_is_projectile_in_area();
+	bool _02EF_destroy_projectiles_in_area();
+	bool _02F0_drop_mine();
+	bool _02F1_drop_nautical_mine();
+	bool _032D_set_car_block_car();
+	bool _03A5_change_garage_type_with_car_model();
+	bool _03C9_is_car_visibly_damaged();
+	bool _03FB_set_car_stays_in_current_level();
+	bool _03FC_set_char_stays_in_current_level();
+	bool _041F_override_hospital_level();
+	bool _0420_override_police_station_level();
+	bool _0438_set_char_ignore_level_transitions();
+	bool _044E_set_car_ignore_level_transitions();
+	bool _044F_make_craigs_car_a_bit_stronger();
+	bool _0452_enable_player_control_camera();
 
 	static int debugMode;
 };

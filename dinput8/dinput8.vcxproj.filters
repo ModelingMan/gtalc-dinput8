@@ -65,6 +65,12 @@
     <ClCompile Include="src\SilentCall.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CPacManPickupsHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CProjectileInfoHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CRunningScriptHack.h">
@@ -122,6 +128,12 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\Vehicles.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CPacManPickupsHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CProjectileInfoHack.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

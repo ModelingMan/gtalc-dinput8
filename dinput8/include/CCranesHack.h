@@ -23,4 +23,7 @@ class CCraneHack : public CCrane
 {
 public:
 	bool DoesCranePickUpThisCarType(unsigned int model);
+	static void FindCarInSectorListHack();
+	static void UpdateHackProxy();
+	void UpdateHack();
 };

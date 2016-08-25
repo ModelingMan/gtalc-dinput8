@@ -321,6 +321,10 @@ bool cAudioManagerHack::initialise()
 	// do not use game's audio zone array
 	call(0x004DDAEB, &cAudioManagerHack::InitialiseAudioZoneArray, PATCH_NOTHING);
 	
+	// crane audio
+	void(__thiscall cAudioManagerHack::* function2)() = &cAudioManagerHack::ProcessCrane;
+	call(0x005F596C, (unsigned long &)function2, PATCH_NOTHING);
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005F5E6C)) = 5;
 	return true;
 }
 
@@ -578,4 +582,50 @@ int cAudioManagerHack::SetupSuspectLastSeenReportHack(int model)
 		return REPORT_VAN;
 	}
 	return REPORT_NONE;
+}
+
+void cAudioManagerHack::ProcessCrane()
+{
+	int x = this->m_Unk13;
+	x = x + x * 4;
+	CCrane *crane = (CCrane *)*(unsigned long *)((unsigned long)&VCGlobals::AudioManager + x * 8 + 0x1F14);
+	if (crane && crane->activity == 1 && crane->status) {
+		this->m_Position = crane->object->GetPos();
+		float distance = this->GetDistanceSquared(this->m_Position);
+		if (distance < 6400.0) {
+			this->m_Unk3 = distance > 0.0 ? sqrt(distance) : 0.0f;
+			this->m_Volume = this->ComputeVolume(0x64, 80.0, this->m_Unk3);
+			if (this->m_Volume) {
+				this->m_Unk7 = 0;
+				this->m_SampleID = 340;
+				this->m_Unk0 = 0;
+				this->m_Unk1 = 0;
+				this->m_Unk2 = 2;
+				this->m_Frequency = 6000;
+				this->m_Unk8 = 0;
+				this->m_Unk11 = 100;
+				this->m_LoopStartOff = VCGlobals::SampleManager.GetSampleLoopStartOffset(this->m_SampleID);
+				this->m_LoopEndOff = VCGlobals::SampleManager.GetSampleLoopEndOffset(this->m_SampleID);
+				this->m_Unk4 = 4.0;
+				this->m_Unk5 = 80.0;
+				this->m_Unk9 = 0;
+				this->m_Unk6 = 3;
+				this->m_Unk10 = 1;
+				this->m_Unk12 = 0;
+				this->AddSampleToRequestedQueue();
+			}
+			x = this->m_Unk13;
+			x = x + x * 4;
+			if (*(unsigned char *)((unsigned long)&VCGlobals::AudioManager + x * 8 + 0x1F34)) {
+				this->m_Unk7 = 1;
+				this->m_SampleID = 139;
+				this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(30);
+				this->m_Unk8 = 1;
+				this->m_Unk9 = 1;
+				this->m_Unk10 = 1;
+				this->m_Unk12 = 1;
+				this->AddSampleToRequestedQueue();
+			}
+		}
+	}
 }

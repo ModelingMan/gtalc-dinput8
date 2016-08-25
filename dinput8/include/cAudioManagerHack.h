@@ -14,4 +14,5 @@ public:
 	static void InitialiseAudioZoneArray();
 	static void SetupSuspectLastSeenReportHackProxy();
 	static int SetupSuspectLastSeenReportHack(int model);
+	void ProcessCrane(void);
 };

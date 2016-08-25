@@ -1,5 +1,6 @@
 #include "CCranesHack.h"
 #include "vcversion.h"
+#include "Globals.h"
 #include "SilentCall.h"
 #include "Vehicles.h"
 
@@ -9,6 +10,12 @@
 static void FindCarInSectorList();
 unsigned long findCarProceedJump = vcversion::AdjustOffset(0x0005A81EC);
 unsigned long findCarEndJump = vcversion::AdjustOffset(0x005A82F4);
+
+// crane audio
+static void DestroyAudioEntityProxy();
+static void DestroyAudioEntity();
+unsigned long updateHackEndJump = vcversion::AdjustOffset(0x005A8859);
+unsigned int audioEntities[8];
 
 bool CCranesHack::initialise()
 {
@@ -22,7 +29,10 @@ bool CCranesHack::initialise()
 	bool(__thiscall CCraneHack::* function)(unsigned int) = &CCraneHack::DoesCranePickUpThisCarType;
 	call(0x005A821E, (unsigned long &)function, PATCH_NOTHING);
 	call(0x005A8275, (unsigned long &)function, PATCH_NOTHING);
-	call(0x005A81DF, &FindCarInSectorList, PATCH_JUMP);
+	call(0x005A81DF, &CCraneHack::FindCarInSectorListHack, PATCH_JUMP);
+
+	call(0x005A8842, &CCraneHack::UpdateHackProxy, PATCH_JUMP);
+	call(0x00627073, &DestroyAudioEntityProxy, PATCH_JUMP);
 
 	return true;
 }
@@ -208,6 +218,10 @@ void CCranesHack::AddThisOneCrane(CEntity *entity)
 			*(unsigned char *)((unsigned long)object + 0x11A) = *(unsigned char *)((unsigned long)object + 0x11A) & 0xFD;
 			cranes[index].hook = object;
 		}
+		audioEntities[index] = VCGlobals::DMAudio.CreateEntity(12, &CCranes::cranes[index]);
+		if (audioEntities[index]) {
+			VCGlobals::DMAudio.SetEntityStatus(audioEntities[index], 1);
+		}
 		CCranes::NumCranes++;
 	}
 }
@@ -223,6 +237,22 @@ void CCranesHack::InitCranes()
 				CCranesHack::AddThisOneCrane(&CPools::ms_pBuildingPool->entities[i]);
 			}
 		}
+	}
+}
+
+void __declspec(naked) DestroyAudioEntityProxy()
+{
+	__asm
+	{
+		call DestroyAudioEntity
+		retn
+	}
+}
+
+void DestroyAudioEntity()
+{
+	for (int i = 0; i < CCranes::NumCranes; i++) {
+		VCGlobals::DMAudio.DestroyEntity(audioEntities[i]);
 	}
 }
 
@@ -261,7 +291,7 @@ bool CCraneHack::DoesCranePickUpThisCarType(unsigned int model)
 	return true;
 }
 
-void __declspec(naked) FindCarInSectorList()
+void __declspec(naked) CCraneHack::FindCarInSectorListHack()
 {
 	__asm
 	{
@@ -273,4 +303,24 @@ void __declspec(naked) FindCarInSectorList()
 	proceed:
 		jmp findCarProceedJump
 	}
+}
+
+void __declspec(naked) CCraneHack::UpdateHackProxy()
+{
+	__asm
+	{
+		mov ecx, ebx
+		call CCraneHack::UpdateHack
+		jmp updateHackEndJump
+	}
+}
+
+void CCraneHack::UpdateHack()
+{
+	if (this->isCrusher) {
+		CVehicle *vehicle = this->vehicle;
+		vehicle->field_053 = (vehicle->field_053 & 0xF7) | 8;
+	}
+	int index = ((unsigned long)this - (unsigned long)&CCranes::cranes[0]) / sizeof(CCrane);
+	VCGlobals::DMAudio.PlayOneShot(audioEntities[index], 0, 0.0);
 }

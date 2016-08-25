@@ -144,7 +144,8 @@ public:
 	unsigned char  status;                 // 0x050
 	unsigned char  field_051;              // 0x051
 	unsigned char  field_052;              // 0x052
-	unsigned char  espace2[0x0009];
+	unsigned char  field_053;              // 0x053
+	unsigned char  espace2[0x0008];
 	unsigned short modelIndex;             // 0x05C
 	unsigned char  espace3[0x0006];
 	// 0x064
@@ -191,8 +192,12 @@ class cDMAudio
 public:
 	static int &garageEntity;
 
+	void PlayRadioAnnouncement(unsigned char);
 	void PlayFrontEndSound(int id, int unk);
 	void PlayOneShot(int, unsigned short, float);
+	void SetEntityStatus(int, unsigned char);
+	void DestroyEntity(int);
+	unsigned int CreateEntity(int, void *);
 };
 
 //########################################################################
