@@ -6,8 +6,7 @@
 
 #include <math.h>
 
-// FindCarInSectorList
-static void FindCarInSectorList();
+// FindCarInSectorListHack
 unsigned long findCarProceedJump = vcversion::AdjustOffset(0x0005A81EC);
 unsigned long findCarEndJump = vcversion::AdjustOffset(0x005A82F4);
 
@@ -206,16 +205,16 @@ void CCranesHack::AddThisOneCrane(CEntity *entity)
 		cranes[index].hook = 0;
 		// new! magnet for cranes!
 		if (cranes[index].isNotCab || entity->GetY() > 0.0) {
-			auto allocateObject = (unsigned int(__cdecl *)(unsigned int))vcversion::AdjustOffset(0x004E4070);
-			unsigned long object = allocateObject(0x194);
+			auto allocateObject = (CObject *(__cdecl *)(unsigned int))vcversion::AdjustOffset(0x004E4070);
+			CObject *object = allocateObject(0x194);
 			if (object) {
-				auto createObject = (unsigned int(__thiscall *)(unsigned long, int, bool))vcversion::AdjustOffset(0x004E41B0);
+				auto createObject = (CObject *(__thiscall *)(CObject *, int, bool))vcversion::AdjustOffset(0x004E41B0);
 				object = createObject(object, 1365, false);
 			}
-			*(unsigned char *)((unsigned long)object + 0x16C) = 2;
-			*(unsigned char *)((unsigned long)object + 0x51) = *(unsigned char *)((unsigned long)object + 0x51) & 0xFE;
-			*(unsigned char *)((unsigned long)object + 0x52) = (*(unsigned char *)((unsigned long)object + 0x52) & 0xFD) | 2;
-			*(unsigned char *)((unsigned long)object + 0x11A) = *(unsigned char *)((unsigned long)object + 0x11A) & 0xFD;
+			object->field_16C = 2;
+			object->field_051 &= 0xFE;
+			object->field_052 = (object->field_052 & 0xFD) | 2;
+			object->field_11A &= 0xFD;
 			cranes[index].hook = object;
 		}
 		audioEntities[index] = VCGlobals::DMAudio.CreateEntity(12, &CCranes::cranes[index]);

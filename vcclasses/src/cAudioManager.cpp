@@ -3,6 +3,7 @@
 #include "vcversion.h"
 
 static unsigned long g_AddSampleToRequestedQueue = vcversion::AdjustOffset(0x005F7560);
+static unsigned long g_RandomDisplacement = vcversion::AdjustOffset(0x005F77E0);
 static unsigned long g_ComputeVolume = vcversion::AdjustOffset(0x005F7A20);
 static unsigned long g_ProcessLoopingScriptObject = vcversion::AdjustOffset(0x005DC5A0);
 static unsigned long g_GetPedCommentSfxFromRange = vcversion::AdjustOffset(0x005DA690);
@@ -10,6 +11,11 @@ static unsigned long g_GetPedCommentSfxFromRange = vcversion::AdjustOffset(0x005
 __declspec(naked) void cAudioManager::AddSampleToRequestedQueue()
 {
 	__asm jmp g_AddSampleToRequestedQueue;
+}
+
+__declspec(naked) unsigned int cAudioManager::RandomDisplacement(unsigned int)
+{
+	__asm jmp g_RandomDisplacement;
 }
 
 __declspec(naked) unsigned char cAudioManager::ComputeVolume(unsigned char, float, float)

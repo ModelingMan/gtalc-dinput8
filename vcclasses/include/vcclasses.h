@@ -91,14 +91,14 @@ protected:
 	unsigned int m_Frequency;       // 0x0028
 	unsigned char m_Volume;         // 0x002C
 	unsigned char space3[0x03];     // 0x002D
-	float m_Unk3;                   // 0x0030
+	float m_DistanceToCamera;       // 0x0030
 	unsigned int m_Unk8;            // 0x0034
 	unsigned int m_LoopStartOff;    // 0x0038
 	unsigned int m_LoopEndOff;      // 0x003C
-	unsigned char m_Unk11;          // 0x0040
+	unsigned char m_MaxVolume;      // 0x0040
 	unsigned char space6[0x03];     // 0x0041
 	float m_Unk4;                   // 0x0044
-	float m_Unk5;                   // 0x0048
+	float m_MaxRange;               // 0x0048
 	unsigned char m_Unk9;           // 0x004C
 	unsigned char space8[0x03];     // 0x004D
 	CVector m_Position;             // 0x0050
@@ -111,6 +111,7 @@ protected:
 
 public:
 	void AddSampleToRequestedQueue();
+	unsigned int RandomDisplacement(unsigned int);
 	unsigned char ComputeVolume(unsigned char, float, float);
 	float GetDistanceSquared(const CVector &); // INLINED!
 	void ProcessLoopingScriptObject(unsigned char);
@@ -467,7 +468,11 @@ public:
 
 class CObject : public CPhysical
 {
-
+public:
+	// 0x120
+	unsigned char space1[0x004C];
+	unsigned char field_16C;      // 0x16C
+	unsigned char field_16D;      // 0x16D
 };
 
 //########################################################################
@@ -749,7 +754,7 @@ class CCrane
 {
 public:
 	CEntity       *object;            // 0x00
-	unsigned long hook;               // 0x04, pointer to hook object
+	CObject       *hook;              // 0x04, pointer to hook object
 	float         pickupX1;           // 0x08
 	float         pickupX2;           // 0x0C
 	float         pickupY1;           // 0x10

@@ -54,9 +54,44 @@
 #define REPORT_SAINTMARKS      263
 #define REPORT_HARWOOD         264
 #define REPORT_PORTLANDBEACH   265
-#define REPORT_PORTLANDVIEW    466
+#define REPORT_PORTLANDVIEW    489
 
 #define TOTAL_AUDIO_ZONES 36
+
+#define FRONT_END_96              465
+#define LOOPING_SCRIPT_OBJECT_A   466
+#define LOOPING_SCRIPT_OBJECT_B   467
+static unsigned int scriptObjectCinemaTime;
+#define LOOPING_SCRIPT_OBJECT_62  468
+#define LOOPING_SCRIPT_OBJECT_64  469
+#define LOOPING_SCRIPT_OBJECT_66  471
+#define LOOPING_SCRIPT_OBJECT_30  472
+#define LOOPING_SCRIPT_OBJECT_32  473
+#define LOOPING_SCRIPT_OBJECT_5   474
+#define LOOPING_SCRIPT_OBJECT_41A 475
+#define LOOPING_SCRIPT_OBJECT_41B 476
+#define LOOPING_SCRIPT_OBJECT_42  477
+#define LOOPING_SCRIPT_OBJECT_44  478
+#define LOOPING_SCRIPT_OBJECT_7   479
+#define LOOPING_SCRIPT_OBJECT_60  480
+#define LOOPING_SCRIPT_OBJECT_71  481
+#define LOOPING_SCRIPT_OBJECT_73  482
+#define LOOPING_SCRIPT_OBJECT_37A 483
+#define LOOPING_SCRIPT_OBJECT_37B 484
+static unsigned int scriptObjectSawmillTime;
+#define LOOPING_SCRIPT_OBJECT_51A 485
+#define LOOPING_SCRIPT_OBJECT_51B 486
+#define LOOPING_SCRIPT_OBJECT_51C 487
+#define LOOPING_SCRIPT_OBJECT_51D 488
+static unsigned int scriptObjectAirportTime;
+static unsigned char scriptObjectAirportCounter;
+#define LOOPING_SCRIPT_OBJECT_59A 490
+#define LOOPING_SCRIPT_OBJECT_59B 491
+#define LOOPING_SCRIPT_OBJECT_59C 492
+#define LOOPING_SCRIPT_OBJECT_59D 493
+#define LOOPING_SCRIPT_OBJECT_59E 494
+static unsigned int scriptObjectHomeTime;
+static unsigned char scriptObjectHomeCounter;
 
 struct PoliceRadioZone
 {
@@ -141,23 +176,21 @@ short audioZones[TOTAL_AUDIO_ZONES] =
 	0x0000
 };
 
+// ProcessFrontEndHackProxy
 unsigned long JumpTableForFrontEnd = vcversion::AdjustOffset(0x006B28B8);
 unsigned long OffsetIfWeHackedFrontEnd = vcversion::AdjustOffset(0x005DBE5E);
+// SetupSuspectLastSeenReportHackProxy
 unsigned long setupSuspectLastSeenReportMatch = vcversion::AdjustOffset(0x005FD6B8);
 unsigned long setupSuspectLastSeenReportNoMatch = vcversion::AdjustOffset(0x005FD6B0);
 
 bool cAudioManagerHack::initialise()
 {
 	unsigned long ProcessFrontEndHackAddr = vcversion::AdjustOffset(0x005DBCA7);
-	unsigned long *ProcessLoopingScriptObjectHackAddr = reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005F58F4));
 
 	//Memory is protected from write (write protection of .text section removed at startup)
 	*reinterpret_cast<unsigned char *>(ProcessFrontEndHackAddr) = 0xB9;						// mov ecx,
 	*reinterpret_cast<void (**)()>(ProcessFrontEndHackAddr + 1) = ProcessFrontEndHackProxy; //          ProcessFrontEndHackProxy
 	*reinterpret_cast<unsigned short *>(ProcessFrontEndHackAddr + 5) = 0xE1FF;				// jmp ecx
-
-	union { void (cAudioManagerHack::*func)(unsigned char); unsigned long offset; } nasty = { &cAudioManagerHack::ProcessLoopingScriptObjectHack };
-	*reinterpret_cast<unsigned long *>(ProcessLoopingScriptObjectHackAddr) = nasty.offset - reinterpret_cast<unsigned long>(ProcessLoopingScriptObjectHackAddr + 1);
 
 	std::ifstream fileName("vehicleSfx.dat");
 	if (fileName.is_open()) {
@@ -325,6 +358,12 @@ bool cAudioManagerHack::initialise()
 	void(__thiscall cAudioManagerHack::* function2)() = &cAudioManagerHack::ProcessCrane;
 	call(0x005F596C, (unsigned long &)function2, PATCH_NOTHING);
 	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005F5E6C)) = 5;
+
+	// looping script objects
+	void(__thiscall cAudioManagerHack::* function3)(unsigned char) = &cAudioManagerHack::ProcessLoopingScriptObjectHack;
+	call(0x005F58F3, (unsigned long &)function3, PATCH_NOTHING);
+	scriptObjectCinemaTime = scriptObjectSawmillTime = scriptObjectAirportTime = scriptObjectHomeTime = CTimer::m_snTimeInMilliseconds;
+	scriptObjectAirportCounter = scriptObjectHomeCounter = 0;
 	return true;
 }
 
@@ -352,32 +391,8 @@ bool cAudioManagerHack::ProcessFrontEndHack(unsigned char id)
 {
 	switch (id)
 	{
-	/*case 59:
-		this->m_SampleID = 330; // sniper rifle
-		break;
-	case 60:
-		this->m_SampleID = 329; // rocket launcher
-		break;*/
-	case 61:
-		this->m_SampleID = 490;
-		break;
-	case 62:
-		this->m_SampleID = 491;
-		break;
-	case 63:
-		this->m_SampleID = 492;
-		break;
-	case 64:
-		this->m_SampleID = 493;
-		break;
-	case 65:
-		this->m_SampleID = 494;
-		break;
-	case 66:
-		this->m_SampleID = 495;
-		break;
 	case 96: //Pager sound
-		this->m_SampleID = 458;
+		this->m_SampleID = FRONT_END_96;
 		break;
 	default:
 		return false;
@@ -389,53 +404,141 @@ bool cAudioManagerHack::ProcessFrontEndHack(unsigned char id)
 void cAudioManagerHack::ProcessLoopingScriptObjectHack(unsigned char id)
 {
 	float maxDistance, distance;
-	unsigned char unk1;
+	unsigned char maxVolume;
 
-	switch (id)
-	{
-	case 47:
-		this->m_SampleID = 483;
+	switch (id) {
+	case 5:
+		maxDistance = 6400.0;
+		this->m_MaxRange = 80.0;
+		this->m_SampleID = LOOPING_SCRIPT_OBJECT_5;
+		this->m_Unk0 = 0;
+		maxVolume = 127;
+		this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+		this->m_Unk2 = 3;
+		this->m_Unk6 = 3;
+		this->m_Unk4 = 2.0;
 		break;
-	case 48:
-		this->m_SampleID = 484;
+	case 7:
+		maxDistance = 6400.0;
+		this->m_MaxRange = 80.0;
+		this->m_SampleID = LOOPING_SCRIPT_OBJECT_7;
+		this->m_Unk0 = 0;
+		maxVolume = 127;
+		this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+		this->m_Unk2 = 3;
+		this->m_Unk6 = 3;
+		this->m_Unk4 = 2.0;
 		break;
-	case 49:
-		this->m_SampleID = 485;
+	case 30:
+		maxDistance = 900.0;
+		this->m_MaxRange = 30.0;
+		this->m_SampleID = LOOPING_SCRIPT_OBJECT_30;
+		this->m_Unk0 = 0;
+		maxVolume = 127;
+		this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+		this->m_Unk2 = 3;
+		this->m_Unk6 = 3;
+		this->m_Unk4 = 2.0;
 		break;
-	case 50:
-		this->m_SampleID = 486;
+	case 32:
+		maxDistance = 900.0;
+		this->m_MaxRange = 30.0;
+		this->m_SampleID = LOOPING_SCRIPT_OBJECT_32;
+		this->m_Unk0 = 0;
+		maxVolume = 127;
+		this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+		this->m_Unk2 = 3;
+		this->m_Unk6 = 3;
+		this->m_Unk4 = 2.0;
+		break;
+	case 37:
+		this->ProcessSawMillScriptObject(id);
+		break;
+	case 41:
+		this->ProcessLaunderetteScriptObject(id);
+		break;
+	case 42:
+		maxDistance = 900.0;
+		this->m_MaxRange = 30.0;
+		this->m_SampleID = LOOPING_SCRIPT_OBJECT_42;
+		this->m_Unk0 = 0;
+		maxVolume = 110;
+		this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+		this->m_Unk2 = 3;
+		this->m_Unk6 = 3;
+		this->m_Unk4 = 2.0;
+		break;
+	case 44:
+		maxDistance = 900.0;
+		this->m_MaxRange = 30.0;
+		this->m_SampleID = LOOPING_SCRIPT_OBJECT_44;
+		this->m_Unk0 = 0;
+		maxVolume = 110;
+		this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+		this->m_Unk2 = 3;
+		this->m_Unk6 = 3;
+		this->m_Unk4 = 2.0;
 		break;
 	case 51:
-		this->m_SampleID = 487;
+		this->ProcessAirportScriptObject(id);
+		break;
+	case 59:
+		this->ProcessHomeScriptObject(id);
+		break;
+	case 60:
+		maxDistance = 900.0;
+		this->m_MaxRange = 30.0;
+		this->m_SampleID = LOOPING_SCRIPT_OBJECT_60;
+		this->m_Unk0 = 0;
+		maxVolume = 127;
+		this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+		this->m_Unk2 = 3;
+		this->m_Unk6 = 3;
+		this->m_Unk4 = 2.0;
+		break;
+	case 62:
+	case 64:
+	case 66:
+	case 91:
+		this->ProcessCinemaScriptObject(id);
+		break;
+	case 71:
+		maxDistance = 6400.0;
+		this->m_MaxRange = 80.0;
+		this->m_SampleID = LOOPING_SCRIPT_OBJECT_71;
+		this->m_Unk0 = 0;
+		maxVolume = 127;
+		this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+		this->m_Unk2 = 2;
+		this->m_Unk6 = 3;
+		this->m_Unk4 = 2.0;
+		break;
+	case 73:
+		maxDistance = 6400.0;
+		this->m_MaxRange = 80.0;
+		this->m_SampleID = LOOPING_SCRIPT_OBJECT_73;
+		this->m_Unk0 = 0;
+		maxVolume = 127;
+		this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+		this->m_Unk2 = 3;
+		this->m_Unk6 = 3;
+		this->m_Unk4 = 2.0;
 		break;
 	default:
 		this->ProcessLoopingScriptObject(id);
 		return;
 	}
-
-	this->m_Unk0 = 0;
-	maxDistance = 36.0f;
-	this->m_Unk5 = 80.0f;
-	unk1 = 127;
-	this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
-	this->m_Unk2 = 3;
-	this->m_Unk6 = 15;
-	this->m_Unk4 = 4.0f;
-	this->m_Unk1 = 0;
-
 	distance = this->GetDistanceSquared(this->m_Position);
-
-	if (distance < maxDistance)
-	{
-		this->m_Unk3 = (distance > 0 ? sqrt(distance) : 0.0f);
-		this->m_Volume = this->ComputeVolume(unk1, this->m_Unk5, this->m_Unk3);
-		if (this->m_Volume > 0)
-		{
+	if (distance < maxDistance) {
+		this->m_DistanceToCamera = (distance > 0 ? sqrt(distance) : 0.0f);
+		this->m_Volume = this->ComputeVolume(maxVolume, this->m_MaxRange, this->m_DistanceToCamera);
+		if (this->m_Volume) {
 			this->m_Unk7 = 0;
+			this->m_Unk1 = 0;
 			this->m_Unk8 = 0;
 			this->m_Unk9 = 0;
 			this->m_Unk10 = 1;
-			this->m_Unk11 = unk1;
+			this->m_MaxVolume = maxVolume;
 			this->m_LoopStartOff = VCGlobals::SampleManager.GetSampleLoopStartOffset(this->m_SampleID);
 			this->m_LoopEndOff = VCGlobals::SampleManager.GetSampleLoopEndOffset(this->m_SampleID);
 			this->m_Unk12 = 0;
@@ -593,8 +696,8 @@ void cAudioManagerHack::ProcessCrane()
 		this->m_Position = crane->object->GetPos();
 		float distance = this->GetDistanceSquared(this->m_Position);
 		if (distance < 6400.0) {
-			this->m_Unk3 = distance > 0.0 ? sqrt(distance) : 0.0f;
-			this->m_Volume = this->ComputeVolume(0x64, 80.0, this->m_Unk3);
+			this->m_DistanceToCamera = distance > 0.0 ? sqrt(distance) : 0.0f;
+			this->m_Volume = this->ComputeVolume(100, 80.0, this->m_DistanceToCamera);
 			if (this->m_Volume) {
 				this->m_Unk7 = 0;
 				this->m_SampleID = 340;
@@ -603,11 +706,11 @@ void cAudioManagerHack::ProcessCrane()
 				this->m_Unk2 = 2;
 				this->m_Frequency = 6000;
 				this->m_Unk8 = 0;
-				this->m_Unk11 = 100;
+				this->m_MaxVolume = 100;
 				this->m_LoopStartOff = VCGlobals::SampleManager.GetSampleLoopStartOffset(this->m_SampleID);
 				this->m_LoopEndOff = VCGlobals::SampleManager.GetSampleLoopEndOffset(this->m_SampleID);
 				this->m_Unk4 = 4.0;
-				this->m_Unk5 = 80.0;
+				this->m_MaxRange = 80.0;
 				this->m_Unk9 = 0;
 				this->m_Unk6 = 3;
 				this->m_Unk10 = 1;
@@ -627,5 +730,321 @@ void cAudioManagerHack::ProcessCrane()
 				this->AddSampleToRequestedQueue();
 			}
 		}
+	}
+}
+
+void cAudioManagerHack::ProcessCinemaScriptObject(unsigned int id)
+{
+	float maxDistance, distance;
+	switch (id) {
+	case 62:
+	case 91:
+		this->m_SampleID = LOOPING_SCRIPT_OBJECT_62;
+		this->m_Unk0 = 0;
+		maxDistance = 400.0;
+		this->m_MaxRange = 20.0;
+		break;
+	case 64:
+		this->m_SampleID = LOOPING_SCRIPT_OBJECT_64;
+		this->m_Unk0 = 0;
+		maxDistance = 400.0;
+		this->m_MaxRange = 20.0;
+		break;
+	case 66:
+		this->m_SampleID = LOOPING_SCRIPT_OBJECT_66;
+		this->m_Unk0 = 0;
+		maxDistance = 400.0;
+		this->m_MaxRange = 20.0;
+		break;
+	}
+	distance = this->GetDistanceSquared(this->m_Position);
+	if (distance < maxDistance) {
+		this->m_DistanceToCamera = (distance > 0 ? sqrt(distance) : 0.0f);
+		if (id != 90 && id != 91) {
+			this->m_Volume = this->ComputeVolume(127, this->m_MaxRange, this->m_DistanceToCamera);
+			if (this->m_Volume) {
+				this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+				this->m_Unk7 = 0;
+				this->m_Unk1 = 0;
+				this->m_Unk8 = 0;
+				this->m_Unk9 = 0;
+				this->m_Unk2 = 3;
+				this->m_Unk4 = 2.0;
+				this->m_MaxVolume = 127;
+				this->m_LoopStartOff = VCGlobals::SampleManager.GetSampleLoopStartOffset(this->m_SampleID);
+				this->m_LoopEndOff = VCGlobals::SampleManager.GetSampleLoopEndOffset(this->m_SampleID);
+				this->m_Unk10 = 1;
+				this->m_Unk12 = 0;
+				this->AddSampleToRequestedQueue();
+			}
+		}
+		if (CTimer::m_snTimeInMilliseconds > scriptObjectCinemaTime) {
+			this->m_Volume = this->ComputeVolume(90, this->m_MaxRange, this->m_DistanceToCamera);
+			if (this->m_Volume) {
+				int rand = *(unsigned int *)((unsigned long)this + 0x5540);
+				rand &= 1;
+				this->m_SampleID = rand + LOOPING_SCRIPT_OBJECT_A;
+				this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+				this->m_Frequency = this->RandomDisplacement(this->m_Frequency >> 4);
+				this->m_Unk7 = rand + 1;
+				this->m_Unk1 = 0;
+				this->m_Unk8 = 1;
+				this->m_Unk9 = 1;
+				this->m_Unk2 = 6;
+				this->m_Unk4 = 0;
+				this->m_LoopStartOff = 0;
+				this->m_LoopEndOff = -1;
+				this->m_Unk10 = 1;
+				this->m_Unk12 = 0;
+				this->AddSampleToRequestedQueue();
+				scriptObjectCinemaTime = CTimer::m_snTimeInMilliseconds + 2000 + cAudioManagerHack::CinemaRandomness();
+			}
+		}
+	}
+}
+
+unsigned int __declspec(naked) cAudioManagerHack::CinemaRandomness()
+{
+	__asm
+	{
+		mov eax, 57619F1h
+		mul dword ptr [ecx+5548h]
+		mov eax, dword ptr [ecx+5548h]
+		shr edx, 7
+		imul edx, 1770h
+		sub eax, edx
+		ret
+	}
+}
+
+void cAudioManagerHack::ProcessLaunderetteScriptObject(unsigned int)
+{
+	float maxDistance, distance;
+	maxDistance = 900.0;
+	this->m_MaxRange = 30.0;
+	distance = this->GetDistanceSquared(this->m_Position);
+	if (distance < maxDistance) {
+		this->m_DistanceToCamera = (distance > 0 ? sqrt(distance) : 0.0f);
+		this->m_Volume = this->ComputeVolume(45, this->m_MaxRange, this->m_DistanceToCamera);
+		if (this->m_Volume) {
+			this->m_SampleID = LOOPING_SCRIPT_OBJECT_41A;
+			this->m_Unk0 = 0;
+			this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+			this->m_Unk7 = 0;
+			this->m_Unk1 = 0;
+			this->m_Unk8 = 0;
+			this->m_Unk9 = 0;
+			this->m_Unk2 = 5;
+			this->m_Unk4 = 2.0;
+			this->m_MaxVolume = 45;
+			this->m_LoopStartOff = VCGlobals::SampleManager.GetSampleLoopStartOffset(this->m_SampleID);
+			this->m_LoopEndOff = VCGlobals::SampleManager.GetSampleLoopEndOffset(this->m_SampleID);
+			this->m_Unk10 = 1;
+			this->m_Unk12 = 0;
+			this->AddSampleToRequestedQueue();
+		}
+		this->m_Volume = this->ComputeVolume(110, this->m_MaxRange, this->m_DistanceToCamera);
+		if (this->m_Volume) {
+			this->m_SampleID = LOOPING_SCRIPT_OBJECT_41B;
+			this->m_Unk0 = 0;
+			this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+			this->m_Unk7 = 1;
+			this->m_Unk1 = 0;
+			this->m_Unk8 = 0;
+			this->m_Unk9 = 0;
+			this->m_Unk2 = 3;
+			this->m_Unk4 = 2.0;
+			this->m_MaxVolume = 110;
+			this->m_LoopStartOff = VCGlobals::SampleManager.GetSampleLoopStartOffset(this->m_SampleID);
+			this->m_LoopEndOff = VCGlobals::SampleManager.GetSampleLoopEndOffset(this->m_SampleID);
+			this->m_Unk10 = 1;
+			this->m_Unk12 = 0;
+			this->AddSampleToRequestedQueue();
+		}
+	}
+}
+
+void cAudioManagerHack::ProcessSawMillScriptObject(unsigned int)
+{
+	float maxDistance, distance;
+	maxDistance = 900.0;
+	this->m_MaxRange = 30.0;
+	distance = this->GetDistanceSquared(this->m_Position);
+	if (distance < maxDistance) {
+		this->m_DistanceToCamera = (distance > 0 ? sqrt(distance) : 0.0f);
+		this->m_Volume = this->ComputeVolume(30, this->m_MaxRange, this->m_DistanceToCamera);
+		if (this->m_Volume) {
+			this->m_SampleID = LOOPING_SCRIPT_OBJECT_37A;
+			this->m_Unk0 = 0;
+			this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+			this->m_Unk7 = 0;
+			this->m_Unk1 = 0;
+			this->m_Unk8 = 0;
+			this->m_Unk9 = 0;
+			this->m_Unk2 = 5;
+			this->m_Unk4 = 2.0;
+			this->m_MaxVolume = 30;
+			this->m_LoopStartOff = VCGlobals::SampleManager.GetSampleLoopStartOffset(this->m_SampleID);
+			this->m_LoopEndOff = VCGlobals::SampleManager.GetSampleLoopEndOffset(this->m_SampleID);
+			this->m_Unk10 = 1;
+			this->m_Unk12 = 0;
+			this->AddSampleToRequestedQueue();
+		}
+		if (CTimer::m_snTimeInMilliseconds > scriptObjectSawmillTime) {
+			this->m_Volume = this->ComputeVolume(70, this->m_MaxRange, this->m_DistanceToCamera);
+			if (this->m_Volume) {
+				this->m_SampleID = LOOPING_SCRIPT_OBJECT_37B;
+				this->m_Unk0 = 0;
+				this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+				this->m_Unk7 = 1;
+				this->m_Unk1 = 0;
+				this->m_Unk8 = 1;
+				this->m_Unk9 = 1;
+				this->m_Unk2 = 3;
+				this->m_Unk4 = 2.0;
+				this->m_LoopStartOff = 0;
+				this->m_LoopEndOff = -1;
+				this->m_Unk10 = 1;
+				this->m_Unk12 = 0;
+				this->AddSampleToRequestedQueue();
+				scriptObjectSawmillTime = CTimer::m_snTimeInMilliseconds + 2000 + cAudioManagerHack::SawmillRandomness();
+			}
+		}
+	}
+}
+
+unsigned int __declspec(naked) cAudioManagerHack::SawmillRandomness()
+{
+	__asm
+	{
+		mov eax, 10624DD3h
+		mul dword ptr [ecx+5548h]
+		mov eax, dword ptr [ecx+5548h]
+		shr edx, 8
+		imul edx, 0FA0h
+		sub eax, edx
+		ret
+	}
+}
+
+void cAudioManagerHack::ProcessAirportScriptObject(unsigned int)
+{
+	if (CTimer::m_snTimeInMilliseconds > scriptObjectAirportTime) {
+		float maxDistance, distance;
+		maxDistance = 6400.0;
+		this->m_MaxRange = 80.0;
+		distance = this->GetDistanceSquared(this->m_Position);
+		if (distance < maxDistance) {
+			this->m_DistanceToCamera = (distance > 0 ? sqrt(distance) : 0.0f);
+			this->m_Volume = this->ComputeVolume(110, this->m_MaxRange, this->m_DistanceToCamera);
+			if (this->m_Volume) {
+				int rand = *(unsigned int *)((unsigned long)this + 0x5540);
+				rand &= 3;
+				this->m_SampleID = rand + LOOPING_SCRIPT_OBJECT_51A;
+				this->m_Unk0 = 0;
+				this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+				this->m_Unk7 = scriptObjectAirportCounter++;
+				this->m_Unk1 = 0;
+				this->m_Unk8 = 1;
+				this->m_Unk9 = 1;
+				this->m_Unk2 = 3;
+				this->m_Unk4 = 2.0;
+				this->m_MaxVolume = 110;
+				this->m_LoopStartOff = 0;
+				this->m_LoopEndOff = -1;
+				this->m_Unk10 = 1;
+				this->m_Unk12 = 0;
+				this->AddSampleToRequestedQueue();
+				scriptObjectAirportTime = CTimer::m_snTimeInMilliseconds + 10000 + cAudioManagerHack::AirportRandomness();
+			}
+		}
+	}
+}
+
+unsigned int __declspec(naked) cAudioManagerHack::AirportRandomness()
+{
+	__asm
+	{
+		mov eax, 0D1B71759h
+		mul dword ptr [ecx+5548h]
+		mov eax, dword ptr [ecx+5548h]
+		shr edx, 0Eh
+		imul edx, 4E20h
+		sub eax, edx
+		ret
+	}
+}
+
+void cAudioManagerHack::ProcessHomeScriptObject(unsigned int)
+{
+	if (CTimer::m_snTimeInMilliseconds > scriptObjectHomeTime) {
+		float maxDistance, distance;
+		maxDistance = 6400.0;
+		this->m_MaxRange = 80.0;
+		distance = this->GetDistanceSquared(this->m_Position);
+		if (distance < maxDistance) {
+			this->m_DistanceToCamera = (distance > 0 ? sqrt(distance) : 0.0f);
+			this->m_Volume = this->ComputeVolume(110, this->m_MaxRange, this->m_DistanceToCamera);
+			if (this->m_Volume) {
+				this->m_SampleID = LOOPING_SCRIPT_OBJECT_59A + cAudioManagerHack::Home2Randomness();
+				this->m_Unk0 = 0;
+				this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+				this->m_Unk7 = scriptObjectHomeCounter++;
+				this->m_Unk1 = 0;
+				this->m_Unk8 = 1;
+				this->m_Unk9 = 1;
+				this->m_Unk2 = 3;
+				this->m_Unk4 = 0;
+				this->m_MaxVolume = 40 + cAudioManagerHack::Home1Randomness();
+				this->m_LoopStartOff = 0;
+				this->m_LoopEndOff = -1;
+				this->m_Unk10 = 1;
+				this->m_Unk12 = 1;
+				this->AddSampleToRequestedQueue();
+				scriptObjectHomeTime = CTimer::m_snTimeInMilliseconds + 1000 + cAudioManagerHack::Home3Randomness();
+			}
+		}
+	}
+}
+
+unsigned int __declspec(naked) cAudioManagerHack::Home1Randomness()
+{
+	__asm
+	{
+		mov eax, 88888889h
+		mul dword ptr [ecx+553Ch]
+		mov eax, dword ptr [ecx+553Ch]
+		shr edx, 4
+		imul edx, 1Eh
+		sub eax, edx
+		ret
+	}
+}
+
+unsigned int __declspec(naked) cAudioManagerHack::Home2Randomness()
+{
+	__asm
+	{
+		mov eax, 0CCCCCCCDh
+		mul dword ptr [ecx+553Ch]
+		mov eax, dword ptr [ecx+553Ch]
+		shr edx, 2
+		imul edx, 5
+		sub eax, edx
+		ret
+	}
+}
+
+unsigned int __declspec(naked) cAudioManagerHack::Home3Randomness()
+{
+	__asm
+	{
+		mov eax, 10624DD3h
+		mul dword ptr [ecx+5548h]
+		mov eax, dword ptr [ecx+5548h]
+		shr edx, 8
+		imul edx, 0FA0h
+		sub eax, edx
+		ret
 	}
 }

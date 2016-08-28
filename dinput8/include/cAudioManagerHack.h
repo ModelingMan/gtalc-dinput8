@@ -15,4 +15,15 @@ public:
 	static void SetupSuspectLastSeenReportHackProxy();
 	static int SetupSuspectLastSeenReportHack(int model);
 	void ProcessCrane(void);
+	void ProcessCinemaScriptObject(unsigned int);
+	unsigned int CinemaRandomness();
+	void ProcessLaunderetteScriptObject(unsigned int);
+	void ProcessSawMillScriptObject(unsigned int);
+	unsigned int SawmillRandomness();
+	void ProcessAirportScriptObject(unsigned int);
+	unsigned int AirportRandomness();
+	void ProcessHomeScriptObject(unsigned int);
+	unsigned int Home1Randomness();
+	unsigned int Home2Randomness();
+	unsigned int Home3Randomness();
 };

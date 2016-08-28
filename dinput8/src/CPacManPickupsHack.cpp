@@ -125,7 +125,6 @@ const CVector aRacePoints1[] =
 	{ 1570.3301f, -684.6239f, 11.969202f },
 	{ 0.0f, 0.0f, 0.0f }
 };
-char treadables[8000] = {};
 
 bool CPacManPickupsHack::initialise()
 {
@@ -133,17 +132,6 @@ bool CPacManPickupsHack::initialise()
 	call(0x004A4967, &CPacManPickupsHack::Init, PATCH_NOTHING); // CGame::ReInitGameObjectVariables
 	call(0x004A45D7, &CPacManPickupsHack::Update, PATCH_NOTHING); // CGame::Process
 	call(0x004A6547, &CPacManPickupsHack::Render, PATCH_NOTHING); // RenderEffects
-
-	// get data for treadables
-	std::ifstream fileName("treadables.dat");
-	if (fileName.is_open()) {
-		std::string line;
-		while (std::getline(fileName, line)) {
-			line = line.substr(0, line.find("//"));
-			treadables[atoi(line.c_str())] = 1;
-		}
-		fileName.close();
-	}
 	return true;
 }
 
@@ -179,41 +167,44 @@ void CPacManPickupsHack::GeneratePMPickUps(CVector center, float radius, short c
 			bool t = false;
 			float random;
 			int counter = 0;
+			unsigned long *baseModelInfo = (unsigned long *)vcversion::AdjustOffset(0x0092D4C8);
 
 			do {
-				if (counter++ * CTimer::ms_fTimeStep > 5000.0) return; // prevents infinite loop in invalid areas
-
+				// prevents infinite loop in invalid areas
+				if (counter++ * CTimer::ms_fTimeStep > 5000.0) {
+					aPMPickups[i].position.x = 0;
+					aPMPickups[i].position.y = 0;
+					aPMPickups[i].position.z = 0;
+					break;
+				}
 				random = ((float)rand()) / (float)RAND_MAX;
 				pos.x = aPMPickups[i].position.x = center.x - radius + random * 2 * radius;
 				random = ((float)rand()) / (float)RAND_MAX;
 				pos.y = aPMPickups[i].position.y = center.y - radius + random * radius;
 				pos.z = aPMPickups[i].position.z = CWorld::FindGroundZForCoord(aPMPickups[i].position.x, aPMPickups[i].position.y) + 0.7f;
 				t = CWorld::ProcessVerticalLine(pos, -1000.0, colpoint, pentity, true, false, false, false, true, false, 0);
-			} while (!t || (pentity->status & 7) != 1 || !treadables[pentity->modelIndex]);
+			} while (!t || (pentity->status & 7) != 1 || !(*(unsigned short *)(baseModelInfo[pentity->modelIndex] + 0x42) & 4));
 
 			aPMPickups[i].state = 1;
 
-			auto allocateObject = (unsigned int(__cdecl *)(unsigned int))vcversion::AdjustOffset(0x004E4070);
-			unsigned long object = allocateObject(0x194);
+			auto allocateObject = (CObject *(__cdecl *)(unsigned int))vcversion::AdjustOffset(0x004E4070);
+			CObject *object = allocateObject(0x194);
 			if (object) {
-				auto createObject = (unsigned int(__thiscall *)(int, int, bool))vcversion::AdjustOffset(0x004E41B0);
+				auto createObject = (CObject *(__thiscall *)(CObject *, int, bool))vcversion::AdjustOffset(0x004E41B0);
 				object = createObject(object, PM_SCRAMBLE_MODEL, true);
 			}
 			if (object) {
-				*(unsigned char *)((unsigned long)object + 0x16C) = 2;
-				CMatrix *matrix = (CMatrix *)((unsigned long)object + 4);
-				matrix->SetRotate(0.0, 0.0, -1.5707964f);
-				*(float *)((unsigned long)object + 0x34) = aPMPickups[i].position.x;
-				*(float *)((unsigned long)object + 0x38) = aPMPickups[i].position.y;
-				*(float *)((unsigned long)object + 0x3C) = aPMPickups[i].position.z;
-				matrix->UpdateRW();
-				((CObject *)object)->UpdateRwFrame();
-				*(unsigned char *)((unsigned long)object + 0x11A) = *(unsigned char *)((unsigned long)object + 0x11A) & 0xFD;
-				*(unsigned char *)((unsigned long)object + 0x52) = (*(unsigned char *)((unsigned long)object + 0x52) & 0xFD) | 2;
-				*(unsigned char *)((unsigned long)object + 0x51) = *(unsigned char *)((unsigned long)object + 0x51) & 0xFE;
-				*(unsigned char *)((unsigned long)object + 0x16D) = *(unsigned char *)((unsigned long)object + 0x16D) & 0xFE;
-				CWorld::Add((CObject *)object);
-				aPMPickups[i].object = (CObject *)object;
+				object->field_16C = 2;
+				object->GetMatrix().SetRotate(0.0, 0.0, -1.5707964f);
+				object->GetPos() = aPMPickups[i].position;
+				object->GetMatrix().UpdateRW();
+				object->UpdateRwFrame();
+				object->field_11A &= 0xFD;
+				object->field_052 = (object->field_052 & 0xFD) | 2;
+				object->field_051 &= 0xFE;
+				object->field_16D &= 0xFE;
+				CWorld::Add(object);
+				aPMPickups[i].object = object;
 			}
 
 		}
@@ -234,27 +225,24 @@ void CPacManPickupsHack::GeneratePMPickUpsForRace(void)
 			aPMPickups[i].position.x = aRacePoints1[i].x + OFFSETX;
 			aPMPickups[i].position.y = aRacePoints1[i].y;
 			aPMPickups[i].position.z = aRacePoints1[i].z + OFFSETZ;
-			auto allocateObject = (unsigned int(__cdecl *)(unsigned int))vcversion::AdjustOffset(0x004E4070);
-			unsigned int object = allocateObject(0x194);
+			auto allocateObject = (CObject *(__cdecl *)(unsigned int))vcversion::AdjustOffset(0x004E4070);
+			CObject *object = allocateObject(0x194);
 			if (object) {
-				auto createObject = (unsigned int(__thiscall *)(int, int, bool))vcversion::AdjustOffset(0x004E41B0);
+				auto createObject = (CObject *(__thiscall *)(CObject *, int, bool))vcversion::AdjustOffset(0x004E41B0);
 				object = createObject(object, PM_RACE_MODEL, true);
 			}
 			if (object) {
-				*(unsigned char *)((unsigned long)object + 0x16C) = 2;
-				CMatrix *matrix = (CMatrix *)((unsigned long)object + 4);
-				matrix->SetRotate(0.0, 0.0, -1.5707964f);
-				*(float *)((unsigned long)object + 0x34) = aPMPickups[i].position.x;
-				*(float *)((unsigned long)object + 0x38) = aPMPickups[i].position.y;
-				*(float *)((unsigned long)object + 0x3C) = aPMPickups[i].position.z;
-				matrix->UpdateRW();
-				((CObject *)object)->UpdateRwFrame();
-				*(unsigned char *)((unsigned long)object + 0x11A) = *(unsigned char *)((unsigned long)object + 0x11A) & 0xFD;
-				*(unsigned char *)((unsigned long)object + 0x52) = (*(unsigned char *)((unsigned long)object + 0x52) & 0xFD) | 2;
-				*(unsigned char *)((unsigned long)object + 0x51) = *(unsigned char *)((unsigned long)object + 0x51) & 0xFE;
-				*(unsigned char *)((unsigned long)object + 0x16D) = *(unsigned char *)((unsigned long)object + 0x16D) & 0xFE;
-				CWorld::Add((CObject *)object);
-				aPMPickups[i].object = (CObject *)object;
+				object->field_16C = 2;
+				object->GetMatrix().SetRotate(0.0, 0.0, -1.5707964f);
+				object->GetPos() = aPMPickups[i].position;
+				object->GetMatrix().UpdateRW();
+				object->UpdateRwFrame();
+				object->field_11A &= 0xFD;
+				object->field_052 = (object->field_052 & 0xFD) | 2;
+				object->field_051 &= 0xFE;
+				object->field_16D &= 0xFE;
+				CWorld::Add(object);
+				aPMPickups[i].object = object;
 			}
 		}
 	}
