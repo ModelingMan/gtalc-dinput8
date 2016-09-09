@@ -323,47 +323,62 @@ bool cAudioManagerHack::initialise()
 
 	// car alarms
 	if (!(CRunningScriptHack::debugMode & DEBUG_VICECITY)) {
-		*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x005F02F9)) = 0;
-		*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x005F0457)) = vcversion::AdjustOffset(0x006AD1B0);
-		*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x005F046D)) = vcversion::AdjustOffset(0x006AD1B4);
+		Patch<unsigned int>(0x005F02F9, 0);
+		Patch<unsigned long>(0x005F0457, vcversion::AdjustOffset(0x006AD1B0));
+		Patch<unsigned long>(0x005F046D, vcversion::AdjustOffset(0x006AD1B4));
 	}
 
 	// player talk sfx
 	unsigned int(__thiscall cAudioManagerHack::* function)(CPed *, unsigned short) = &cAudioManagerHack::GetPlayerTalkSfx;
-	call(0x005EA204, (unsigned long &)function, PATCH_NOTHING);
+	InjectHook(0x005EA204, (unsigned long &)function);
 
 	// suspect last seen report, requires modification of sfx
-	call(0x005FD58C, &cAudioManagerHack::SetupSuspectLastSeenReportHackProxy, PATCH_JUMP);
+	InjectHook(0x005FD58C, &cAudioManagerHack::SetupSuspectLastSeenReportHackProxy, PATCH_JUMP);
 
 	// set up crime report
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005FDBFF)) = TOTAL_AUDIO_ZONES;
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005FDC4A)) = TOTAL_AUDIO_ZONES;
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005FDC4F)) = TOTAL_AUDIO_ZONES;
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FDC27)) = (unsigned long)&policeRadioZones + 4;
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FDC2F)) = (unsigned long)&policeRadioZones;
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FDC3D)) = (unsigned long)&policeRadioZones + 8;
+	Patch<unsigned char>(0x005FDBFF, TOTAL_AUDIO_ZONES);
+	Patch<unsigned char>(0x005FDC4A, TOTAL_AUDIO_ZONES);
+	Patch<unsigned char>(0x005FDC4F, TOTAL_AUDIO_ZONES);
+	Patch<unsigned long>(0x005FDC27, (unsigned long)&policeRadioZones + 4);
+	Patch<unsigned long>(0x005FDC2F, (unsigned long)&policeRadioZones);
+	Patch<unsigned long>(0x005FDC3D, (unsigned long)&policeRadioZones + 8);
 
 	// play suspect last seen
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005FCF39)) = TOTAL_AUDIO_ZONES;
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005FCF87)) = TOTAL_AUDIO_ZONES;
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005FCF8C)) = TOTAL_AUDIO_ZONES;
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FCF5F)) = (unsigned long)&policeRadioZones + 4;
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FCF67)) = (unsigned long)&policeRadioZones;
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FCF75)) = (unsigned long)&policeRadioZones + 8;
+	Patch<unsigned char>(0x005FCF39, TOTAL_AUDIO_ZONES);
+	Patch<unsigned char>(0x005FCF87, TOTAL_AUDIO_ZONES);
+	Patch<unsigned char>(0x005FCF8C, TOTAL_AUDIO_ZONES);
+	Patch<unsigned long>(0x005FCF5F, (unsigned long)&policeRadioZones + 4);
+	Patch<unsigned long>(0x005FCF67, (unsigned long)&policeRadioZones);
+	Patch<unsigned long>(0x005FCF75, (unsigned long)&policeRadioZones + 8);
 
 	// do not use game's audio zone array
-	call(0x004DDAEB, &cAudioManagerHack::InitialiseAudioZoneArray, PATCH_NOTHING);
+	InjectHook(0x004DDAEB, &cAudioManagerHack::InitialiseAudioZoneArray);
 	
 	// crane audio
 	void(__thiscall cAudioManagerHack::* function2)() = &cAudioManagerHack::ProcessCrane;
-	call(0x005F596C, (unsigned long &)function2, PATCH_NOTHING);
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005F5E6C)) = 5;
+	InjectHook(0x005F596C, (unsigned long &)function2);
+	Patch<unsigned char>(0x005F5E6C, 5);
 
 	// looping script objects
 	void(__thiscall cAudioManagerHack::* function3)(unsigned char) = &cAudioManagerHack::ProcessLoopingScriptObjectHack;
-	call(0x005F58F3, (unsigned long &)function3, PATCH_NOTHING);
+	InjectHook(0x005F58F3, (unsigned long &)function3);
 	scriptObjectCinemaTime = scriptObjectSawmillTime = scriptObjectAirportTime = scriptObjectHomeTime = CTimer::m_snTimeInMilliseconds;
 	scriptObjectAirportCounter = scriptObjectHomeCounter = 0;
+
+	// RC Baron process engine - temporary workaround affects RC helicopters
+	Patch<unsigned int>(0x005F3925, 342);
+	Patch<unsigned int>(0x005F392C, 342);
+	Patch<unsigned int>(0x005F395B, 342);
+	Patch<unsigned char>(0x005F394C, 80);
+	Patch<float>(0x005F3973, 90.0);
+	Patch<unsigned char>(0x005F55CA, 0x2B);
+
+	// crime report fix (SilentPatch)
+	Patch<unsigned int>(0x005FDDDB, 0xC5);
+
+	// radio station text shadow fix (SilentPatch)
+	InjectHook(0x005FA1FD, &cAudioManagerHack::DisplayRadioStationNameHack);
+
 	return true;
 }
 
@@ -403,8 +418,8 @@ bool cAudioManagerHack::ProcessFrontEndHack(unsigned char id)
 
 void cAudioManagerHack::ProcessLoopingScriptObjectHack(unsigned char id)
 {
-	float maxDistance, distance;
-	unsigned char maxVolume;
+	float maxDistance = 0.0, distance;
+	unsigned char maxVolume = 0;
 
 	switch (id) {
 	case 5:
@@ -735,7 +750,7 @@ void cAudioManagerHack::ProcessCrane()
 
 void cAudioManagerHack::ProcessCinemaScriptObject(unsigned int id)
 {
-	float maxDistance, distance;
+	float maxDistance = 0.0, distance;
 	switch (id) {
 	case 62:
 	case 91:
@@ -797,23 +812,9 @@ void cAudioManagerHack::ProcessCinemaScriptObject(unsigned int id)
 				this->m_Unk10 = 1;
 				this->m_Unk12 = 0;
 				this->AddSampleToRequestedQueue();
-				scriptObjectCinemaTime = CTimer::m_snTimeInMilliseconds + 2000 + cAudioManagerHack::CinemaRandomness();
+				scriptObjectCinemaTime = CTimer::m_snTimeInMilliseconds + 2000 + *(unsigned int *)((unsigned long)this + 0x5548) % 0x1770;
 			}
 		}
-	}
-}
-
-unsigned int __declspec(naked) cAudioManagerHack::CinemaRandomness()
-{
-	__asm
-	{
-		mov eax, 57619F1h
-		mul dword ptr [ecx+5548h]
-		mov eax, dword ptr [ecx+5548h]
-		shr edx, 7
-		imul edx, 1770h
-		sub eax, edx
-		ret
 	}
 }
 
@@ -907,23 +908,9 @@ void cAudioManagerHack::ProcessSawMillScriptObject(unsigned int)
 				this->m_Unk10 = 1;
 				this->m_Unk12 = 0;
 				this->AddSampleToRequestedQueue();
-				scriptObjectSawmillTime = CTimer::m_snTimeInMilliseconds + 2000 + cAudioManagerHack::SawmillRandomness();
+				scriptObjectSawmillTime = CTimer::m_snTimeInMilliseconds + 2000 + *(unsigned int *)((unsigned long)this + 0x5548) % 0xFA0;
 			}
 		}
-	}
-}
-
-unsigned int __declspec(naked) cAudioManagerHack::SawmillRandomness()
-{
-	__asm
-	{
-		mov eax, 10624DD3h
-		mul dword ptr [ecx+5548h]
-		mov eax, dword ptr [ecx+5548h]
-		shr edx, 8
-		imul edx, 0FA0h
-		sub eax, edx
-		ret
 	}
 }
 
@@ -955,23 +942,9 @@ void cAudioManagerHack::ProcessAirportScriptObject(unsigned int)
 				this->m_Unk10 = 1;
 				this->m_Unk12 = 0;
 				this->AddSampleToRequestedQueue();
-				scriptObjectAirportTime = CTimer::m_snTimeInMilliseconds + 10000 + cAudioManagerHack::AirportRandomness();
+				scriptObjectAirportTime = CTimer::m_snTimeInMilliseconds + 10000 + *(unsigned int *)((unsigned long)this + 0x5548) % 0x4E20;
 			}
 		}
-	}
-}
-
-unsigned int __declspec(naked) cAudioManagerHack::AirportRandomness()
-{
-	__asm
-	{
-		mov eax, 0D1B71759h
-		mul dword ptr [ecx+5548h]
-		mov eax, dword ptr [ecx+5548h]
-		shr edx, 0Eh
-		imul edx, 4E20h
-		sub eax, edx
-		ret
 	}
 }
 
@@ -984,9 +957,10 @@ void cAudioManagerHack::ProcessHomeScriptObject(unsigned int)
 		distance = this->GetDistanceSquared(this->m_Position);
 		if (distance < maxDistance) {
 			this->m_DistanceToCamera = (distance > 0 ? sqrt(distance) : 0.0f);
-			this->m_Volume = this->ComputeVolume(110, this->m_MaxRange, this->m_DistanceToCamera);
+			unsigned char randomVolume = 40 + *(unsigned int *)((unsigned long)this + 0x553C) % 0x1E;
+			this->m_Volume = this->ComputeVolume(randomVolume, this->m_MaxRange, this->m_DistanceToCamera);
 			if (this->m_Volume) {
-				this->m_SampleID = LOOPING_SCRIPT_OBJECT_59A + cAudioManagerHack::Home2Randomness();
+				this->m_SampleID = LOOPING_SCRIPT_OBJECT_59A + *(unsigned int *)((unsigned long)this + 0x553C) % 5;
 				this->m_Unk0 = 0;
 				this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
 				this->m_Unk7 = scriptObjectHomeCounter++;
@@ -995,56 +969,19 @@ void cAudioManagerHack::ProcessHomeScriptObject(unsigned int)
 				this->m_Unk9 = 1;
 				this->m_Unk2 = 3;
 				this->m_Unk4 = 0;
-				this->m_MaxVolume = 40 + cAudioManagerHack::Home1Randomness();
+				this->m_MaxVolume = randomVolume;
 				this->m_LoopStartOff = 0;
 				this->m_LoopEndOff = -1;
 				this->m_Unk10 = 1;
 				this->m_Unk12 = 1;
 				this->AddSampleToRequestedQueue();
-				scriptObjectHomeTime = CTimer::m_snTimeInMilliseconds + 1000 + cAudioManagerHack::Home3Randomness();
+				scriptObjectHomeTime = CTimer::m_snTimeInMilliseconds + 1000 + *(unsigned int *)((unsigned long)this + 0x5548) % 0xFA0;
 			}
 		}
 	}
 }
 
-unsigned int __declspec(naked) cAudioManagerHack::Home1Randomness()
+void cAudioManagerHack::DisplayRadioStationNameHack(float fX, float fY, wchar_t *pText)
 {
-	__asm
-	{
-		mov eax, 88888889h
-		mul dword ptr [ecx+553Ch]
-		mov eax, dword ptr [ecx+553Ch]
-		shr edx, 4
-		imul edx, 1Eh
-		sub eax, edx
-		ret
-	}
-}
-
-unsigned int __declspec(naked) cAudioManagerHack::Home2Randomness()
-{
-	__asm
-	{
-		mov eax, 0CCCCCCCDh
-		mul dword ptr [ecx+553Ch]
-		mov eax, dword ptr [ecx+553Ch]
-		shr edx, 2
-		imul edx, 5
-		sub eax, edx
-		ret
-	}
-}
-
-unsigned int __declspec(naked) cAudioManagerHack::Home3Randomness()
-{
-	__asm
-	{
-		mov eax, 10624DD3h
-		mul dword ptr [ecx+5548h]
-		mov eax, dword ptr [ecx+5548h]
-		shr edx, 8
-		imul edx, 0FA0h
-		sub eax, edx
-		ret
-	}
+	CFont::PrintString(fX - 2.0f + (2.0f * VCGlobals::resolutionXMultiplier * VCGlobals::resolutionX), fY - 2.0f + (2.0f * VCGlobals::resolutionYMultiplier * VCGlobals::resolutionY), pText);
 }

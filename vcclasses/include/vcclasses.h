@@ -93,8 +93,8 @@ protected:
 	unsigned char space3[0x03];     // 0x002D
 	float m_DistanceToCamera;       // 0x0030
 	unsigned int m_Unk8;            // 0x0034
-	unsigned int m_LoopStartOff;    // 0x0038
-	unsigned int m_LoopEndOff;      // 0x003C
+	int m_LoopStartOff;             // 0x0038
+	int m_LoopEndOff;               // 0x003C
 	unsigned char m_MaxVolume;      // 0x0040
 	unsigned char space6[0x03];     // 0x0041
 	float m_Unk4;                   // 0x0044
@@ -160,6 +160,8 @@ public:
 	float &GetY() { return placeable.matrix.pos.y; }
 	float &GetZ() { return placeable.matrix.pos.z; }
 };
+
+static_assert(sizeof(CEntity) == 0x064, "Size of CEntity is not 0x064 bytes.");
 
 //########################################################################
 //# CCamera
@@ -305,16 +307,17 @@ protected:
 class CWanted
 {
 public:
-	unsigned int  counter;                    // 0x000
-	unsigned char space1[0x014];
-	unsigned char numberOfPoliceInPursuit;    // 0x018
-	unsigned char maxNumberOfPoliceInPursuit; // 0x019
-	unsigned char space2[0x004];
-	unsigned char activity;                   // 0x01E
-	unsigned char space3;
-	int           level;                      // 0x020
-	unsigned char space4[0x1C4];
-	unsigned long policeInPursuit[10];        // 0x1E8
+	unsigned int   counter;                    // 0x000
+	unsigned char  space1[0x014];
+	unsigned char  numberOfPoliceInPursuit;    // 0x018
+	unsigned char  maxNumberOfPoliceInPursuit; // 0x019
+	unsigned char  space2[0x002];
+	unsigned short roadblockChance;            // 0x01C
+	unsigned char  activity;                   // 0x01E
+	unsigned char  space3;
+	int            level;                      // 0x020
+	unsigned char  space4[0x1C4];
+	unsigned long  policeInPursuit[10];        // 0x1E8
 
 	void SetWantedLevelCheat(int);
 	void UpdateWantedLevel(void);
@@ -347,6 +350,8 @@ public:
 
 	bool GetHasCollidedWith(CEntity *);
 };
+
+static_assert(sizeof(CPhysical) == 0x120, "Size of CPhysical is not 0x120 bytes.");
 
 //########################################################################
 //# CVehicle
@@ -398,6 +403,8 @@ public:
 
 	bool IsSphereTouchingVehicle(float, float, float, float);
 };
+
+static_assert(sizeof(CVehicle) == 0x5DC, "Size of CVehicle is not 0x5DC bytes.");
 
 //########################################################################
 //# CAutomobile
@@ -452,6 +459,8 @@ public:
 	bool IsPedInControl(void);
 	void Say(unsigned short);
 };
+
+static_assert(sizeof(CPed) == 0x6D8, "Size of CPed is not 0x6D8 bytes.");
 
 //########################################################################
 //# CPlayerPed
@@ -548,6 +557,8 @@ public:
 	// 0x170
 };
 
+static_assert(sizeof(CPlayerInfo) == 0x170, "Size of CPlayerInfo is not 0x170 bytes.");
+
 //########################################################################
 //# CRunningScript
 //########################################################################
@@ -593,8 +604,8 @@ class cSampleManager
 {
 public:
 	unsigned int GetSampleBaseFrequency(unsigned int);
-	unsigned int GetSampleLoopEndOffset(unsigned int);
-	unsigned int GetSampleLoopStartOffset(unsigned int);
+	int GetSampleLoopEndOffset(unsigned int);
+	int GetSampleLoopStartOffset(unsigned int);
 };
 
 //########################################################################
@@ -684,7 +695,9 @@ public:
 class CColPoint
 {
 public:
-	unsigned char space1[40];
+	CVector point;
+	unsigned char space1[0x1C];
+	// 0x28
 };
 
 //########################################################################
@@ -694,6 +707,7 @@ public:
 class CWorld
 {
 public:
+	static unsigned char &PlayerInFocus;
 	static CPlayerInfo *Players;
 	static float FindGroundZForCoord(float x, float y);
 	static bool ProcessVerticalLine(CVector const &, float, CColPoint &, CEntity *&, bool, bool, bool, bool, bool, bool, unsigned long);
@@ -944,6 +958,7 @@ public:
 	static int *carsCollected;
 	static int &BankVansCollected;
 	static int &PoliceCarsCollected;
+	static unsigned char &RespraysAreFree;
 	static unsigned char &BombsAreFree;
 	static CGarage *garages;
 
@@ -1138,11 +1153,68 @@ class CStats
 public:
 	static float &ShootingRangeRank;
 	static float &GarbagePickups;
-	static float &LoanSharkVisits;
+	static float &LoanSharks;
+	static int &IndustrialPassed;
+	static int &SuburbanPassed;
+	static int &CommercialPassed;
 	static float &TopShootingRangeScore;
 	static float &MovieStunts;
 
 	static void AnotherKillFrenzyPassed(void);
+};
+
+//########################################################################
+//# CCarCtrl
+//########################################################################
+
+class CCarCtrl
+{
+public:
+	static unsigned int &LastTimeFireTruckCreated;
+	static unsigned int &LastTimeAmbulanceCreated;
+
+	static void ReInit(void);
+};
+
+//########################################################################
+//# CPathInfoForObject
+//########################################################################
+
+class CPathInfoForObject
+{
+public:
+	struct PathNode
+	{
+		CVector       Pos;
+		char          NodeType;
+		char          NextNode;
+		char          LeftLanes;
+		char          RightLanes;
+		unsigned char SpeedLimit;
+		char          Median;
+		bool          IsCrossroad : 1;
+		bool          Unknown2 : 1;
+		bool          IsRoadblock : 1;
+		bool          IgnoredByTraffic : 1;
+		bool          BoatNode : 1;
+		bool          RestrictedNode : 1;
+		unsigned char SpawnRate : 4;
+	} m_node[12];
+
+	void SwapConnectionsToBeRightWayRound(void);
+};
+
+//########################################################################
+//# CPathFind
+//########################################################################
+
+class CPathFind
+{
+public:
+	static CPathInfoForObject *&InfoForTileCars;
+	static CPathInfoForObject *&InfoForTilePeds;
+
+	void StoreDetachedNodeInfoPed(int, char, int, float, float, float, float, bool, bool, bool, unsigned char);
 };
 
 #endif

@@ -1,6 +1,7 @@
 #include "CRendererHack.h"
 #include "CRunningScriptHack.h"
 #include "vcversion.h"
+#include "Globals.h"
 #include "SilentCall.h"
 #include <Windows.h>
 #include <fstream>
@@ -15,18 +16,18 @@ bool CRendererHack::initialise()
 {
 	if (GetPrivateProfileInt("Misc", "DisableCulling", 1, "./gta-lc.ini")) {
 		// disable backface culling from aap's skygfx_vc - temporary
-		*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x004C9E5F)) = 1;
-		*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x004C9F08)) = 1;
-		//*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x004C9F5D)) = 1; // replaced
-		*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x004CA157)) = 1;
-		*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x004CA199)) = 1;
+		Patch<unsigned char>(0x004C9E5F, 1);
+		Patch<unsigned char>(0x004C9F08, 1);
+		//Patch<unsigned char>(0x004C9F5D, 1); // replaced
+		Patch<unsigned char>(0x004CA157, 1);
+		Patch<unsigned char>(0x004CA199, 1);
 
 		// disable backface culling during cutscene
-		*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x004E0146)) = 1;
+		Patch<unsigned char>(0x004E0146, 1);
 	}
 
 	// control backface culling of non-transparent buildings
-	call(0x004C9F87, &RenderEverythingBarRoadsHackProxy, PATCH_JUMP);
+	InjectHook(0x004C9F87, &RenderEverythingBarRoadsHackProxy, PATCH_JUMP);
 
 	// get data to draw backfaces
 	std::ifstream fileName("drawBackfaces.dat");
@@ -41,13 +42,13 @@ bool CRendererHack::initialise()
 	
 	// auto-aim crosshair
 	if (!(CRunningScriptHack::debugMode & DEBUG_VICECITY)) {
-		strcpy_s((char *)vcversion::AdjustOffset(0x0069D818), 10, "crosshair");
-		strcpy_s((char *)vcversion::AdjustOffset(0x0069D80C), 11, "crosshairm");
+		VCGlobals::strcpy((char *)vcversion::AdjustOffset(0x0069D818), "crosshair");
+		VCGlobals::strcpy((char *)vcversion::AdjustOffset(0x0069D80C), "crosshairm");
 		memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x005D4ECC)), 0x90, 11);
-		*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005D4EE3)) = 2;
-		*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005D4EEE)) = 2;
+		Patch<unsigned char>(0x005D4EE3, 2);
+		Patch<unsigned char>(0x005D4EEE, 2);
 	} else {
-		*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005D4EEE)) = 9;
+		Patch<unsigned char>(0x005D4EEE, 9);
 	}
 	return true;
 }

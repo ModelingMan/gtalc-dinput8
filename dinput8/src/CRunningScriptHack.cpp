@@ -10,7 +10,6 @@
 #include "vcversion.h"
 #include "SilentCall.h"
 
-#include <string.h>
 #include <Windows.h>
 
 using namespace VCGlobals;
@@ -26,16 +25,6 @@ unsigned long getRandomCarEndJump = vcversion::AdjustOffset(0x0062F269);
 static void GangsInitialise();
 unsigned long gangInitialiseEndJump = vcversion::AdjustOffset(0x004EEEDF);
 
-// ProjectileInfoUpdate
-static void ProjectileInfoUpdate();
-unsigned long projectileInfoUpdateProceedJump = vcversion::AdjustOffset(0x005C6ECC);
-unsigned long projectileInfoUpdateEndJump = vcversion::AdjustOffset(0x005C6F45);
-
-// CamControl
-static void CamControl();
-unsigned long camControlOther = vcversion::AdjustOffset(0x00472BF9);
-unsigned long camControlCar = vcversion::AdjustOffset(0x00472C02);
-
 // GameLogicUpdate
 static void GameLogicUpdate();
 unsigned long gameLogicUpdateEndJump = vcversion::AdjustOffset(0x0042BC6D);
@@ -46,6 +35,12 @@ unsigned long preRenderMatchAmbulan = vcversion::AdjustOffset(0x0058BE77);
 unsigned long preRenderMatchFbiranch = vcversion::AdjustOffset(0x0058C8F0);
 unsigned long preRenderNoMatch = vcversion::AdjustOffset(0x0058BE34);
 
+// RenderReflections
+float RenderReflections();
+
+// CarCtrlReInit
+void CarCtrlReInit();
+
 int CRunningScriptHack::debugMode;
 
 bool CRunningScriptHack::initialise()
@@ -55,61 +50,53 @@ bool CRunningScriptHack::initialise()
 	*ProcessOneCommandHackAddr = nasty.offset - reinterpret_cast<unsigned long>(ProcessOneCommandHackAddr + 1);
 
 	// detonator weapon switch
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005D49C7)) = 0xD;
+	Patch<unsigned char>(0x005D49C7, 0xD);
 	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x005345ED)), 0x90, 9);
 
-	// second helicopter
-	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x004D1E0F)) = 2;
-
 	// 0410 (Purple Nines) fix
-	call(0x004EEED1, &GangsInitialise, PATCH_JUMP);
+	InjectHook(0x004EEED1, &GangsInitialise, PATCH_JUMP);
 
 	// 053E accept mission vehicles - workaround for crusher
-	call(0x0062F234, &GetRandomCarOfTypeInAreaNoSave, PATCH_JUMP);
-
-	// ProjectileInfo null thrower fix
-	call(0x005C6EC6, &ProjectileInfoUpdate, PATCH_JUMP);
-
-	// RC Baron camera controls
-	*reinterpret_cast<float *>(vcversion::AdjustOffset(0x0068ABF4)) = 0.0;
-	*reinterpret_cast<float *>(vcversion::AdjustOffset(0x0068ABEC)) = 0.0;
-	call(0x00483F6A, 0x00483F7D, PATCH_JUMP);
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x00597CBE)) = 3;
-	call(0x00472BE8, &CamControl, PATCH_JUMP);
-
-	// RC Baron process engine - temporary workaround affects RC helicopters
-	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x005F3925)) = 342;
-	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x005F392C)) = 342;
-	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x005F395B)) = 342;
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005F394C)) = 80;
-	*reinterpret_cast<float *>(vcversion::AdjustOffset(0x005F3973)) = 90.0;
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005F55CA)) = 0x2B;
+	InjectHook(0x0062F234, &GetRandomCarOfTypeInAreaNoSave, PATCH_JUMP);
 
 	// horizon ships
 	if (!(CRunningScriptHack::debugMode & DEBUG_VICECITY)) {
-		*reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x005BC5BC)) = 0xE990;
+		Patch<unsigned short>(0x005BC5BC, 0xE990);
 	}
 
 	// cylindrical marker colors
-	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x00458E82)) = 0x000080;
-	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x00689CA8)) = 0xFF8000;
-	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x00568E45)) = 0x000080;
-	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x00698D58)) = 0xFF8000;
-	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x004C3F99)) = 0x000080;
-	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x0068F958)) = 0xFF8000;
+	Patch<unsigned int>(0x00458E82, 0x000080); // CTheScripts::DrawScriptSpheres
+	Patch<unsigned int>(0x00689CA8, 0xFF8000);
+	Patch<unsigned int>(0x00568E45, 0x000080); // CShadows::RenderIndicatorShadow
+	Patch<unsigned int>(0x00698D58, 0xFF8000);
+	Patch<unsigned int>(0x004C3F99, 0x000080); // CRadar::Draw3dMarkers
+	Patch<unsigned int>(0x0068F958, 0xFF8000);
 
 	// undo ocean change
-	*reinterpret_cast<float *>(vcversion::AdjustOffset(0x69CD70)) = 70.0;
+	Patch<float>(0x69CD70, 70.0);
 
 	// taxi cash
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005B8AB6)) = 25;
+	Patch<unsigned char>(0x005B8AB6, 25); // CVehicle::SetDriver
 
 	// hospital cost
-	call(0x0042BC64, &GameLogicUpdate, PATCH_JUMP);
+	InjectHook(0x0042BC64, &GameLogicUpdate, PATCH_JUMP); // CGameLogic::Update
 
 	// FBI Rancher roof light
-	call(0x0058BE2F, &AutomobilePreRender, PATCH_JUMP);
+	InjectHook(0x0058BE2F, &AutomobilePreRender, PATCH_JUMP); // CAutomobile::PreRender
+
+	// fire light glow (SilentPatch)
+	Patch<unsigned char>(0x0048EB27, 0x10); // CFire::ProcessFire
 	
+	// wet roads reflection (SilentPatch)
+	InjectHook(0x005433BD, &RenderReflections);
+
+	// support treadables
+	Patch<unsigned int>(0x004C0325, 0x4068006A);
+	Patch<unsigned int>(0x004C0329, 0xE800001F);
+
+	// reinit firetruck/ambulance timer (SilentPatch)
+	InjectHook(0x004A489B, &CarCtrlReInit);
+
 	return true;
 }
 
@@ -248,7 +235,7 @@ bool CRunningScriptHack::_014D_text_pager()
 {
 	char pagerText[8];
 	
-	strcpy_s(pagerText, reinterpret_cast<char *>(&CTheScripts::ScriptSpace[this->m_dwScriptIP]));
+	VCGlobals::strcpy(pagerText, reinterpret_cast<char *>(&CTheScripts::ScriptSpace[this->m_dwScriptIP]));
 	this->m_dwScriptIP += 8;
 	
 	this->CollectParameters(&this->m_dwScriptIP, 3);
@@ -263,21 +250,21 @@ bool CRunningScriptHack::_014D_text_pager()
 
 bool CRunningScriptHack::_034A_industrial_passed()
 {
-	CScrollBarHack::ms_PortlandComplete = true;
+	CStats::IndustrialPassed = 1;
 	VCGlobals::DMAudio.PlayRadioAnnouncement(25); // must match COMopen.wav in gta-lc.ini
 	return 0;
 }
 
 bool CRunningScriptHack::_034B_commercial_passed()
 {
-	CScrollBarHack::ms_StauntonComplete = true;
+	CStats::CommercialPassed = 1;
 	VCGlobals::DMAudio.PlayRadioAnnouncement(26); // must match SUBopen.wav in gta-lc.ini
 	return 0;
 }
 
 bool CRunningScriptHack::_034C_suburban_passed()
 {
-	CScrollBarHack::ms_ShoresideComplete = true;
+	CStats::SuburbanPassed = 1;
 	return 0;
 }
 
@@ -311,7 +298,7 @@ bool CRunningScriptHack::_024C_set_phone_message()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
 	char text[8];
-	strcpy_s(text, reinterpret_cast<char *>(&CTheScripts::ScriptSpace[this->m_dwScriptIP]));
+	VCGlobals::strncpy(text, reinterpret_cast<char *>(&CTheScripts::ScriptSpace[this->m_dwScriptIP]), 8);
 	this->m_dwScriptIP += 8;
 	VCGlobals::ThePhoneInfo.SetPhoneMessage_JustOnce(ScriptParams[0].int32, TheText.Get(text), 0, 0, 0, 0, 0);
 	return 0;
@@ -459,40 +446,6 @@ void GangsInitialise()
 	}
 }
 
-void __declspec(naked) ProjectileInfoUpdate()
-{
-	__asm
-	{
-		mov eax, [ebp+4] // get pointer of projectile thrower
-		test eax, eax    // compare pointer with 0
-		jz end
-		mov eax, [ebp+0]
-		cmp eax, 0Ch
-		jmp projectileInfoUpdateProceedJump
-	end:
-		jmp projectileInfoUpdateEndJump
-
-	}
-}
-
-void __declspec(naked) CamControl()
-{
-	__asm
-	{
-		mov eax, dword ptr [ebp+80Ch]
-		mov edi, dword ptr [eax+29Ch]
-		cmp edi, 1
-		jz other
-		movzx edi, word ptr [eax+5Ch] // get model index of vehicle
-		cmp edi, 194                  // compare with model index of RC Baron
-		jnz car
-	other:
-		jmp camControlOther
-	car:
-		jmp camControlCar
-	}
-}
-
 void __declspec(naked) GameLogicUpdate()
 {
 	__asm
@@ -518,6 +471,18 @@ void __declspec(naked) AutomobilePreRender()
 	matchFbiranch:
 		jmp preRenderMatchFbiranch
 	}
+}
+
+float RenderReflections()
+{
+	return 1.0;
+}
+
+void CarCtrlReInit()
+{
+	CCarCtrl::ReInit();
+	CCarCtrl::LastTimeFireTruckCreated = 0;
+	CCarCtrl::LastTimeAmbulanceCreated = 0;
 }
 
 bool CRunningScriptHack::_00AC_is_car_still_alive()
@@ -599,7 +564,7 @@ bool CRunningScriptHack::_0255_restart_critical_mission()
 	pos.y = ScriptParams[1].float32;
 	pos.z = ScriptParams[2].float32;
 	CRestart::OverrideNextRestart(pos, ScriptParams[3].float32);
-	CPlayerInfo *player = &CWorld::Players[VCGlobals::currentPlayer];
+	CPlayerInfo *player = &CWorld::Players[CWorld::PlayerInFocus];
 	if (player->deathArrestState == 0) {
 		player->deathArrestState = 3;
 		player->timeDeathArrest = CTimer::m_snTimeInMilliseconds;

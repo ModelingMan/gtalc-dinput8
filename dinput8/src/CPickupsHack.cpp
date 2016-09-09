@@ -25,27 +25,27 @@ unsigned long pickupEffectNoMatchJump = vcversion::AdjustOffset(0x0043F246);
 
 bool CPickupsHack::initialise()
 {
-	call(0x0043E639, &RenderPickUpTextHack, PATCH_JUMP);
+	InjectHook(0x0043E639, &CPickupsHack::RenderPickUpTextHack, PATCH_JUMP);
 
 	// non-weapon pickup effects
-	call(0x0043F0F5, &DoPickUpEffectsHack, PATCH_JUMP);
+	InjectHook(0x0043F0F5, &CPickupsHack::DoPickUpEffectsHack, PATCH_JUMP);
 
 	// pickup colors, blue-green-red
-	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x006881C0)) = 0x80FF80; // color 37
-	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x006881C8)) = 0xFF0000; // color 38
-	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x006881D0)) = 0;        // color 39
+	Patch<unsigned int>(0x006881C0, 0x80FF80); // color 37
+	Patch<unsigned int>(0x006881C8, 0xFF0000); // color 38
+	Patch<unsigned int>(0x006881D0, 0);        // color 39
 
 	// pickups light glow
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x0043F52B)) = 0x10;
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x0043EC03)) = 0x10;
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x0043E983)) = 0x10;
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x0043EECB)) = 0x10;
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x0043F842)) = 0x10;
+	Patch<unsigned char>(0x0043F52B, 0x10);
+	Patch<unsigned char>(0x0043EC03, 0x10);
+	Patch<unsigned char>(0x0043E983, 0x10);
+	Patch<unsigned char>(0x0043EECB, 0x10);
+	Patch<unsigned char>(0x0043F842, 0x10);
 
 	// package rewards
-	call(0x00441293, &CPickupsHack::UpdateHack, PATCH_CALL);
-	*reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x00441298)) = 0x9090;
-	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x004412DC)) = 1000000;
+	InjectHook(0x00441293, &CPickupsHack::UpdateHack, PATCH_CALL);
+	Patch<unsigned short>(0x00441298, 0x9090);
+	Patch<unsigned int>(0x004412DC, 1000000);
 
 	return true;
 }
@@ -146,5 +146,5 @@ void __declspec(naked) CPickupsHack::DoPickUpEffectsHack()
 
 void CPickupsHack::UpdateHack()
 {
-	CWorld::Players[VCGlobals::currentPlayer].m_Money += 1000;
+	CWorld::Players[CWorld::PlayerInFocus].m_Money += 1000;
 }

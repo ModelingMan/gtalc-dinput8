@@ -3,7 +3,6 @@
 #include "vcversion.h"
 
 #include <math.h>
-#include <stdlib.h>
 
 using namespace VCGlobals;
 

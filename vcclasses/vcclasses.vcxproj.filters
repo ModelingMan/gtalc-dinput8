@@ -163,5 +163,14 @@
     <ClCompile Include="src\CPlaceable.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CCarCtrl.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPathInfoForObject.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPathFind.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,6 +1,5 @@
 #include <Windows.h>
 #include <tchar.h>
-#include <stdlib.h>
 #include <time.h>
 
 #include "cAudioManagerHack.h"
@@ -16,6 +15,10 @@
 #include "CGaragesHack.h"
 #include "CWantedHack.h"
 #include "CPacManPickupsHack.h"
+#include "CProjectileInfoHack.h"
+#include "CCameraHack.h"
+#include "CFileLoaderHack.h"
+#include "CPathFindHack.h"
 
 HMODULE hOrigDLL = NULL;
 
@@ -24,6 +27,8 @@ FARPROC OldDllCanUnloadNow = NULL;
 FARPROC OldDllGetClassObject = NULL;
 FARPROC OldDllRegisterServer = NULL;
 FARPROC OldDllUnregisterServer = NULL;
+
+const char *windowName = "GTA: Liberty City";
 
 bool SetupDirectInputProxy()
 {
@@ -44,7 +49,7 @@ bool SetupDirectInputProxy()
 	return OldDirectInput8Create != NULL && OldDllCanUnloadNow != NULL && OldDllGetClassObject != NULL && OldDllRegisterServer != NULL && OldDllUnregisterServer != NULL;
 }
 
-_declspec(naked) HRESULT WINAPI NewDirectInput8Create(HINSTANCE hinst, DWORD dwVersion, REFIID riidltf, LPVOID *ppvOut, LPUNKNOWN punkOuter)
+_declspec(naked) HRESULT WINAPI NewDirectInput8Create(HINSTANCE, DWORD, REFIID, LPVOID *, LPUNKNOWN)
 {
 	__asm jmp OldDirectInput8Create;
 }
@@ -109,6 +114,20 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			return FALSE;
 		}
 
+		// A/B drive fix (SilentPatch)
+		*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x005D7941)) = 'A';
+		*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x005D7B04)) = 'A';
+
+		// disable DirectPlay dependency (SilentPatch)
+		*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x00601CA0)) = 0xB8;
+		*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x00601CA1)) = 0x900;
+
+		// disable video memory check (SilentPatch)
+		*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x00601E26)) = 0xEB;
+
+		// window name
+		*reinterpret_cast<const char **>(vcversion::AdjustOffset(0x00602D36)) = windowName;
+
 		// debug modes
 		{
 			const char *debugKeys[11] =
@@ -145,7 +164,11 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			!CPadHack::initialise() ||
 			!CGaragesHack::initialise() ||
 			!CWantedHack::initialise() ||
-			!CPacManPickupsHack::initialise())
+			!CPacManPickupsHack::initialise() ||
+			!CProjectileInfoHack::initialise() ||
+			!CCameraHack::initialise() ||
+			!CFileLoaderHack::initialise() ||
+			!CPathFindHack::initialise())
 		{
 			VirtualProtect((LPVOID)(0x400000 + sectionheader->VirtualAddress), sectionheader->Misc.VirtualSize, OldProtect, &OldProtect);
 			return FALSE;

@@ -4,6 +4,7 @@
 int *CGarages::carsCollected = reinterpret_cast<int *>(vcversion::AdjustOffset(0x007D52F8));
 int &CGarages::BankVansCollected = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x00978714));
 int &CGarages::PoliceCarsCollected = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x00A0D8B8));
+unsigned char &CGarages::RespraysAreFree = *reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x00A10AB5));
 unsigned char &CGarages::BombsAreFree = *reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x00A10B32));
 CGarage *CGarages::garages = reinterpret_cast<CGarage *>(vcversion::AdjustOffset(0x00812668));
 

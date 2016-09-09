@@ -7,6 +7,7 @@ class CGaragesHack : public CGarages
 public:
 	static bool initialise();
 	static bool HasImportExportGarageCollectedThisCar(short index, int slot);
+	static void InitHack();
 };
 
 class CGarageHack : public CGarage

@@ -14,8 +14,8 @@ unsigned long recentKeys = vcversion::AdjustOffset(0x00A10942);
 char *weaponCheatString = "VS\\H`iXNTYbO";
 char *moneyCheatString = "QFTIPdUHF]R_PfV";
 char *healthCheatString = "WNLIQiXZFR";
-char *wantedCheatString = "HXHFYkHJJW\\XLr\\S";
-char *notWantedCheatString = "HXHFYkHJJW\\XVn";
+char *wantedLevelUpCheatString = "HXHFYkHJJW\\XLr\\S";
+char *wantedLevelDownCheatString = "HXHFYkHJJW\\XVn";
 char *tankCheatString = "NSHUNnXLWTT";
 char *blowUpCarsCheatString = "JSHCTiDIHYNJ";
 char *dressingUpCheatString = "SZNOVnVLSORSPlV";
@@ -31,9 +31,9 @@ char *cloudyWeatherCheatString = "GSHMajFZFVVTP";
 char *rainyWeatherCheatString = "GSHMajFZFa\\TP";
 char *foggyWeatherCheatString = "SZVTN`S";
 char *timeTravelCheatString = "UJOUN`ZKBX";
-char *wheelsOnlyCheatString = "VQLFUrIVUP`MJi[G";
-char *flyboyCheatString = "EG`UadKJZ_aQOc";
-char *gripCheatString = "GFTFXdOZSP[ZVc";
+char *onlyRenderWheelsCheatString = "VQLFUrIVUP`MJi[G";
+char *chittyChittyBangBangCheatString = "EG`UadKJZ_aQOc";
+char *strongGripCheatString = "GFTFXdOZSP[ZVc";
 char *goreCheatString = "WFLIPnETJWf\\Za[";
 char *vehicleCheatString = "UFJSN^UHD";
 char *vehicleReverseCheatString = "FFYDNmFHS";
@@ -58,25 +58,29 @@ char specialCharacters[10][8] =
 bool CPadHack::initialise()
 {
 	// allow for additional cheats
-	call(0x004ACF28, &AddToCheatString, PATCH_JUMP);
+	InjectHook(0x004ACF28, &AddToCheatString, PATCH_JUMP);
 
 	// remove cheat warning
-	call(0x004990AD, 0x004990C0, PATCH_JUMP);
+	InjectHook(0x004990AD, vcversion::AdjustOffset(0x004990C0), PATCH_JUMP);
 
 	// modify weapon set for arm everybody cheat
-	call(0x0053B6B9, &UpdatePedCount, PATCH_JUMP);
+	InjectHook(0x0053B6B9, &UpdatePedCount, PATCH_JUMP);
 
 	// modify special character cheats
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACA66)) = (unsigned long)&specialCharacters[0]; // igbuddy
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACA96)) = (unsigned long)&specialCharacters[1]; // igcandy
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACAC6)) = (unsigned long)&specialCharacters[2]; // igken
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACAF6)) = (unsigned long)&specialCharacters[3]; // ighlary
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACB26)) = (unsigned long)&specialCharacters[4]; // igjezz
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACB56)) = (unsigned long)&specialCharacters[5]; // igphil
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACB86)) = (unsigned long)&specialCharacters[6]; // igsonny
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACD76)) = (unsigned long)&specialCharacters[7]; // igmerc
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACDA6)) = (unsigned long)&specialCharacters[8]; // igdick
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004ACEB6)) = (unsigned long)&specialCharacters[9]; // igdiaz
+	Patch<unsigned long>(0x004ACA66, (unsigned long)&specialCharacters[0]); // igbuddy
+	Patch<unsigned long>(0x004ACA96, (unsigned long)&specialCharacters[1]); // igcandy
+	Patch<unsigned long>(0x004ACAC6, (unsigned long)&specialCharacters[2]); // igken
+	Patch<unsigned long>(0x004ACAF6, (unsigned long)&specialCharacters[3]); // ighlary
+	Patch<unsigned long>(0x004ACB26, (unsigned long)&specialCharacters[4]); // igjezz
+	Patch<unsigned long>(0x004ACB56, (unsigned long)&specialCharacters[5]); // igphil
+	Patch<unsigned long>(0x004ACB86, (unsigned long)&specialCharacters[6]); // igsonny
+	Patch<unsigned long>(0x004ACD76, (unsigned long)&specialCharacters[7]); // igmerc
+	Patch<unsigned long>(0x004ACDA6, (unsigned long)&specialCharacters[8]); // igdick
+	Patch<unsigned long>(0x004ACEB6, (unsigned long)&specialCharacters[9]); // igdiaz
+
+	// cheat weapon ammo fix (SilentPatch)
+	Patch<unsigned char>(0x004AED15, 1);
+	Patch<unsigned char>(0x004AEB75, 1);
 
 	return true;
 }
@@ -124,14 +128,14 @@ void CPadHack::WeaponCheat()
 void CPadHack::MoneyCheat()
 {
 	char gxtKey[8] = "CHEAT6";
-	CWorld::Players[VCGlobals::currentPlayer].m_Money += 250000;
+	CWorld::Players[CWorld::PlayerInFocus].m_Money += 250000;
 	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
 void CPadHack::HealthCheat()
 {
 	char gxtKey[8] = "CHEAT3";
-	VCGlobals::FindPlayerPed()->health = (float)CWorld::Players[VCGlobals::currentPlayer].maxHealth;
+	VCGlobals::FindPlayerPed()->health = (float)CWorld::Players[CWorld::PlayerInFocus].maxHealth;
 	if (CVehicle *vehicle = VCGlobals::FindPlayerVehicle()) {
 		vehicle->health = 1000.0;
 		if (!vehicle->type) {
@@ -146,7 +150,7 @@ void CPadHack::HealthCheat()
 	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
-void CPadHack::WantedCheat()
+void CPadHack::WantedLevelUpCheat()
 {
 	char gxtKey[8] = "CHEAT5";
 	CWanted *wanted = VCGlobals::FindPlayerPed()->wanted;
@@ -158,7 +162,7 @@ void CPadHack::WantedCheat()
 	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
-void CPadHack::NotWantedCheat()
+void CPadHack::WantedLevelDownCheat()
 {
 	char gxtKey[8] = "CHEAT5";
 	CWanted *wanted = VCGlobals::FindPlayerPed()->wanted;
@@ -216,7 +220,7 @@ void CPadHack::SlowTimeCheat()
 void CPadHack::ArmourCheat()
 {
 	char gxtKey[8] = "CHEAT4";
-	VCGlobals::FindPlayerPed()->armour = (float)CWorld::Players[VCGlobals::currentPlayer].maxArmour;
+	VCGlobals::FindPlayerPed()->armour = (float)CWorld::Players[CWorld::PlayerInFocus].maxArmour;
 	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
@@ -256,7 +260,7 @@ void CPadHack::TimeTravelCheat()
 	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
-void CPadHack::WheelsOnlyCheat()
+void CPadHack::OnlyRenderWheelsCheat()
 {
 	char gxtKey[8] = "CHEAT1";
 	unsigned char &c = *(unsigned char *)vcversion::AdjustOffset(0x00A10B30);
@@ -264,7 +268,7 @@ void CPadHack::WheelsOnlyCheat()
 	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
-void CPadHack::FlyboyCheat()
+void CPadHack::ChittyChittyBangBangCheat()
 {
 	char gxtKey[8] = "CHEAT1";
 	unsigned char &c = *(unsigned char *)vcversion::AdjustOffset(0x00A10B28);
@@ -272,7 +276,7 @@ void CPadHack::FlyboyCheat()
 	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
-void CPadHack::GripCheat()
+void CPadHack::StrongGripCheat()
 {
 	char gxtKey[8] = "CHEAT1";
 	unsigned char &c = *(unsigned char *)vcversion::AdjustOffset(0x00A10B0F);
@@ -380,24 +384,24 @@ void __declspec(naked) AddToCheatString()
 		call CPadHack::HealthCheat
 		jmp end
 	wanted:
-		push wantedCheatString
+		push wantedLevelUpCheatString
 		push recentKeys
 		call cipherFunction
 		test al, al
 		pop ecx
 		pop ecx
 		jnz notWanted
-		call CPadHack::WantedCheat
+		call CPadHack::WantedLevelUpCheat
 		jmp end
 	notWanted:
-		push notWantedCheatString
+		push wantedLevelDownCheatString
 		push recentKeys
 		call cipherFunction
 		test al, al
 		pop ecx
 		pop ecx
 		jnz tank
-		call CPadHack::NotWantedCheat
+		call CPadHack::WantedLevelDownCheat
 		jmp end
 	tank:
 		push tankCheatString
@@ -543,38 +547,38 @@ void __declspec(naked) AddToCheatString()
 		test al, al
 		pop ecx
 		pop ecx
-		jnz wheelsOnly
+		jnz onlyRenderWheels
 		call CPadHack::TimeTravelCheat
 		jmp end
-	wheelsOnly:
-		push wheelsOnlyCheatString
+	onlyRenderWheels:
+		push onlyRenderWheelsCheatString
 		push recentKeys
 		call cipherFunction
 		test al, al
 		pop ecx
 		pop ecx
-		jnz flyboy
-		call CPadHack::WheelsOnlyCheat
+		jnz chittyChittyBangBang
+		call CPadHack::OnlyRenderWheelsCheat
 		jmp end
-	flyboy:
-		push flyboyCheatString
+	chittyChittyBangBang:
+		push chittyChittyBangBangCheatString
 		push recentKeys
 		call cipherFunction
 		test al, al
 		pop ecx
 		pop ecx
-		jnz grip
-		call CPadHack::FlyboyCheat
+		jnz strongGrip
+		call CPadHack::ChittyChittyBangBangCheat
 		jmp end
-	grip:
-		push gripCheatString
+	strongGrip:
+		push strongGripCheatString
 		push recentKeys
 		call cipherFunction
 		test al, al
 		pop ecx
 		pop ecx
 		jnz vehicle
-		call CPadHack::GripCheat
+		call CPadHack::StrongGripCheat
 		jmp end
 	vehicle:
 		push vehicleCheatString

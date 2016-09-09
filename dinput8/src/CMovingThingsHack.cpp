@@ -41,18 +41,18 @@ bool CMovingThingsHack::initialise()
 	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x0054EC1C)), 0x90, 8);
 
 	// undo nop
-	call(0x004A6556, 0x0054F250, PATCH_CALL); // render
-	call(0x004A4EC9, 0x0054F880, PATCH_CALL); // initialise
-	call(0x004A4953, 0x0054F880, PATCH_CALL); // reinitialise
-	call(0x004A45B4, 0x0054F420, PATCH_CALL); // update
+	InjectHook(0x004A6556, vcversion::AdjustOffset(0x0054F250), PATCH_CALL); // render
+	InjectHook(0x004A4EC9, vcversion::AdjustOffset(0x0054F880), PATCH_CALL); // initialise
+	InjectHook(0x004A4953, vcversion::AdjustOffset(0x0054F880), PATCH_CALL); // reinitialise
+	InjectHook(0x004A45B4, vcversion::AdjustOffset(0x0054F420), PATCH_CALL); // update
 
 	// do not update trails and banner
 	if (!(CRunningScriptHack::debugMode & DEBUG_VICECITY)) {
-		call(0x005AFDD3, 0x005AFE37, PATCH_JUMP);
+		InjectHook(0x005AFDD3, vcversion::AdjustOffset(0x005AFE37), PATCH_JUMP);
 	}
 
 	// do not update escalators
-	call(0x0054F435, 0x0054F453, PATCH_JUMP);
+	InjectHook(0x0054F435, vcversion::AdjustOffset(0x0054F453), PATCH_JUMP);
 
 	return true;
 }

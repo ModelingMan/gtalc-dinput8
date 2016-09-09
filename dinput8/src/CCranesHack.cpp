@@ -18,20 +18,20 @@ unsigned int audioEntities[8];
 
 bool CCranesHack::initialise()
 {
-	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x005A8CBF)) = MILITARYCRANETOTAL;
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x005A8CCC)) = MILITARYCRANETOTAL;
+	Patch<unsigned int>(0x005A8CBF, MILITARYCRANETOTAL);
+	Patch<unsigned char>(0x005A8CCC, MILITARYCRANETOTAL);
 
-	call(0x005A8CB9, &CCranesHack::RegisterCarForMilitaryCrane, PATCH_NOTHING);
-	call(0x005A8232, &CCranesHack::DoesMilitaryCraneHaveThisOneAlready, PATCH_NOTHING);
-	call(0x004A4EC4, &CCranesHack::InitCranes, PATCH_NOTHING);
-	call(0x004A4993, &CCranesHack::InitCranes, PATCH_NOTHING);
+	InjectHook(0x005A8CB9, &CCranesHack::RegisterCarForMilitaryCrane);
+	InjectHook(0x005A8232, &CCranesHack::DoesMilitaryCraneHaveThisOneAlready);
+	InjectHook(0x004A4EC4, &CCranesHack::InitCranes);
+	InjectHook(0x004A4993, &CCranesHack::InitCranes);
 	bool(__thiscall CCraneHack::* function)(unsigned int) = &CCraneHack::DoesCranePickUpThisCarType;
-	call(0x005A821E, (unsigned long &)function, PATCH_NOTHING);
-	call(0x005A8275, (unsigned long &)function, PATCH_NOTHING);
-	call(0x005A81DF, &CCraneHack::FindCarInSectorListHack, PATCH_JUMP);
+	InjectHook(0x005A821E, (unsigned long &)function);
+	InjectHook(0x005A8275, (unsigned long &)function);
+	InjectHook(0x005A81DF, &CCraneHack::FindCarInSectorListHack, PATCH_JUMP);
 
-	call(0x005A8842, &CCraneHack::UpdateHackProxy, PATCH_JUMP);
-	call(0x00627073, &DestroyAudioEntityProxy, PATCH_JUMP);
+	InjectHook(0x005A8842, &CCraneHack::UpdateHackProxy, PATCH_JUMP);
+	InjectHook(0x00627073, &DestroyAudioEntityProxy, PATCH_JUMP);
 
 	return true;
 }

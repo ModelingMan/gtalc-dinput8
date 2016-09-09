@@ -53,26 +53,29 @@ unsigned long updateType14ProceedJump = vcversion::AdjustOffset(0x00432C8E);
 
 bool CGaragesHack::initialise()
 {
-	call(0x0045AD84, &HasImportExportGarageCollectedThisCar, PATCH_NOTHING);
+	InjectHook(0x0045AD84, &HasImportExportGarageCollectedThisCar);
 
 	void(__thiscall CGarageHack::* function1)(int) = &CGarageHack::MarkThisCarAsCollectedForCraig;
-	call(0x0043253C, (unsigned long &)function1, PATCH_NOTHING);
+	InjectHook(0x0043253C, (unsigned long &)function1);
 
 	bool(__thiscall CGarageHack::* function2)(int) = &CGarageHack::HasThisCarNotBeenCollected;
-	call(0x00432242, (unsigned long &)function2, PATCH_NOTHING);
-	call(0x004325F0, (unsigned long &)function2, PATCH_NOTHING);
-	call(0x004328C9, (unsigned long &)function2, PATCH_NOTHING);
+	InjectHook(0x00432242, (unsigned long &)function2);
+	InjectHook(0x004325F0, (unsigned long &)function2);
+	InjectHook(0x004328C9, (unsigned long &)function2);
 
 	bool(__thiscall CGarageHack::* function3)(int) = &CGarageHack::HasThisCarBeenCollected;
-	call(0x004326DC, (unsigned long &)function3, PATCH_NOTHING);
+	InjectHook(0x004326DC, (unsigned long &)function3);
 
 	// additional garage types
-	call(0x00432217, &CGarageHack::UpdateType7HackProxy, PATCH_JUMP);
-	call(0x00432C87, &CGarageHack::UpdateType14HackProxy, PATCH_JUMP);
+	InjectHook(0x00432217, &CGarageHack::UpdateType7HackProxy, PATCH_JUMP);
+	InjectHook(0x00432C87, &CGarageHack::UpdateType14HackProxy, PATCH_JUMP);
 
 	// bomb shop reward
-	*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x004318BB)) = 1000;
-	*reinterpret_cast<int *>(vcversion::AdjustOffset(0x00431BC4)) = -1000;
+	Patch<unsigned int>(0x004318BB, 1000);
+	Patch<int>(0x00431BC4, -1000);
+
+	// respray reinit fix (SilentPatch)
+	InjectHook(0x004349BB, &CGaragesHack::InitHack, PATCH_JUMP);
 
 	return true;
 }
@@ -86,6 +89,11 @@ bool CGaragesHack::HasImportExportGarageCollectedThisCar(short index, int slot)
 		return !!(CGaragesHack::carsCollected[1] & (1 << slot));
 	}
 	return false;
+}
+
+void CGaragesHack::InitHack()
+{
+	RespraysAreFree = 0;
 }
 
 void CGarageHack::MarkThisCarAsCollectedForCraig(int model)

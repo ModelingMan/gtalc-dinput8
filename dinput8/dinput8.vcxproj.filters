@@ -62,13 +62,19 @@
     <ClCompile Include="src\CWantedHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\SilentCall.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\CPacManPickupsHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\CProjectileInfoHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCameraHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CFileLoaderHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPathFindHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -134,6 +140,15 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\CProjectileInfoHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CCameraHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CFileLoaderHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CPathFindHack.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

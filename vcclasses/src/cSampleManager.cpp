@@ -10,12 +10,12 @@ __declspec(naked) unsigned int cSampleManager::GetSampleBaseFrequency(unsigned i
 	__asm jmp g_GetSampleBaseFrequency;
 }
 
-__declspec(naked) unsigned int cSampleManager::GetSampleLoopEndOffset(unsigned int)
+__declspec(naked) int cSampleManager::GetSampleLoopEndOffset(unsigned int)
 {
 	__asm jmp g_GetSampleLoopEndOffset;
 }
 
-__declspec(naked) unsigned int cSampleManager::GetSampleLoopStartOffset(unsigned int)
+__declspec(naked) int cSampleManager::GetSampleLoopStartOffset(unsigned int)
 {
 	__asm jmp g_GetSampleLoopStartOffset;
 }

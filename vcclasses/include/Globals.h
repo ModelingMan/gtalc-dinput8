@@ -11,14 +11,18 @@ namespace VCGlobals
 	extern cAudioManager &AudioManager;
 	extern CPhoneInfo &ThePhoneInfo;
 	extern CMissionCleanup &TheMissionCleanup;
+	extern CPathFind &ThePaths;
 
 	extern char *ScrollCharSet;
 
-	extern unsigned char &currentPlayer;
 	extern unsigned short &MI_CARMINE;
 	extern unsigned short &MI_NAUTICALMINE;
 	extern unsigned short &MI_LITTLEHA_POLICE;
-	extern unsigned short &MI_OD_LIGHTBEAM;
+	extern unsigned short &MI_LIGHTBEAM;
+	extern unsigned int &resolutionX;
+	extern unsigned int &resolutionY;
+	extern float &resolutionXMultiplier;
+	extern float &resolutionYMultiplier;
 
 	union ScriptParameter
 	{
@@ -47,7 +51,11 @@ namespace VCGlobals
 	};
 	extern RsGlobalType& Globals;
 
-	CPlayerPed *FindPlayerPed();
-	CVehicle *FindPlayerVehicle();
+	CPlayerPed *FindPlayerPed(void);
+	CVehicle *FindPlayerVehicle(void);
 	CVector *FindPlayerCoors(CVector *);
+	char *strcpy(char *dest, const char *src);
+	char *strncpy(char *dest, const char *src, size_t n);
+	int rand();
+	int sscanf(const char *s, const char *format, ...);
 }

@@ -23,6 +23,7 @@
     <ClCompile Include="src\cAudioManager.cpp" />
     <ClCompile Include="src\CAutomobile.cpp" />
     <ClCompile Include="src\CCamera.cpp" />
+    <ClCompile Include="src\CCarCtrl.cpp" />
     <ClCompile Include="src\CClock.cpp" />
     <ClCompile Include="src\CCranes.cpp" />
     <ClCompile Include="src\CDamageManager.cpp" />
@@ -39,6 +40,8 @@
     <ClCompile Include="src\CMessages.cpp" />
     <ClCompile Include="src\CMissionCleanup.cpp" />
     <ClCompile Include="src\CPad.cpp" />
+    <ClCompile Include="src\CPathFind.cpp" />
+    <ClCompile Include="src\CPathInfoForObject.cpp" />
     <ClCompile Include="src\CPed.cpp" />
     <ClCompile Include="src\CPhoneInfo.cpp" />
     <ClCompile Include="src\CPhysical.cpp" />

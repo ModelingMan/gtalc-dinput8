@@ -7,8 +7,8 @@ public:
 	static void WeaponCheat();
 	static void MoneyCheat();
 	static void HealthCheat();
-	static void WantedCheat();
-	static void NotWantedCheat();
+	static void WantedLevelUpCheat();
+	static void WantedLevelDownCheat();
 	static void TankCheat();
 	static void BlowUpCarsCheat();
 	static void ArmEverybodyCheat();
@@ -20,9 +20,9 @@ public:
 	static void RainyWeatherCheat();
 	static void FoggyWeatherCheat();
 	static void TimeTravelCheat();
-	static void WheelsOnlyCheat();
-	static void FlyboyCheat();
-	static void GripCheat();
-	static void VehicleCheat();
-	static void VehicleReverseCheat();
+	static void OnlyRenderWheelsCheat();
+	static void ChittyChittyBangBangCheat();
+	static void StrongGripCheat();
+	static void VehicleCheat(); // custom cheat
+	static void VehicleReverseCheat(); // custom cheat
 };

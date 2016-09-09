@@ -3,7 +3,6 @@
 #include "vcclasses.h"
 
 #include <math.h>
-#include <stdlib.h>
 #include <string.h>
 
 using namespace VCGlobals;
@@ -13,10 +12,6 @@ static char *ScrollBarMsgs[52] =
 {
 #include "ScrollBarMessages.inc"
 };
-
-bool CScrollBarHack::ms_PortlandComplete = false;
-bool CScrollBarHack::ms_StauntonComplete = false;
-bool CScrollBarHack::ms_ShoresideComplete = false;
 
 void CScrollBarHack::Update()
 {
@@ -309,9 +304,9 @@ void CScrollBarHack::Update()
 
 char *CScrollBarHack::BridgesMsgDynamic()
 {
-	if (ms_StauntonComplete)
+	if (CStats::CommercialPassed)
 		return ScrollBarMsgs[29];
-	else if (ms_PortlandComplete)
+	else if (CStats::IndustrialPassed)
 		return ScrollBarMsgs[28];
 	else
 		return ScrollBarMsgs[27];
@@ -319,9 +314,9 @@ char *CScrollBarHack::BridgesMsgDynamic()
 
 char *CScrollBarHack::LibertyTunnelMsgDynamic()
 {
-	if (ms_StauntonComplete)
+	if (CStats::CommercialPassed)
 		return ScrollBarMsgs[26];
-	else if (ms_PortlandComplete)
+	else if (CStats::IndustrialPassed)
 		return ScrollBarMsgs[25];
 	else
 		return ScrollBarMsgs[24];

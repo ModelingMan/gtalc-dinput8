@@ -1,5 +1,18 @@
 #include "CProjectileInfoHack.h"
 #include "vcversion.h"
+#include "SilentCall.h"
+
+// UpdateHack
+unsigned long projectileInfoUpdateProceedJump = vcversion::AdjustOffset(0x005C6ECC);
+unsigned long projectileInfoUpdateEndJump = vcversion::AdjustOffset(0x005C6F45);
+
+bool CProjectileInfoHack::initialise()
+{
+	// ProjectileInfo null thrower fix
+	InjectHook(0x005C6EC6, &CProjectileInfoHack::UpdateHack, PATCH_JUMP);
+
+	return true;
+}
 
 bool CProjectileInfoHack::IsProjectileInRange(float x1, float y1, float z1, float x2, float y2, float z2, bool flag)
 {
@@ -25,4 +38,19 @@ bool CProjectileInfoHack::IsProjectileInRange(float x1, float y1, float z1, floa
 		}
 	}
 	return false;
+}
+
+void __declspec(naked) CProjectileInfoHack::UpdateHack()
+{
+	__asm
+	{
+		mov eax, [ebp+4] // get pointer of projectile thrower
+		test eax, eax    // compare pointer with 0
+		jz end
+		mov eax, [ebp+0]
+		cmp eax, 0Ch
+		jmp projectileInfoUpdateProceedJump
+	end:
+		jmp projectileInfoUpdateEndJump
+	}
 }

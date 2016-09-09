@@ -2,11 +2,8 @@
 #include "vcversion.h"
 #include "SilentCall.h"
 #include <math.h>
-#include <stdlib.h>
-#include <fstream>
-#include <string>
 
-#define PM_SCRAMBLE_MODEL VCGlobals::MI_OD_LIGHTBEAM
+#define PM_SCRAMBLE_MODEL VCGlobals::MI_LIGHTBEAM
 #define PM_RACE_MODEL VCGlobals::MI_LITTLEHA_POLICE
 #define OFFSETX -335.0f
 #define OFFSETZ 6.0f
@@ -128,10 +125,10 @@ const CVector aRacePoints1[] =
 
 bool CPacManPickupsHack::initialise()
 {
-	call(0x004A4ED8, &CPacManPickupsHack::Init, PATCH_NOTHING); // CGame::Initialise
-	call(0x004A4967, &CPacManPickupsHack::Init, PATCH_NOTHING); // CGame::ReInitGameObjectVariables
-	call(0x004A45D7, &CPacManPickupsHack::Update, PATCH_NOTHING); // CGame::Process
-	call(0x004A6547, &CPacManPickupsHack::Render, PATCH_NOTHING); // RenderEffects
+	InjectHook(0x004A4ED8, &CPacManPickupsHack::Init); // CGame::Initialise
+	InjectHook(0x004A4967, &CPacManPickupsHack::Init); // CGame::ReInitGameObjectVariables
+	InjectHook(0x004A45D7, &CPacManPickupsHack::Update); // CGame::Process
+	InjectHook(0x004A6547, &CPacManPickupsHack::Render); // RenderEffects
 	return true;
 }
 
@@ -165,7 +162,8 @@ void CPacManPickupsHack::GeneratePMPickUps(CVector center, float radius, short c
 			CColPoint colpoint;
 			CVector pos;
 			bool t = false;
-			float random;
+			int random;
+			float randX, randY;
 			int counter = 0;
 			unsigned long *baseModelInfo = (unsigned long *)vcversion::AdjustOffset(0x0092D4C8);
 
@@ -177,15 +175,19 @@ void CPacManPickupsHack::GeneratePMPickUps(CVector center, float radius, short c
 					aPMPickups[i].position.z = 0;
 					break;
 				}
-				random = ((float)rand()) / (float)RAND_MAX;
-				pos.x = aPMPickups[i].position.x = center.x - radius + random * 2 * radius;
-				random = ((float)rand()) / (float)RAND_MAX;
-				pos.y = aPMPickups[i].position.y = center.y - radius + random * radius;
-				pos.z = aPMPickups[i].position.z = CWorld::FindGroundZForCoord(aPMPickups[i].position.x, aPMPickups[i].position.y) + 0.7f;
+				random = VCGlobals::rand();
+				randX = (float)((random & 255) - 128);
+				randY = (float)(((random / 256) & 255) - 128);
+				pos.x = center.x + randX * radius / 128;
+				pos.y = center.y + randY * radius / 128;
+				pos.z = 1000.0;
 				t = CWorld::ProcessVerticalLine(pos, -1000.0, colpoint, pentity, true, false, false, false, true, false, 0);
 			} while (!t || (pentity->status & 7) != 1 || !(*(unsigned short *)(baseModelInfo[pentity->modelIndex] + 0x42) & 4));
 
 			aPMPickups[i].state = 1;
+			aPMPickups[i].position.x = colpoint.point.x;
+			aPMPickups[i].position.y = colpoint.point.y;
+			aPMPickups[i].position.z = colpoint.point.z + 0.7f;
 
 			auto allocateObject = (CObject *(__cdecl *)(unsigned int))vcversion::AdjustOffset(0x004E4070);
 			CObject *object = allocateObject(0x194);
