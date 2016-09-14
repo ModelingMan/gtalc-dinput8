@@ -151,7 +151,7 @@ void CMovingThingsHack::Init()
 	v.x = v24;
 	v.y = v25;
 	v.z = 32.80299758911133f + zExtra;
-	aDigitalClocks[0].Init(v, v27, v26, -1, 0, 0, 100.0f, 0.8f);
+	aDigitalClocks[0].Init(v, v27, v26, 255, 0, 0, 100.0f, 0.8f);
 	float v28 = 0.3f * v16 + 60.56399917602539f + xExtra;
 	float v29 = 0.3f * v17 + -1083.088989257812f;
 	float v30 = -v20 * 0.05f + v28;
@@ -159,7 +159,7 @@ void CMovingThingsHack::Init()
 	v.x = v30;
 	v.y = v31;
 	v.z = 32.80299758911133f + zExtra;
-	aDigitalClocks[1].Init(v, v16, v17, 0, 0, -1, 100.0f, 0.8f);
+	aDigitalClocks[1].Init(v, v16, v17, 0, 0, 255, 100.0f, 0.8f);
 	float v32 = 0.3f * v20 + 58.14500045776367f + xExtra;
 	float v33 = 0.3f * v21 + -1079.267944335938f;
 	float v34 = 0.05f * v16 + v32;
@@ -167,7 +167,7 @@ void CMovingThingsHack::Init()
 	v.x = v34;
 	v.y = v35;
 	v.z = 32.80299758911133f + zExtra;
-	aDigitalClocks[2].Init(v, v20, v21, 0, -1, 0, 100.0f, 0.8f);
+	aDigitalClocks[2].Init(v, v20, v21, 0, 255, 0, 100.0f, 0.8f);
 
 }
 

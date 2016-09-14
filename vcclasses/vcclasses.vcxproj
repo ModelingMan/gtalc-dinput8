@@ -50,6 +50,7 @@
     <ClCompile Include="src\CPools.cpp" />
     <ClCompile Include="src\CProjectileInfo.cpp" />
     <ClCompile Include="src\CRadar.cpp" />
+    <ClCompile Include="src\CRenderer.cpp" />
     <ClCompile Include="src\CRestart.cpp" />
     <ClCompile Include="src\CRunningScript.cpp" />
     <ClCompile Include="src\cSampleManager.cpp" />
@@ -70,6 +71,7 @@
     <ClCompile Include="src\CWeather.cpp" />
     <ClCompile Include="src\CWorld.cpp" />
     <ClCompile Include="src\Globals.cpp" />
+    <ClCompile Include="src\RenderWare.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4CD5D3AF-19A3-4519-AB2A-1AF1740E123B}</ProjectGuid>

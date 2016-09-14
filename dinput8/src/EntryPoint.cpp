@@ -19,6 +19,7 @@
 #include "CCameraHack.h"
 #include "CFileLoaderHack.h"
 #include "CPathFindHack.h"
+#include "CBridgeHack.h"
 
 HMODULE hOrigDLL = NULL;
 
@@ -168,7 +169,8 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			!CProjectileInfoHack::initialise() ||
 			!CCameraHack::initialise() ||
 			!CFileLoaderHack::initialise() ||
-			!CPathFindHack::initialise())
+			!CPathFindHack::initialise() ||
+			!CBridgeHack::initialise())
 		{
 			VirtualProtect((LPVOID)(0x400000 + sectionheader->VirtualAddress), sectionheader->Misc.VirtualSize, OldProtect, &OldProtect);
 			return FALSE;

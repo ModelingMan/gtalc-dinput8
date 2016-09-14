@@ -14,11 +14,13 @@ class CGarageHack : public CGarage
 {
 public:
 	void MarkThisCarAsCollectedForCraig(int model);
-	bool HasThisCarBeenCollected(int model);
-	bool HasThisCarNotBeenCollected(int model);
+	bool HasCraigCollectedThisCar(int model);
+	bool DoesCraigNeedThisCar(int model);
 	static void UpdateType7HackProxy(void);
 	void UpdateType7Hack(void);
 	static void UpdateType14HackProxy(void);
 	void UpdateType14Hack(void);
 	float ProximityToGarageArea(float x, float y);
+	static void UpdateType5HackProxy(void);
+	static bool UpdateType5Hack(int);
 };

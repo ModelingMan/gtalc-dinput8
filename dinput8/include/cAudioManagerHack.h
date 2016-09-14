@@ -11,10 +11,13 @@ public:
 	static void ProcessFrontEndHackProxy();
 	void ProcessLoopingScriptObjectHack(unsigned char);
 	unsigned int GetPlayerTalkSfx(CPed *ped, unsigned short type);
-	static void InitialiseAudioZoneArray();
-	static void SetupSuspectLastSeenReportHackProxy();
+	static void InitialiseAudioZoneArray(void);
+	static void SetupSuspectLastSeenReportHackProxy(void);
 	static int SetupSuspectLastSeenReportHack(int model);
-	void ProcessCrane(void);
+	void ProcessCraneAndBridge(void);
+	void ProcessBridgeMotor(void);
+	void ProcessBridgeWarning(void);
+	void ProcessBridgeOneShots(void);
 	void ProcessCinemaScriptObject(unsigned int);
 	void ProcessLaunderetteScriptObject(unsigned int);
 	void ProcessSawMillScriptObject(unsigned int);

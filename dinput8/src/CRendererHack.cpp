@@ -73,7 +73,6 @@ void __declspec(naked) CRendererHack::RenderEverythingBarRoadsHackProxy(void)
 
 void CRendererHack::RenderEverythingBarRoadsHack(int model)
 {
-	auto RwRenderStateSet = (void(__cdecl *)(int, int))vcversion::AdjustOffset(0x00649BA0);
 	if (buildings[model]) {
 		RwRenderStateSet(0x14, 1);
 		isStateOne = true;

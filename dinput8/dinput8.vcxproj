@@ -134,6 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\CBridgeHack.cpp" />
     <ClCompile Include="src\CCameraHack.cpp" />
     <ClCompile Include="src\CExplosionHack.cpp" />
     <ClCompile Include="src\CFileLoaderHack.cpp" />
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\cAudioManagerHack.h" />
+    <ClInclude Include="include\CBridgeHack.h" />
     <ClInclude Include="include\CCameraHack.h" />
     <ClInclude Include="include\CExplosionHack.h" />
     <ClInclude Include="include\CFileLoaderHack.h" />

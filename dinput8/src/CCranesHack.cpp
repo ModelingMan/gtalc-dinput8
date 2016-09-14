@@ -14,7 +14,7 @@ unsigned long findCarEndJump = vcversion::AdjustOffset(0x005A82F4);
 static void DestroyAudioEntityProxy();
 static void DestroyAudioEntity();
 unsigned long updateHackEndJump = vcversion::AdjustOffset(0x005A8859);
-unsigned int audioEntities[8];
+int audioEntities[8];
 
 bool CCranesHack::initialise()
 {
@@ -176,23 +176,14 @@ void CCranesHack::ActivateCrane(float pickupX1, float pickupX2, float pickupY1, 
 
 void CCranesHack::AddThisOneCrane(CEntity *entity)
 {
-	// reset orientation
-	*(float *)((unsigned long)entity + 4) = 1.0;
-	*(float *)((unsigned long)entity + 8) = 0.0;
-	*(float *)((unsigned long)entity + 0xC) = 0.0;
-	*(float *)((unsigned long)entity + 0x14) = 0.0;
-	*(float *)((unsigned long)entity + 0x18) = 1.0;
-	*(float *)((unsigned long)entity + 0x1C) = 0.0;
-	*(float *)((unsigned long)entity + 0x24) = 0.0;
-	*(float *)((unsigned long)entity + 0x28) = 0.0;
-	*(float *)((unsigned long)entity + 0x2C) = 1.0;
+	entity->GetMatrix().ResetOrientation();
 	// add crane to array
 	if (CCranes::NumCranes < 8) {
 		int index = CCranes::NumCranes;
 		cranes[index].object = entity;
 		cranes[index].activity = 0;
 		// initialise rotation
-		cranes[index].armCurrentRotation = (float)CCranes::NumCranes;
+		cranes[index].armCurrentRotation = static_cast<float>(CCranes::NumCranes);
 		while (cranes[index].armCurrentRotation > 6.283) {
 			cranes[index].armCurrentRotation -= 6.283;
 		}

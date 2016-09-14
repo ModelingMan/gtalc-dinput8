@@ -41,6 +41,37 @@ float RenderReflections();
 // CarCtrlReInit
 void CarCtrlReInit();
 
+// CivilianAI
+void CivilianAI();
+unsigned long civilianAIValidPed = vcversion::AdjustOffset(0x004E94E6);
+unsigned long civilianAIInvalidPed = vcversion::AdjustOffset(0x004E9555);
+
+// center mouse (SilentPatch)
+static bool bGameInFocus = true;
+static LRESULT(CALLBACK **OldWndProc)(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK CustomWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (uMsg) {
+	case WM_KILLFOCUS:
+		bGameInFocus = false;
+		break;
+	case WM_SETFOCUS:
+		bGameInFocus = true;
+		break;
+	}
+
+	return (*OldWndProc)(hwnd, uMsg, wParam, lParam);
+}
+static auto* pCustomWndProc = CustomWndProc;
+void ResetMousePos()
+{
+	if (bGameInFocus) {
+		RwV2d vecPos = { resolutionX * 0.5f, resolutionY * 0.5f };
+		RsMouseSetPos(&vecPos);
+	}
+	CRenderer::ConstructRenderList();
+}
+
 int CRunningScriptHack::debugMode;
 
 bool CRunningScriptHack::initialise()
@@ -96,6 +127,14 @@ bool CRunningScriptHack::initialise()
 
 	// reinit firetruck/ambulance timer (SilentPatch)
 	InjectHook(0x004A489B, &CarCtrlReInit);
+
+	// investigate ped crash fix
+	InjectHook(0x004E94E0, &CivilianAI, PATCH_JUMP);
+
+	// center mouse (SilentPatch)
+	InjectHook(0x004A5E45, &ResetMousePos);
+	OldWndProc = *(LRESULT(CALLBACK***)(HWND, UINT, WPARAM, LPARAM))vcversion::AdjustOffset(0x00601727);
+	Patch(0x00601727, &pCustomWndProc);
 
 	return true;
 }
@@ -483,6 +522,19 @@ void CarCtrlReInit()
 	CCarCtrl::ReInit();
 	CCarCtrl::LastTimeFireTruckCreated = 0;
 	CCarCtrl::LastTimeAmbulanceCreated = 0;
+}
+
+void __declspec(naked) CivilianAI()
+{
+	__asm
+	{
+		mov edx, dword ptr [ebp+1A0h] // get ped to investigate
+		test edx, edx
+		jz invalidPed
+		jmp civilianAIValidPed
+	invalidPed:
+		jmp civilianAIInvalidPed
+	}
 }
 
 bool CRunningScriptHack::_00AC_is_car_still_alive()

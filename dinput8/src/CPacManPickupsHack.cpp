@@ -2,17 +2,19 @@
 #include "vcversion.h"
 #include "SilentCall.h"
 #include <math.h>
+#include <fstream>
+#include <string>
 
-#define PM_SCRAMBLE_MODEL VCGlobals::MI_LIGHTBEAM
-#define PM_RACE_MODEL VCGlobals::MI_LITTLEHA_POLICE
 #define OFFSETX -335.0f
 #define OFFSETZ 6.0f
 
 int CPacManPickupsHack::PillsEatenInRace;
 bool CPacManPickupsHack::bPMActive;
 CPacManPickupHack CPacManPickupsHack::aPMPickups[MAX_PACMAN_PICKUP];
+unsigned short scrambleModel;
+unsigned short raceModel;
 
-const CVector aRacePoints1[] =
+CVector aRacePoints1[MAX_PACMAN_PICKUP] =
 {
 	{ 913.6222f, -155.13692f, 4.969947f },
 	{ 913.924f, -124.129425f, 4.969257f },
@@ -140,6 +142,23 @@ void CPacManPickupsHack::Init(void)
 	}
 	bPMActive = false;
 	PillsEatenInRace = 0;
+
+	// get optional data for pickups
+	// create pacman.dat and populate it with two custom models and up to 255 coordinate points
+	scrambleModel = VCGlobals::MI_LIGHTBEAM;
+	raceModel = VCGlobals::MI_LITTLEHA_POLICE;
+	std::ifstream fileName("pacman.dat");
+	if (fileName.is_open()) {
+		std::string line;
+		if (std::getline(fileName, line)) sscanf_s(line.c_str(), "%d", &scrambleModel);
+		if (std::getline(fileName, line)) sscanf_s(line.c_str(), "%d", &raceModel);
+		int i = 0;
+		for (; std::getline(fileName, line) && i < MAX_PACMAN_PICKUP - 1; i++) {
+			sscanf_s(line.c_str(), "%f %f %f", &aRacePoints1[i].x, &aRacePoints1[i].y, &aRacePoints1[i].z);
+		}
+		aRacePoints1[i].x = aRacePoints1[i].y = aRacePoints1[i].z = 0;
+		fileName.close();
+	}
 }
 
 void CPacManPickupsHack::Update(void)
@@ -176,8 +195,8 @@ void CPacManPickupsHack::GeneratePMPickUps(CVector center, float radius, short c
 					break;
 				}
 				random = VCGlobals::rand();
-				randX = (float)((random & 255) - 128);
-				randY = (float)(((random / 256) & 255) - 128);
+				randX = static_cast<float>((random & 255) - 128);
+				randY = static_cast<float>(((random / 256) & 255) - 128);
 				pos.x = center.x + randX * radius / 128;
 				pos.y = center.y + randY * radius / 128;
 				pos.z = 1000.0;
@@ -193,7 +212,7 @@ void CPacManPickupsHack::GeneratePMPickUps(CVector center, float radius, short c
 			CObject *object = allocateObject(0x194);
 			if (object) {
 				auto createObject = (CObject *(__thiscall *)(CObject *, int, bool))vcversion::AdjustOffset(0x004E41B0);
-				object = createObject(object, PM_SCRAMBLE_MODEL, true);
+				object = createObject(object, scrambleModel, true);
 			}
 			if (object) {
 				object->field_16C = 2;
@@ -231,7 +250,7 @@ void CPacManPickupsHack::GeneratePMPickUpsForRace(void)
 			CObject *object = allocateObject(0x194);
 			if (object) {
 				auto createObject = (CObject *(__thiscall *)(CObject *, int, bool))vcversion::AdjustOffset(0x004E41B0);
-				object = createObject(object, PM_RACE_MODEL, true);
+				object = createObject(object, raceModel, true);
 			}
 			if (object) {
 				object->field_16C = 2;
@@ -263,7 +282,6 @@ void CPacManPickupsHack::GenerateOnePMPickUp(CVector pos)
 void CPacManPickupsHack::Render(void)
 {
 	if (bPMActive) {
-		auto RwRenderStateSet = (void(__cdecl *)(int, int))vcversion::AdjustOffset(0x00649BA0);
 		RwRenderStateSet(8, 0);
 		RwRenderStateSet(12, 1);
 		RwRenderStateSet(10, 2);

@@ -70,6 +70,7 @@ public:
 
 	void SetRotate(float, float, float);
 	void SetRotateZOnly(float);
+	void ResetOrientation(void);
 	void UpdateRW(void);
 };
 
@@ -115,7 +116,7 @@ public:
 	unsigned char ComputeVolume(unsigned char, float, float);
 	float GetDistanceSquared(const CVector &); // INLINED!
 	void ProcessLoopingScriptObject(unsigned char);
-	unsigned int GetPedCommentSfxFromRange(int &, unsigned long, int, int);
+	unsigned int GetPhrase(unsigned int &, unsigned int &, unsigned int, unsigned int);
 };
 
 //########################################################################
@@ -200,7 +201,7 @@ public:
 	void PlayOneShot(int, unsigned short, float);
 	void SetEntityStatus(int, unsigned char);
 	void DestroyEntity(int);
-	unsigned int CreateEntity(int, void *);
+	int CreateEntity(int, void *);
 };
 
 //########################################################################
@@ -446,11 +447,13 @@ public:
 		unsigned int unk1;  // 0x10
 		unsigned int unk2;  // 0x14
 	} weapons[10];                // 0x408
-	unsigned char space7[0x00FC];
+	unsigned char space7[0x00E8];
+	unsigned int  phrase;         // 0x5E0
+	unsigned char space8[0x0010];
 	CWanted       *wanted;        // 0x5F4
-	unsigned char space8[0x0040];
+	unsigned char space9[0x0040];
 	unsigned char drunkenness;    // 0x638
-	unsigned char space9[0x009F];
+	unsigned char space10[0x009F];
 	// 0x6D8
 
 	void SetAmmo(int, unsigned int);
@@ -482,7 +485,11 @@ public:
 	unsigned char space1[0x004C];
 	unsigned char field_16C;      // 0x16C
 	unsigned char field_16D;      // 0x16D
+	unsigned char space2[0x0032];
+	// 0x1A0
 };
+
+static_assert(sizeof(CObject) == 0x1A0, "Size of CObject is not 0x1A0 bytes.");
 
 //########################################################################
 //# CCutsceneHead
@@ -955,7 +962,7 @@ public:
 class CGarages
 {
 public:
-	static int *carsCollected;
+	static int *CarTypesCollected;
 	static int &BankVansCollected;
 	static int &PoliceCarsCollected;
 	static unsigned char &RespraysAreFree;
@@ -1215,6 +1222,16 @@ public:
 	static CPathInfoForObject *&InfoForTilePeds;
 
 	void StoreDetachedNodeInfoPed(int, char, int, float, float, float, float, bool, bool, bool, unsigned char);
+};
+
+//########################################################################
+//# CRenderer
+//########################################################################
+
+class CRenderer
+{
+public:
+	static void ConstructRenderList(void);
 };
 
 #endif

@@ -26,8 +26,8 @@ char *GenerateDigitalClockText()
 {
 	if (((CTimer::m_snTimeInMilliseconds >> 10) & 7) >= 6)
 	{
-		short temprature = (short)(13.0f - 6.0f * cosf((CClock::ms_nGameClockHours * 60 + CClock::ms_nGameClockMinutes) / 229.299358f - 1.0f));
-		sDigitalClockText[0] = temprature / 10 + '0';
+		short temprature = static_cast<short>(13.0f - 6.0f * cosf((CClock::ms_nGameClockHours * 60 + CClock::ms_nGameClockMinutes) / 229.299358f - 1.0f));
+		sDigitalClockText[0] = static_cast<char>(temprature / 10 + '0');
 		if (sDigitalClockText[0] == '0')
 			sDigitalClockText[0] = ' ';
 		sDigitalClockText[1] = temprature % 10 + '0';
@@ -65,10 +65,10 @@ void CDigitalClockHack::Render()
 		CSprite::InitSpriteBuffer();
 		char *text = GenerateDigitalClockText();
 		
-		v5 = ((float)(rand() % 256 + 768) * this->m_fScale) / 1024.0f;
-		unsigned char r = (int)((float)this->m_20 * v5);
-		unsigned char g = (int)((float)this->m_21 * v5);
-		unsigned char b = (int)((float)this->m_22 * v5);
+		v5 = (static_cast<float>(rand() % 256 + 768) * this->m_fScale) / 1024.0f;
+		unsigned char r = static_cast<unsigned char>(static_cast<float>(this->m_20) * v5);
+		unsigned char g = static_cast<unsigned char>(static_cast<float>(this->m_21) * v5);
+		unsigned char b = static_cast<unsigned char>(static_cast<float>(this->m_22) * v5);
 		
 		//RwRenderStateSet(rwRENDERSTATEZWRITEENABLE, 0);
 		//RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, (void *)1);
@@ -77,13 +77,13 @@ void CDigitalClockHack::Render()
 		//RwRenderStateSet(rwRENDERSTATETEXTUREFILTER, (void *)2);
 		//RwRenderStateSet(rwRENDERSTATETEXTURERASTER, dword_5FAF44->raster);
 		//RwRenderStateSet(rwRENDERSTATEZTESTENABLE, (void *)1);
-		((int(*)(int, int))vcversion::AdjustOffset(0x00649BA0))(8, 0);
-		((int(*)(int, int))vcversion::AdjustOffset(0x00649BA0))(12, 1);
-		((int(*)(int, int))vcversion::AdjustOffset(0x00649BA0))(10, 2);
-		((int(*)(int, int))vcversion::AdjustOffset(0x00649BA0))(11, 2);
-		((int(*)(int, int))vcversion::AdjustOffset(0x00649BA0))(9, 2);
-		((int(*)(int, int))vcversion::AdjustOffset(0x00649BA0))(1, (int)**(void ***)vcversion::AdjustOffset(0x00695538));//dword_5FAF44->raster);
-		((int(*)(int, int))vcversion::AdjustOffset(0x00649BA0))(6, 1);
+		RwRenderStateSet(8, 0);
+		RwRenderStateSet(12, 1);
+		RwRenderStateSet(10, 2);
+		RwRenderStateSet(11, 2);
+		RwRenderStateSet(9, 2);
+		RwRenderStateSet(1, (int)**(void ***)vcversion::AdjustOffset(0x00695538));//dword_5FAF44->raster);
+		RwRenderStateSet(6, 1);
 		
 		int v20 = 0;
 		for (int i = 0; i < 5; i++, v20 += 8)
@@ -103,7 +103,7 @@ void CDigitalClockHack::Render()
 						{
 							v10 = v28 * this->m_1C * 0.12f;
 							v11 = v27 * this->m_1C * 0.12f;
-							CSprite::RenderBufferedOneXLUSprite(v24.x, v24.y, v24.z, v11, v10, r, g, b, 255, 1.0f / v24.z, -1);
+							CSprite::RenderBufferedOneXLUSprite(v24.x, v24.y, v24.z, v11, v10, r, g, b, 255, 1.0f / v24.z, 255);
 						}
 					}
 				}

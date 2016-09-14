@@ -46,10 +46,14 @@ const int carsToCollect[2][16] =
 	}
 };
 
+// UpdateType7HackProxy
 unsigned long updateType7EndJump = vcversion::AdjustOffset(0x00433FF0);
 unsigned long updateType7ProceedJump = vcversion::AdjustOffset(0x0043221E);
+// UpdateType14HackProxy
 unsigned long updateType14EndJump = vcversion::AdjustOffset(0x00434010);
 unsigned long updateType14ProceedJump = vcversion::AdjustOffset(0x00432C8E);
+// UpdateType5HackProxy
+unsigned long updateType5EndJump = vcversion::AdjustOffset(0x00430CF9);
 
 bool CGaragesHack::initialise()
 {
@@ -58,12 +62,12 @@ bool CGaragesHack::initialise()
 	void(__thiscall CGarageHack::* function1)(int) = &CGarageHack::MarkThisCarAsCollectedForCraig;
 	InjectHook(0x0043253C, (unsigned long &)function1);
 
-	bool(__thiscall CGarageHack::* function2)(int) = &CGarageHack::HasThisCarNotBeenCollected;
+	bool(__thiscall CGarageHack::* function2)(int) = &CGarageHack::DoesCraigNeedThisCar;
 	InjectHook(0x00432242, (unsigned long &)function2);
 	InjectHook(0x004325F0, (unsigned long &)function2);
 	InjectHook(0x004328C9, (unsigned long &)function2);
 
-	bool(__thiscall CGarageHack::* function3)(int) = &CGarageHack::HasThisCarBeenCollected;
+	bool(__thiscall CGarageHack::* function3)(int) = &CGarageHack::HasCraigCollectedThisCar;
 	InjectHook(0x004326DC, (unsigned long &)function3);
 
 	// additional garage types
@@ -77,16 +81,19 @@ bool CGaragesHack::initialise()
 	// respray reinit fix (SilentPatch)
 	InjectHook(0x004349BB, &CGaragesHack::InitHack, PATCH_JUMP);
 
+	// spray shop acceptable vehicles
+	InjectHook(0x00430CC6, &CGarageHack::UpdateType5HackProxy, PATCH_JUMP);
+
 	return true;
 }
 
 bool CGaragesHack::HasImportExportGarageCollectedThisCar(short index, int slot)
 {
 	if (garages[index].type == 8) {
-		return !!(CGaragesHack::carsCollected[0] & (1 << slot));
+		return !!(CGaragesHack::CarTypesCollected[0] & (1 << slot));
 	}
 	if (garages[index].type == 9) {
-		return !!(CGaragesHack::carsCollected[1] & (1 << slot));
+		return !!(CGaragesHack::CarTypesCollected[1] & (1 << slot));
 	}
 	return false;
 }
@@ -110,8 +117,8 @@ void CGarageHack::MarkThisCarAsCollectedForCraig(int model)
 	}
 	for (int i = 0; i < 16; i++) {
 		if (model == carsToCollect[list][i]) {
-			CGaragesHack::carsCollected[list] |= (1 << i);
-			if (CGaragesHack::carsCollected[list] == 0xFFFF) {
+			CGaragesHack::CarTypesCollected[list] |= (1 << i);
+			if (CGaragesHack::CarTypesCollected[list] == 0xFFFF) {
 				CWorld::Players->m_Money += 200000;
 				CGarages::TriggerMessage("GA_14", -1, 5000, -1);
 			} else {
@@ -123,7 +130,7 @@ void CGarageHack::MarkThisCarAsCollectedForCraig(int model)
 	}
 }
 
-bool CGarageHack::HasThisCarBeenCollected(int model)
+bool CGarageHack::HasCraigCollectedThisCar(int model)
 {
 	if (type != 8 && type != 9) {
 		return false;
@@ -137,13 +144,13 @@ bool CGarageHack::HasThisCarBeenCollected(int model)
 	}
 	for (int i = 0; i < 16; i++) {
 		if (model == carsToCollect[list][i]) {
-			return !!(CGaragesHack::carsCollected[list] & (1 << i));
+			return !!(CGaragesHack::CarTypesCollected[list] & (1 << i));
 		}
 	}
 	return false;
 }
 
-bool CGarageHack::HasThisCarNotBeenCollected(int model)
+bool CGarageHack::DoesCraigNeedThisCar(int model)
 {
 	if (type != 8 && type != 9) {
 		return false;
@@ -157,7 +164,7 @@ bool CGarageHack::HasThisCarNotBeenCollected(int model)
 	}
 	for (int i = 0; i < 16; i++) {
 		if (model == carsToCollect[list][i]) {
-			return !(CGaragesHack::carsCollected[list] & (1 << i));
+			return !(CGaragesHack::CarTypesCollected[list] & (1 << i));
 		}
 	}
 	return false;
@@ -233,7 +240,7 @@ void CGarageHack::UpdateType7Hack(void)
 				if (!reward) {
 					CGarages::TriggerMessage("GA_11", -1, 4000, -1);
 				} else {
-					CGarages::TriggerMessage("GA_10", (short)reward, 4000, -1);
+					CGarages::TriggerMessage("GA_10", static_cast<short>(reward), 4000, -1);
 					CWorld::Players->m_Money += reward;
 				}
 			}
@@ -382,4 +389,31 @@ float CGarageHack::ProximityToGarageArea(float x, float y)
 		y = 0;
 	}
 	return x * x + y * y;
+}
+
+void __declspec(naked) CGarageHack::UpdateType5HackProxy(void)
+{
+	__asm
+	{
+		push eax
+		call CGarageHack::UpdateType5Hack
+		add esp, 4
+		jmp updateType5EndJump
+	}
+}
+
+bool CGarageHack::UpdateType5Hack(int model)
+{
+	switch (model) {
+	case CAR_AMBULAN:
+	case CAR_BARRACKS:
+	case CAR_BUS:
+	case CAR_DODO:
+	case CAR_ENFORCER:
+	case CAR_FIRETRUK:
+	case CAR_POLICE:
+	case CAR_RHINO:
+		return false;
+	}
+	return true;
 }

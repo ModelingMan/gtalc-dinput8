@@ -1,5 +1,6 @@
 #include "cAudioManagerHack.h"
 #include "CRunningScriptHack.h"
+#include "CBridgeHack.h"
 #include "Globals.h"
 #include "vcversion.h"
 #include "SilentCall.h"
@@ -92,6 +93,10 @@ static unsigned char scriptObjectAirportCounter;
 #define LOOPING_SCRIPT_OBJECT_59E 494
 static unsigned int scriptObjectHomeTime;
 static unsigned char scriptObjectHomeCounter;
+
+#define BRIDGE_WARNING 495
+#define BRIDGE_ONE_SHOT 132
+#define BRIDGE_MOTOR 319
 
 struct PoliceRadioZone
 {
@@ -355,7 +360,7 @@ bool cAudioManagerHack::initialise()
 	InjectHook(0x004DDAEB, &cAudioManagerHack::InitialiseAudioZoneArray);
 	
 	// crane audio
-	void(__thiscall cAudioManagerHack::* function2)() = &cAudioManagerHack::ProcessCrane;
+	void(__thiscall cAudioManagerHack::* function2)() = &cAudioManagerHack::ProcessCraneAndBridge;
 	InjectHook(0x005F596C, (unsigned long &)function2);
 	Patch<unsigned char>(0x005F5E6C, 5);
 
@@ -564,7 +569,7 @@ void cAudioManagerHack::ProcessLoopingScriptObjectHack(unsigned char id)
 
 unsigned int __thiscall cAudioManagerHack::GetPlayerTalkSfx(CPed *ped, unsigned short type)
 {
-	int store, start, range;
+	unsigned int store, start, range;
 	switch (type) {
 	case 0x67:
 		return 9796;
@@ -589,7 +594,7 @@ unsigned int __thiscall cAudioManagerHack::GetPlayerTalkSfx(CPed *ped, unsigned 
 	default:
 		return 9942;
 	}
-	VCGlobals::AudioManager.GetPedCommentSfxFromRange(store, (unsigned long)ped + 0x5E0, start, range);
+	VCGlobals::AudioManager.GetPhrase(store, ped->phrase, start, range);
 	return store;
 }
 
@@ -702,14 +707,16 @@ int cAudioManagerHack::SetupSuspectLastSeenReportHack(int model)
 	return REPORT_NONE;
 }
 
-void cAudioManagerHack::ProcessCrane()
+void cAudioManagerHack::ProcessCraneAndBridge()
 {
+	// process crane
+	float distance;
 	int x = this->m_Unk13;
 	x = x + x * 4;
 	CCrane *crane = (CCrane *)*(unsigned long *)((unsigned long)&VCGlobals::AudioManager + x * 8 + 0x1F14);
 	if (crane && crane->activity == 1 && crane->status) {
 		this->m_Position = crane->object->GetPos();
-		float distance = this->GetDistanceSquared(this->m_Position);
+		distance = this->GetDistanceSquared(this->m_Position);
 		if (distance < 6400.0) {
 			this->m_DistanceToCamera = distance > 0.0 ? sqrt(distance) : 0.0f;
 			this->m_Volume = this->ComputeVolume(100, 80.0, this->m_DistanceToCamera);
@@ -737,11 +744,113 @@ void cAudioManagerHack::ProcessCrane()
 			if (*(unsigned char *)((unsigned long)&VCGlobals::AudioManager + x * 8 + 0x1F34)) {
 				this->m_Unk7 = 1;
 				this->m_SampleID = 139;
-				this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(30);
+				this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
 				this->m_Unk8 = 1;
 				this->m_Unk9 = 1;
 				this->m_Unk10 = 1;
 				this->m_Unk12 = 1;
+				this->AddSampleToRequestedQueue();
+			}
+		}
+	}
+
+	// process bridge
+	if (CBridgeHack::pLiftPart && CStats::CommercialPassed) {
+		this->m_Position = CBridgeHack::pLiftPart->GetPos();
+		distance = this->GetDistanceSquared(this->m_Position);
+		if (distance < 202500.0) {
+			this->m_DistanceToCamera = distance > 0.0 ? sqrt(distance) : 0.0f;
+			switch (CBridgeHack::State) {
+			case 2: // moving down
+			case 5: // moving up
+				this->ProcessBridgeMotor();
+			case 0: // inactive
+			case 1: // fully opened
+			case 4: // ready to move up
+				this->ProcessBridgeWarning();
+				break;
+			default:
+				this->ProcessBridgeOneShots();
+			}
+		}
+	}
+}
+
+void cAudioManagerHack::ProcessBridgeWarning()
+{
+	if (this->m_DistanceToCamera < 450.0) {
+		this->m_Volume = this->ComputeVolume(100, 450.0, this->m_DistanceToCamera);
+		if (this->m_Volume) {
+			this->m_Unk7 = 0;
+			this->m_SampleID = BRIDGE_WARNING;
+			this->m_Unk0 = 0;
+			this->m_Unk1 = 0;
+			this->m_Unk2 = 1;
+			this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+			this->m_Unk8 = 0;
+			this->m_MaxVolume = 100;
+			this->m_LoopStartOff = VCGlobals::SampleManager.GetSampleLoopStartOffset(this->m_SampleID);
+			this->m_LoopEndOff = VCGlobals::SampleManager.GetSampleLoopEndOffset(this->m_SampleID);
+			this->m_Unk4 = 2.0;
+			this->m_MaxRange = 450.0;
+			this->m_Unk9 = 0;
+			this->m_Unk6 = 8;
+			this->m_Unk10 = 0;
+			this->m_Unk12 = 0;
+			this->AddSampleToRequestedQueue();
+		}
+	}
+}
+
+void cAudioManagerHack::ProcessBridgeMotor()
+{
+	if (this->m_DistanceToCamera < 400.0) {
+		this->m_Volume = this->ComputeVolume(127, 400.0, this->m_DistanceToCamera);
+		if (this->m_Volume) {
+			this->m_Unk7 = 1;
+			this->m_SampleID = BRIDGE_MOTOR;
+			this->m_Unk0 = 0;
+			this->m_Unk1 = 0;
+			this->m_Unk2 = 1;
+			this->m_Frequency = 5500;
+			this->m_Unk8 = 0;
+			this->m_MaxVolume = 127;
+			this->m_LoopStartOff = VCGlobals::SampleManager.GetSampleLoopStartOffset(this->m_SampleID);
+			this->m_LoopEndOff = VCGlobals::SampleManager.GetSampleLoopEndOffset(this->m_SampleID);
+			this->m_Unk4 = 2.0;
+			this->m_MaxRange = 400.0;
+			this->m_Unk9 = 0;
+			this->m_Unk6 = 3;
+			this->m_Unk10 = 0;
+			this->AddSampleToRequestedQueue();
+		}
+	}
+}
+
+void cAudioManagerHack::ProcessBridgeOneShots()
+{
+	if ((CBridgeHack::State == 1 && CBridgeHack::OldState == 5) ||
+		(CBridgeHack::State == 3 && CBridgeHack::OldState == 2) ||
+		(CBridgeHack::State == 5 && CBridgeHack::OldState == 4) ||
+		(CBridgeHack::State == 2 && CBridgeHack::OldState == 1)) {
+		if (this->m_DistanceToCamera < 400.0) {
+			this->m_Volume = this->ComputeVolume(127, 400.0, this->m_DistanceToCamera);
+			if (this->m_Volume) {
+				this->m_Unk7 = 2;
+				this->m_SampleID = BRIDGE_ONE_SHOT;
+				this->m_Unk0 = 0;
+				this->m_Unk1 = 0;
+				this->m_Unk2 = 1;
+				this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+				this->m_Unk8 = 1;
+				this->m_MaxVolume = 127;
+				this->m_LoopStartOff = 0;
+				this->m_LoopEndOff = -1;
+				this->m_Unk4 = 2.0;
+				this->m_MaxRange = 400.0;
+				this->m_Unk9 = 1;
+				this->m_Unk10 = 0;
+				this->m_Unk12 = 0;
 				this->AddSampleToRequestedQueue();
 			}
 		}

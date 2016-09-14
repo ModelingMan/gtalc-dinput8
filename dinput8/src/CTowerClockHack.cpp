@@ -1,4 +1,5 @@
 #include "CTowerClockHack.h"
+#include "vcversion.h"
 #include "Globals.h"
 
 #define _USE_MATH_DEFINES
@@ -46,13 +47,13 @@ void CTowerClockHack::Render()
 		//RwRenderStateSet(rwRENDERSTATEDESTBLEND, (void *)6);
 		//RwRenderStateSet(rwRENDERSTATETEXTUREFILTER, (void *)2);
 		//RwRenderStateSet(rwRENDERSTATETEXTURERASTER, 0);
-		((int(*)(int, int))0x00649BA0)(8, 1);
-		((int(*)(int, int))0x00649BA0)(6, 1);
-		((int(*)(int, int))0x00649BA0)(12, 1);
-		((int(*)(int, int))0x00649BA0)(10, 5);
-		((int(*)(int, int))0x00649BA0)(11, 6);
-		((int(*)(int, int))0x00649BA0)(9, 2);
-		((int(*)(int, int))0x00649BA0)(1, 0);
+		RwRenderStateSet(8, 1);
+		RwRenderStateSet(6, 1);
+		RwRenderStateSet(12, 1);
+		RwRenderStateSet(10, 5);
+		RwRenderStateSet(11, 6);
+		RwRenderStateSet(9, 2);
+		RwRenderStateSet(1, 0);
 		
 		verts[0].color = this->m_22 | (this->m_21 << 8) | (this->m_20 << 16) | alpha << 24;
 		verts[1].color = this->m_22 | (this->m_21 << 8) | (this->m_20 << 16) | alpha << 24;

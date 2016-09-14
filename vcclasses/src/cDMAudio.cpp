@@ -35,7 +35,7 @@ __declspec(naked) void cDMAudio::DestroyEntity(int)
 	__asm jmp g_DestroyEntity;
 }
 
-__declspec(naked) unsigned int cDMAudio::CreateEntity(int, void *)
+__declspec(naked) int cDMAudio::CreateEntity(int, void *)
 {
 	__asm jmp g_CreateEntity;
 }

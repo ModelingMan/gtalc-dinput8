@@ -56,6 +56,6 @@ namespace VCGlobals
 	CVector *FindPlayerCoors(CVector *);
 	char *strcpy(char *dest, const char *src);
 	char *strncpy(char *dest, const char *src, size_t n);
-	int rand();
+	int rand(void);
 	int sscanf(const char *s, const char *format, ...);
 }

@@ -172,5 +172,11 @@
     <ClCompile Include="src\CPathFind.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\RenderWare.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CRenderer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

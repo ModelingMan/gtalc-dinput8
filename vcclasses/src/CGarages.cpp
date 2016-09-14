@@ -1,7 +1,7 @@
 #include "vcclasses.h"
 #include "vcversion.h"
 
-int *CGarages::carsCollected = reinterpret_cast<int *>(vcversion::AdjustOffset(0x007D52F8));
+int *CGarages::CarTypesCollected = reinterpret_cast<int *>(vcversion::AdjustOffset(0x007D52F8));
 int &CGarages::BankVansCollected = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x00978714));
 int &CGarages::PoliceCarsCollected = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x00A0D8B8));
 unsigned char &CGarages::RespraysAreFree = *reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x00A10AB5));

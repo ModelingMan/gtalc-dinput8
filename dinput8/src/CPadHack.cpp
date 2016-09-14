@@ -135,7 +135,7 @@ void CPadHack::MoneyCheat()
 void CPadHack::HealthCheat()
 {
 	char gxtKey[8] = "CHEAT3";
-	VCGlobals::FindPlayerPed()->health = (float)CWorld::Players[CWorld::PlayerInFocus].maxHealth;
+	VCGlobals::FindPlayerPed()->health = static_cast<float>(CWorld::Players[CWorld::PlayerInFocus].maxHealth);
 	if (CVehicle *vehicle = VCGlobals::FindPlayerVehicle()) {
 		vehicle->health = 1000.0;
 		if (!vehicle->type) {
@@ -220,7 +220,7 @@ void CPadHack::SlowTimeCheat()
 void CPadHack::ArmourCheat()
 {
 	char gxtKey[8] = "CHEAT4";
-	VCGlobals::FindPlayerPed()->armour = (float)CWorld::Players[CWorld::PlayerInFocus].maxArmour;
+	VCGlobals::FindPlayerPed()->armour = static_cast<float>(CWorld::Players[CWorld::PlayerInFocus].maxArmour);
 	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
