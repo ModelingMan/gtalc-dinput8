@@ -31,7 +31,7 @@ bool CPagerHack::initialise()
 void CPagerHack::AddMessage(wchar_t *text, unsigned short delay, unsigned short unk1, unsigned short unk2)
 {
 	bool bDone = false;
-	int iTextLength = wcslen(text);
+	unsigned short iTextLength = static_cast<unsigned short>(wcslen(text));
 
 	for (int iPagerIndex = 0; !bDone && iPagerIndex < 8; iPagerIndex++)
 	{
@@ -43,7 +43,7 @@ void CPagerHack::AddMessage(wchar_t *text, unsigned short delay, unsigned short 
 			Pagers[iPagerIndex].Unk3 = unk2;
 			Pagers[iPagerIndex].Scroll = -((unsigned short)MaxLength + 10);
 			Pagers[iPagerIndex].Unk2 = delay + CTimer::m_snTimeInMilliseconds;
-			Pagers[iPagerIndex].TextLength = static_cast<unsigned short>(iTextLength);
+			Pagers[iPagerIndex].TextLength = iTextLength;
 			Pagers[iPagerIndex].Unk5 = 0x0FFFFFFFF;
 			Pagers[iPagerIndex].Unk6 = 0x0FFFFFFFF;
 			Pagers[iPagerIndex].Unk7 = 0x0FFFFFFFF;
@@ -83,7 +83,7 @@ void CPagerHack::AddMessage(wchar_t *text, unsigned short delay, unsigned short 
 					Pagers[iPagerIndex].Unk3 = unk2;
 					Pagers[iPagerIndex].Scroll = -((unsigned short)MaxLength + 10);
 					Pagers[iPagerIndex].Unk2 = delay + CTimer::m_snTimeInMilliseconds;
-					Pagers[iPagerIndex].TextLength = static_cast<unsigned short>(iTextLength);
+					Pagers[iPagerIndex].TextLength = iTextLength;
 					Pagers[iPagerIndex].Unk5 = 0xFFFFFFFF;
 					Pagers[iPagerIndex].Unk6 = 0xFFFFFFFF;
 					Pagers[iPagerIndex].Unk7 = 0xFFFFFFFF;

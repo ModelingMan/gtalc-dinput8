@@ -2,8 +2,7 @@
 #include "vcversion.h"
 #include "SilentCall.h"
 #include <math.h>
-#include <fstream>
-#include <string>
+#include <new>
 
 #define OFFSETX -335.0f
 #define OFFSETZ 6.0f
@@ -147,17 +146,17 @@ void CPacManPickupsHack::Init(void)
 	// create pacman.dat and populate it with two custom models and up to 255 coordinate points
 	scrambleModel = VCGlobals::MI_LIGHTBEAM;
 	raceModel = VCGlobals::MI_LITTLEHA_POLICE;
-	std::ifstream fileName("pacman.dat");
-	if (fileName.is_open()) {
-		std::string line;
-		if (std::getline(fileName, line)) sscanf_s(line.c_str(), "%d", &scrambleModel);
-		if (std::getline(fileName, line)) sscanf_s(line.c_str(), "%d", &raceModel);
+	int filename = CFileMgr::OpenFile("pacman.dat", "r");
+	if (filename) {
+		char buffer[200];
+		if (CFileMgr::ReadLine(filename, buffer, 200)) VCGlobals::sscanf(buffer, "%d", &scrambleModel);
+		if (CFileMgr::ReadLine(filename, buffer, 200)) VCGlobals::sscanf(buffer, "%d", &raceModel);
 		int i = 0;
-		for (; std::getline(fileName, line) && i < MAX_PACMAN_PICKUP - 1; i++) {
-			sscanf_s(line.c_str(), "%f %f %f", &aRacePoints1[i].x, &aRacePoints1[i].y, &aRacePoints1[i].z);
+		for (; CFileMgr::ReadLine(filename, buffer, 200) && i < MAX_PACMAN_PICKUP - 1; i++) {
+			VCGlobals::sscanf(buffer, "%f %f %f", &aRacePoints1[i].x, &aRacePoints1[i].y, &aRacePoints1[i].z);
 		}
 		aRacePoints1[i].x = aRacePoints1[i].y = aRacePoints1[i].z = 0;
-		fileName.close();
+		CFileMgr::CloseFile(filename);
 	}
 }
 
@@ -178,7 +177,7 @@ void CPacManPickupsHack::GeneratePMPickUps(CVector center, float radius, short c
 		if (aPMPickups[i].state == 0) {
 			CEntity entity;
 			CEntity *pentity = &entity;
-			CColPoint colpoint;
+			CColPoint colpoint = {};
 			CVector pos;
 			bool t = false;
 			int random;
@@ -208,12 +207,8 @@ void CPacManPickupsHack::GeneratePMPickUps(CVector center, float radius, short c
 			aPMPickups[i].position.y = colpoint.point.y;
 			aPMPickups[i].position.z = colpoint.point.z + 0.7f;
 
-			auto allocateObject = (CObject *(__cdecl *)(unsigned int))vcversion::AdjustOffset(0x004E4070);
-			CObject *object = allocateObject(0x194);
-			if (object) {
-				auto createObject = (CObject *(__thiscall *)(CObject *, int, bool))vcversion::AdjustOffset(0x004E41B0);
-				object = createObject(object, scrambleModel, true);
-			}
+			void *place = CObject::operator new(0x194);
+			CObject *object = ::new (place)CObject(scrambleModel, true);
 			if (object) {
 				object->field_16C = 2;
 				object->GetMatrix().SetRotate(0.0, 0.0, -1.5707964f);
@@ -221,7 +216,7 @@ void CPacManPickupsHack::GeneratePMPickUps(CVector center, float radius, short c
 				object->GetMatrix().UpdateRW();
 				object->UpdateRwFrame();
 				object->field_11A &= 0xFD;
-				object->field_052 = (object->field_052 & 0xFD) | 2;
+				object->field_052 |= 2;
 				object->field_051 &= 0xFE;
 				object->field_16D &= 0xFE;
 				CWorld::Add(object);
@@ -246,12 +241,8 @@ void CPacManPickupsHack::GeneratePMPickUpsForRace(void)
 			aPMPickups[i].position.x = aRacePoints1[i].x + OFFSETX;
 			aPMPickups[i].position.y = aRacePoints1[i].y;
 			aPMPickups[i].position.z = aRacePoints1[i].z + OFFSETZ;
-			auto allocateObject = (CObject *(__cdecl *)(unsigned int))vcversion::AdjustOffset(0x004E4070);
-			CObject *object = allocateObject(0x194);
-			if (object) {
-				auto createObject = (CObject *(__thiscall *)(CObject *, int, bool))vcversion::AdjustOffset(0x004E41B0);
-				object = createObject(object, raceModel, true);
-			}
+			void *place = CObject::operator new(0x194);
+			CObject *object = ::new (place)CObject(raceModel, true);
 			if (object) {
 				object->field_16C = 2;
 				object->GetMatrix().SetRotate(0.0, 0.0, -1.5707964f);
@@ -259,7 +250,7 @@ void CPacManPickupsHack::GeneratePMPickUpsForRace(void)
 				object->GetMatrix().UpdateRW();
 				object->UpdateRwFrame();
 				object->field_11A &= 0xFD;
-				object->field_052 = (object->field_052 & 0xFD) | 2;
+				object->field_052 |= 2;
 				object->field_051 &= 0xFE;
 				object->field_16D &= 0xFE;
 				CWorld::Add(object);
@@ -289,10 +280,7 @@ void CPacManPickupsHack::Render(void)
 		RwRenderStateSet(1, (int)**(void ***)vcversion::AdjustOffset(0x00695550));
 		for (int i = 0; i < MAX_PACMAN_PICKUP; i++) {
 			if (aPMPickups[i].state) {
-				RwV3d pickup;
-				pickup.x = aPMPickups[i].position.x;
-				pickup.y = aPMPickups[i].position.y;
-				pickup.z = aPMPickups[i].position.z;
+				RwV3d pickup = { aPMPickups[i].position.x, aPMPickups[i].position.y, aPMPickups[i].position.z };
 				RwV3d pos;
 				float width;
 				float height;

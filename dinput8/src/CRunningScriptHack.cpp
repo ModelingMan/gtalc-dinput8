@@ -611,10 +611,7 @@ bool CRunningScriptHack::_0255_restart_critical_mission()
 	if (ScriptParams[2].float32 <= -100.0) {
 		ScriptParams[2].float32 = CWorld::FindGroundZForCoord(ScriptParams[0].float32, ScriptParams[1].float32);
 	}
-	CVector pos;
-	pos.x = ScriptParams[0].float32;
-	pos.y = ScriptParams[1].float32;
-	pos.z = ScriptParams[2].float32;
+	CVector pos = { ScriptParams[0].float32, ScriptParams[1].float32, ScriptParams[2].float32 };
 	CRestart::OverrideNextRestart(pos, ScriptParams[3].float32);
 	CPlayerInfo *player = &CWorld::Players[CWorld::PlayerInFocus];
 	if (player->deathArrestState == 0) {
@@ -698,10 +695,7 @@ bool CRunningScriptHack::_02C7_start_pacman_scramble()
 	if (ScriptParams[2].float32 <= -100.0) {
 		ScriptParams[2].float32 = CWorld::FindGroundZForCoord(ScriptParams[0].float32, ScriptParams[1].float32);
 	}
-	CVector pos;
-	pos.x = ScriptParams[0].float32;
-	pos.y = ScriptParams[1].float32;
-	pos.z = ScriptParams[2].float32;
+	CVector pos = { ScriptParams[0].float32, ScriptParams[1].float32, ScriptParams[2].float32 };
 	CPacManPickupsHack::StartPacManScramble(pos, ScriptParams[3].float32, ScriptParams[4].int16);
 	return 0;
 }
@@ -777,10 +771,7 @@ bool CRunningScriptHack::_02F0_drop_mine()
 	if (ScriptParams[2].float32 <= -100.0) {
 		ScriptParams[2].float32 = CWorld::FindGroundZForCoord(ScriptParams[0].float32, ScriptParams[1].float32) + 0.5f;
 	}
-	CVector pos;
-	pos.x = ScriptParams[0].float32;
-	pos.y = ScriptParams[1].float32;
-	pos.z = ScriptParams[2].float32;
+	CVector pos = { ScriptParams[0].float32, ScriptParams[1].float32, ScriptParams[2].float32 };
 	CPickups::GenerateNewOne(pos, VCGlobals::MI_CARMINE, 9, 0, 0, 0, 0);
 	return 0;
 }
@@ -791,10 +782,7 @@ bool CRunningScriptHack::_02F1_drop_nautical_mine()
 	if (ScriptParams[2].float32 <= -100.0) {
 		ScriptParams[2].float32 = CWorld::FindGroundZForCoord(ScriptParams[0].float32, ScriptParams[1].float32) + 0.5f;
 	}
-	CVector pos;
-	pos.x = ScriptParams[0].float32;
-	pos.y = ScriptParams[1].float32;
-	pos.z = ScriptParams[2].float32;
+	CVector pos = { ScriptParams[0].float32, ScriptParams[1].float32, ScriptParams[2].float32 };
 	CPickups::GenerateNewOne(pos, VCGlobals::MI_NAUTICALMINE, 11, 0, 0, 0, 0);
 	return 0;
 }

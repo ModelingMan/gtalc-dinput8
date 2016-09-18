@@ -487,6 +487,10 @@ public:
 	unsigned char field_16D;      // 0x16D
 	unsigned char space2[0x0032];
 	// 0x1A0
+
+	void *operator new(unsigned int);
+	CObject(int, bool);
+	CObject(void);
 };
 
 static_assert(sizeof(CObject) == 0x1A0, "Size of CObject is not 0x1A0 bytes.");
@@ -1159,13 +1163,18 @@ class CStats
 {
 public:
 	static float &ShootingRangeRank;
+	static int &TotalNumberMissions;
 	static float &GarbagePickups;
 	static float &LoanSharks;
 	static int &IndustrialPassed;
+	static int &HighestLevelFireMission;
 	static int &SuburbanPassed;
+	static float &StoresKnockedOff;
 	static int &CommercialPassed;
 	static float &TopShootingRangeScore;
 	static float &MovieStunts;
+	static int &MissionsGiven;
+	static float &Assassinations;
 
 	static void AnotherKillFrenzyPassed(void);
 };
@@ -1232,6 +1241,18 @@ class CRenderer
 {
 public:
 	static void ConstructRenderList(void);
+};
+
+//########################################################################
+//# CFileMgr
+//########################################################################
+
+class CFileMgr
+{
+public:
+	static int CloseFile(int);
+	static bool ReadLine(int, char *, int);
+	static int OpenFile(char const *, char const *);
 };
 
 #endif

@@ -4,8 +4,6 @@
 #include "Globals.h"
 #include "SilentCall.h"
 #include <Windows.h>
-#include <fstream>
-#include <string>
 
 unsigned long renderEverythingBarRoadsIntermediate = vcversion::AdjustOffset(0x004C9FA8);
 unsigned long renderEverythingBarRoadsEndJump = vcversion::AdjustOffset(0x004C9F90);
@@ -28,17 +26,6 @@ bool CRendererHack::initialise()
 
 	// control backface culling of non-transparent buildings
 	InjectHook(0x004C9F87, &RenderEverythingBarRoadsHackProxy, PATCH_JUMP);
-
-	// get data to draw backfaces
-	std::ifstream fileName("drawBackfaces.dat");
-	if (fileName.is_open()) {
-		std::string line;
-		while (std::getline(fileName, line)) {
-			line = line.substr(0, line.find("//"));
-			buildings[atoi(line.c_str())] = 1;
-		}
-		fileName.close();
-	}
 	
 	// auto-aim crosshair
 	if (!(CRunningScriptHack::debugMode & DEBUG_VICECITY)) {
@@ -50,6 +37,10 @@ bool CRendererHack::initialise()
 	} else {
 		Patch<unsigned char>(0x005D4EEE, 9);
 	}
+
+	// get optional data to draw backfaces
+	InjectHook(0x004CA421, &CRendererHack::InitHack, PATCH_JUMP);
+
 	return true;
 }
 
@@ -81,5 +72,19 @@ void CRendererHack::RenderEverythingBarRoadsHack(int model)
 	if (isStateOne) {
 		RwRenderStateSet(0x14, 2);
 		isStateOne = false;
+	}
+}
+
+void CRendererHack::InitHack(void)
+{
+	int filename = CFileMgr::OpenFile("drawBackfaces.dat", "r");
+	if (filename) {
+		char buffer[200];
+		int line;
+		while (CFileMgr::ReadLine(filename, buffer, 200)) {
+			VCGlobals::sscanf(buffer, "%d", &line);
+			buildings[line] = 1;
+		}
+		CFileMgr::CloseFile(filename);
 	}
 }

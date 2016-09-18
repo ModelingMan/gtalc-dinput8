@@ -80,6 +80,9 @@
     <ClCompile Include="src\CBridgeHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CStatsHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CRunningScriptHack.h">
@@ -155,6 +158,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\CBridgeHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CStatsHack.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

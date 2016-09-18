@@ -7,4 +7,5 @@ public:
 
 	static void RenderEverythingBarRoadsHackProxy(void);
 	static void RenderEverythingBarRoadsHack(int model);
+	static void InitHack(void);
 };

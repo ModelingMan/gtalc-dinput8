@@ -5,7 +5,7 @@
 #include "vcversion.h"
 #include "SilentCall.h"
 #include "Vehicles.h"
-#include <fstream>
+#include <math.h>
 
 #define REPORT_AMBULANCE     234
 #define REPORT_VAN           235
@@ -100,12 +100,10 @@ static unsigned char scriptObjectHomeCounter;
 
 struct PoliceRadioZone
 {
-	const char zone[8];
+	char zone[8];
 	int sfx;
 	int padding;
-};
-
-PoliceRadioZone policeRadioZones[TOTAL_AUDIO_ZONES] =
+} policeRadioZones[TOTAL_AUDIO_ZONES] =
 {
 	{ "HOSPI_2", REPORT_ROCKFORD,       0 },
 	{ "CONSTRU", REPORT_FORTSTAUNTON,   0 },
@@ -143,6 +141,126 @@ PoliceRadioZone policeRadioZones[TOTAL_AUDIO_ZONES] =
 	{ "A",       REPORT_ROCKFORD,       0 },
 	{ "A",       REPORT_ROCKFORD,       0 },
 	{ 0,         0,                     0 }
+};
+
+struct VehicleSfx
+{
+	int npcEngine;
+	int playerEngine;
+	int horn;
+	int hornPitch;
+	int siren;
+	int sirenPitch;
+	int door;
+} presetVehicleSfx[107] =
+{
+	{ 277, 13, 0, 26513, 52,  9935, 1 }, // landstal
+	{ 278, 14, 4, 11487, 52,  9935, 0 }, // idaho
+	{ 274, 10, 6, 10400, 52, 10123, 1 }, // banshee
+	{ 272,  8, 7, 29711, 52,  9935, 2 }, // linerun
+	{ 278, 14, 4, 12893, 52,  8941, 0 }, // peren
+	{ 271,  7, 1, 10706, 52, 11922, 1 }, // sentinel
+	{ 268,  0, 7, 29711, 52,  9700, 1 }, // rio
+	{ 272,  8, 7, 29711, 27, 11556, 2 }, // firetruk
+	{ 272,  8, 7, 31478, 52,  8941, 2 }, // trash
+	{ 278, 14, 1,  9538, 52, 12220, 1 }, // stretch
+	{ 278, 14, 4, 10842, 52,  9935, 0 }, // manana
+	{ 269,  5, 1, 12017, 52,  9935, 1 }, // infernus
+	{ 277, 13, 0, 22293, 52,  9935, 1 }, // yardie
+	{ 270,  6, 3, 18000, 52, 13400, 1 }, // pony
+	{ 270,  6, 2, 18286, 52,  9935, 2 }, // mule
+	{ 274, 10, 6, 10000, 52,  9500, 0 }, // hotring
+	{ 270,  6, 0, 22295, 29,  8795, 2 }, // ambulan
+	{ 268,  4, 3, 17900, 27, 10511, 2 }, // fbiranch
+	{ 278, 14, 4, 12170, 52,  8000, 1 }, // moonbeam
+	{ 278, 14, 3, 12345, 52,  9935, 0 }, // esperant
+	{ 277, 13, 1, 10796, 52,  8543, 1 }, // taxi
+	{ 271,  7, 1,  9003, 52,  9935, 1 }, // mafia
+	{ 277, 13, 5, 10924, 52,  9935, 1 }, // bobcat
+	{ 278, 14, 5, 11025, 31, 11025, 0 }, // mrwhoop
+	{ 273,  9, 0, 26513, 52,  9935, 1 }, // bfinject
+	{ 453, 30, 0, 26513, 52,  9200, 1 }, // hunter
+	{ 271,  7, 1, 10706, 27, 13596, 1 }, // police
+	{ 270,  6, 2, 17260, 27, 13000, 2 }, // enforcer
+	{ 270,  6, 5,  8670, 52,  9935, 0 }, // securica
+	{ 271,  7, 1, 10500, 52,  9100, 1 }, // washing
+	{ 268,  0, 0, 26513, 27, 13596, 1 }, // predator
+	{ 272,  8, 3, 11652, 52, 10554, 3 }, // bus
+	{ 272,  8, 7, 29711, 52,  8000, 2 }, // rhino
+	{ 272,  8, 7, 28043, 52,  9935, 2 }, // barracks
+	{ 273,  9, 0, 25400, 52,  9800, 0 }, // cuban
+	{ 268,  0, 0, 26513, 52,  9935, 1 }, // chopper
+	{ 284, 20, 0, 26313, 52, 10000, 1 }, // angel
+	{ 272,  8, 2, 16291, 52,  7500, 3 }, // coach
+	{ 278, 14, 4, 10842, 52,  9935, 0 }, // cabbie
+	{ 278, 14, 4, 10233, 52,  8935, 0 }, // stallion
+	{ 270,  6, 5,  8670, 52,  8935, 0 }, // rumpo
+	{ 423, 17, 5, 20000, 52, 17000, 1 }, // rcbandit
+	{ 278, 14, 0, 26513, 52, 10000, 0 }, // corpse
+	{ 272,  8, 7, 29000, 52,  9400, 2 }, // packer
+	{ 270,  6, 0, 21043, 52,  9000, 0 }, // panlant
+	{ 271,  7, 6,  9271, 52,  9935, 1 }, // kuruma
+	{ 268,  0, 3, 15554, 52,  9100, 1 }, // squalo
+	{ 268,  0, 3, 13857, 52,  9000, 2 }, // seaspar
+	{ 285, 21, 0, 30000, 52,  9100, 1 }, // pizzaboy
+	{ 270,  6, 0, 21043, 52,  9935, 2 }, // hoods
+	{ 268,  0, 0, 21043, 52,  9935, 1 }, // airtrain
+	{ 268,  0, 0, 21043, 52,  9935, 1 }, // deaddodo
+	{ 268,  0, 0, 21043, 52,  9935, 1 }, // speeder
+	{ 268,  0, 0, 21043, 52,  9935, 1 }, // reefer
+	{ 268,  0, 0, 21043, 52,  9700, 1 }, // tropic
+	{ 272,  8, 7, 28043, 52,  9935, 2 }, // flatbed
+	{ 270,  6, 2, 18286, 52,  9935, 2 }, // yankee
+	{ 279, 15, 0, 28500, 52,  9800, 1 }, // caddy
+	{ 278, 14, 4, 10842, 52,  9935, 0 }, // borgnine
+	{ 270,  6, 3, 18000, 52, 13400, 1 }, // toyz
+	{ 461, 35, 0, 26513, 52,  9700, 1 }, // skimmer
+	{ 287, 23, 0, 27000, 52,  9600, 1 }, // pcj600
+	{ 285, 21, 0, 31000, 52,  9500, 1 }, // faggio
+	{ 284, 20, 5, 11000, 52,  9400, 1 }, // freeway
+	{ 423, 17, 0, 30000, 52,  9935, 0 }, // dodo
+	{ 425, 18, 0, 30000, 52, 15000, 1 }, // rcraider
+	{ 276, 12, 4, 10300, 52,  9100, 0 }, // glendale
+	{ 276, 12, 4, 10500, 52,  9000, 0 }, // blistac
+	{ 286, 22, 0, 30000, 52,  9000, 1 }, // sanchez
+	{ 268,  0, 0, 26513, 52,  9100, 2 }, // delofly
+	{ 270,  6, 7, 29711, 52,  7948, 2 }, // patriot
+	{ 274, 10, 5, 11200, 52,  9300, 1 }, // lovefist
+	{ 268,  0, 0, 26513, 52,  9935, 1 }, // ghost
+	{ 268,  0, 0, 26513, 52,  9500, 1 }, // dinghy
+	{ 276, 12, 4, 10700, 52,  9600, 0 }, // comet
+	{ 273,  9, 1,  9200, 52,  9700, 0 }, // sabretur
+	{ 273,  9, 3, 13857, 52,  9935, 0 }, // diablos
+	{ 274, 10, 0, 26513, 52,  9900, 1 }, // phoenix
+	{ 278, 14, 4, 10540, 52,  9935, 2 }, // walton
+	{ 275, 11, 5, 11000, 52,  9700, 1 }, // regina
+	{ 274, 10, 6, 11025, 52, 10928, 1 }, // stinger
+	{ 274, 10, 1,  9700, 52,  9700, 1 }, // delodrv
+	{ 275, 11, 3, 18000, 52,  9600, 0 }, // burrito
+	{ 273,  9, 6, 10500, 52,  9500, 0 }, // sandking
+	{ 268,  0, 0, 26513, 52,  9400, 1 }, // marquis
+	{ 275, 11, 0, 27513, 52,  9300, 1 }, // baggage
+	{ 268,  4, 4, 10842, 52,  9200, 0 }, // zebra
+	{ 268,  0, 0, 26513, 52,  9100, 2 }, // maverick
+	{ 268,  0, 0, 26513, 52,  9000, 2 }, // vcnmav
+	{ 277, 13, 3, 18000, 52,  9100, 2 }, // rancher
+	{ 271,  7, 6,  9271, 27, 16168, 1 }, // fbicar
+	{ 271,  7, 0, 26513, 52,  9200, 1 }, // virgo
+	{ 275, 11, 1,  9600, 52,  9300, 1 }, // greenwoo
+	{ 271,  0, 0, 26513, 52,  9400, 1 }, // jetmax
+	{ 269,  5, 6, 11025, 52, 13600, 1 }, // cheetah
+	{ 273,  9, 5, 10924, 52,  9935, 0 }, // columb
+	{ 277, 13, 0, 22295, 52, 12200, 1 }, // blista
+	{ 268,  0, 0, 26513, 52,  9800, 1 }, // polmav
+	{ 270,  6, 0, 21043, 52,  9935, 0 }, // bellyup
+	{ 270,  6, 0, 21043, 52,  9935, 0 }, // mrwongs
+	{ 268,  4, 0, 26513, 52,  9700, 1 }, // mesa
+	{ 425, 18, 0, 26513, 52,  9600, 1 }, // rcgoblin
+	{ 273, 9, 79, 26513, 52,  9700, 1 }, // genlee
+	{ 274, 10, 3, 15554, 52,  9935, 1 }, // yakuza
+	{ 268,  4, 0, 26513, 52,  9500, 1 }, // bloodra
+	{ 271,  7, 6, 12375, 52,  9400, 1 }, // admiral
+	{ 269,  5, 6, 11025, 52, 13600, 1 } // vicechee
 };
 
 // this must be changed if navig.zon is modified
@@ -196,135 +314,6 @@ bool cAudioManagerHack::initialise()
 	*reinterpret_cast<unsigned char *>(ProcessFrontEndHackAddr) = 0xB9;						// mov ecx,
 	*reinterpret_cast<void (**)()>(ProcessFrontEndHackAddr + 1) = ProcessFrontEndHackProxy; //          ProcessFrontEndHackProxy
 	*reinterpret_cast<unsigned short *>(ProcessFrontEndHackAddr + 5) = 0xE1FF;				// jmp ecx
-
-	std::ifstream fileName("vehicleSfx.dat");
-	if (fileName.is_open()) {
-		int value = 0, i = 0, j = 0;
-		while (fileName >> value) {
-			*(unsigned int *)(vcversion::AdjustOffset(0x6AD1A0) + i * 28 + j * 4) = value;
-			if (++j > 6) {
-				i++;
-				j = 0;
-			}
-		}
-		fileName.close();
-	} else {
-		int vehicleSfx[107][7] =
-		{
-			{ 277, 13, 0, 26513, 52,  9935, 1 }, // landstal
-			{ 278, 14, 4, 11487, 52,  9935, 0 }, // idaho
-			{ 274, 10, 6, 10400, 52, 10123, 1 }, // banshee
-			{ 272,  8, 7, 29711, 52,  9935, 2 }, // linerun
-			{ 278, 14, 4, 12893, 52,  8941, 0 }, // peren
-			{ 271,  7, 1, 10706, 52, 11922, 1 }, // sentinel
-			{ 268,  0, 7, 29711, 52,  9700, 1 }, // rio
-			{ 272,  8, 7, 29711, 27, 11556, 2 }, // firetruk
-			{ 272,  8, 7, 31478, 52,  8941, 2 }, // trash
-			{ 278, 14, 1,  9538, 52, 12220, 1 }, // stretch
-			{ 278, 14, 4, 10842, 52,  9935, 0 }, // manana
-			{ 269,  5, 1, 12017, 52,  9935, 1 }, // infernus
-			{ 277, 13, 0, 22293, 52,  9935, 1 }, // yardie
-			{ 270,  6, 3, 18000, 52, 13400, 1 }, // pony
-			{ 270,  6, 2, 18286, 52,  9935, 2 }, // mule
-			{ 274, 10, 6, 10000, 52,  9500, 0 }, // hotring
-			{ 270,  6, 0, 22295, 29,  8795, 2 }, // ambulan
-			{ 268,  4, 3, 17900, 27, 10511, 2 }, // fbiranch
-			{ 278, 14, 4, 12170, 52,  8000, 1 }, // moonbeam
-			{ 278, 14, 3, 12345, 52,  9935, 0 }, // esperant
-			{ 277, 13, 1, 10796, 52,  8543, 1 }, // taxi
-			{ 271,  7, 1,  9003, 52,  9935, 1 }, // mafia
-			{ 277, 13, 5, 10924, 52,  9935, 1 }, // bobcat
-			{ 278, 14, 5, 11025, 31, 11025, 0 }, // mrwhoop
-			{ 273,  9, 0, 26513, 52,  9935, 1 }, // bfinject
-			{ 453, 30, 0, 26513, 52,  9200, 1 }, // hunter
-			{ 271,  7, 1, 10706, 27, 13596, 1 }, // police
-			{ 270,  6, 2, 17260, 27, 13000, 2 }, // enforcer
-			{ 270,  6, 5,  8670, 52,  9935, 0 }, // securica
-			{ 271,  7, 1, 10500, 52,  9100, 1 }, // washing
-			{ 268,  0, 0, 26513, 27, 13596, 1 }, // predator
-			{ 272,  8, 3, 11652, 52, 10554, 3 }, // bus
-			{ 272,  8, 7, 29711, 52,  8000, 2 }, // rhino
-			{ 272,  8, 7, 28043, 52,  9935, 2 }, // barracks
-			{ 273,  9, 0, 25400, 52,  9800, 0 }, // cuban
-			{ 268,  0, 0, 26513, 52,  9935, 1 }, // chopper
-			{ 284, 20, 0, 26313, 52, 10000, 1 }, // angel
-			{ 272,  8, 2, 16291, 52,  7500, 3 }, // coach
-			{ 278, 14, 4, 10842, 52,  9935, 0 }, // cabbie
-			{ 278, 14, 4, 10233, 52,  8935, 0 }, // stallion
-			{ 270,  6, 5,  8670, 52,  8935, 0 }, // rumpo
-			{ 423, 17, 5, 20000, 52, 17000, 1 }, // rcbandit
-			{ 278, 14, 0, 26513, 52, 10000, 0 }, // corpse
-			{ 272,  8, 7, 29000, 52,  9400, 2 }, // packer
-			{ 270,  6, 0, 21043, 52,  9000, 0 }, // panlant
-			{ 271,  7, 6,  9271, 52,  9935, 1 }, // kuruma
-			{ 268,  0, 3, 15554, 52,  9100, 1 }, // squalo
-			{ 268,  0, 3, 13857, 52,  9000, 2 }, // seaspar
-			{ 285, 21, 0, 30000, 52,  9100, 1 }, // pizzaboy
-			{ 270,  6, 0, 21043, 52,  9935, 2 }, // hoods
-			{ 268,  0, 0, 21043, 52,  9935, 1 }, // airtrain
-			{ 268,  0, 0, 21043, 52,  9935, 1 }, // deaddodo
-			{ 268,  0, 0, 21043, 52,  9935, 1 }, // speeder
-			{ 268,  0, 0, 21043, 52,  9935, 1 }, // reefer
-			{ 268,  0, 0, 21043, 52,  9700, 1 }, // tropic
-			{ 272,  8, 7, 28043, 52,  9935, 2 }, // flatbed
-			{ 270,  6, 2, 18286, 52,  9935, 2 }, // yankee
-			{ 279, 15, 0, 28500, 52,  9800, 1 }, // caddy
-			{ 278, 14, 4, 10842, 52,  9935, 0 }, // borgnine
-			{ 270,  6, 3, 18000, 52, 13400, 1 }, // toyz
-			{ 461, 35, 0, 26513, 52,  9700, 1 }, // skimmer
-			{ 287, 23, 0, 27000, 52,  9600, 1 }, // pcj600
-			{ 285, 21, 0, 31000, 52,  9500, 1 }, // faggio
-			{ 284, 20, 5, 11000, 52,  9400, 1 }, // freeway
-			{ 423, 17, 0, 30000, 52,  9935, 0 }, // dodo
-			{ 425, 18, 0, 30000, 52, 15000, 1 }, // rcraider
-			{ 276, 12, 4, 10300, 52,  9100, 0 }, // glendale
-			{ 276, 12, 4, 10500, 52,  9000, 0 }, // blistac
-			{ 286, 22, 0, 30000, 52,  9000, 1 }, // sanchez
-			{ 268,  0, 0, 26513, 52,  9100, 2 }, // delofly
-			{ 270,  6, 7, 29711, 52,  7948, 2 }, // patriot
-			{ 274, 10, 5, 11200, 52,  9300, 1 }, // lovefist
-			{ 268,  0, 0, 26513, 52,  9935, 1 }, // ghost
-			{ 268,  0, 0, 26513, 52,  9500, 1 }, // dinghy
-			{ 276, 12, 4, 10700, 52,  9600, 0 }, // comet
-			{ 273,  9, 1,  9200, 52,  9700, 0 }, // sabretur
-			{ 273,  9, 3, 13857, 52,  9935, 0 }, // diablos
-			{ 274, 10, 0, 26513, 52,  9900, 1 }, // phoenix
-			{ 278, 14, 4, 10540, 52,  9935, 2 }, // walton
-			{ 275, 11, 5, 11000, 52,  9700, 1 }, // regina
-			{ 274, 10, 6, 11025, 52, 10928, 1 }, // stinger
-			{ 274, 10, 1,  9700, 52,  9700, 1 }, // delodrv
-			{ 275, 11, 3, 18000, 52,  9600, 0 }, // burrito
-			{ 273,  9, 6, 10500, 52,  9500, 0 }, // sandking
-			{ 268,  0, 0, 26513, 52,  9400, 1 }, // marquis
-			{ 275, 11, 0, 27513, 52,  9300, 1 }, // baggage
-			{ 268,  4, 4, 10842, 52,  9200, 0 }, // zebra
-			{ 268,  0, 0, 26513, 52,  9100, 2 }, // maverick
-			{ 268,  0, 0, 26513, 52,  9000, 2 }, // vcnmav
-			{ 277, 13, 3, 18000, 52,  9100, 2 }, // rancher
-			{ 271,  7, 6,  9271, 27, 16168, 1 }, // fbicar
-			{ 271,  7, 0, 26513, 52,  9200, 1 }, // virgo
-			{ 275, 11, 1,  9600, 52,  9300, 1 }, // greenwoo
-			{ 271,  0, 0, 26513, 52,  9400, 1 }, // jetmax
-			{ 269,  5, 6, 11025, 52, 13600, 1 }, // cheetah
-			{ 273,  9, 5, 10924, 52,  9935, 0 }, // columb
-			{ 277, 13, 0, 22295, 52, 12200, 1 }, // blista
-			{ 268,  0, 0, 26513, 52,  9800, 1 }, // polmav
-			{ 270,  6, 0, 21043, 52,  9935, 0 }, // bellyup
-			{ 270,  6, 0, 21043, 52,  9935, 0 }, // mrwongs
-			{ 268,  4, 0, 26513, 52,  9700, 1 }, // mesa
-			{ 425, 18, 0, 26513, 52,  9600, 1 }, // rcgoblin
-			{ 273, 9, 79, 26513, 52,  9700, 1 }, // genlee
-			{ 274, 10, 3, 15554, 52,  9935, 1 }, // yakuza
-			{ 268,  4, 0, 26513, 52,  9500, 1 }, // bloodra
-			{ 271,  7, 6, 12375, 52,  9400, 1 }, // admiral
-			{ 269,  5, 6, 11025, 52, 13600, 1 } // vicechee
-		};
-		for (int i = 0; i < 107; i++) {
-			for (int j = 0; j < 7; j++) {
-				*(unsigned int *)(vcversion::AdjustOffset(0x006AD1A0) + i * 28 + j * 4) = vehicleSfx[i][j];
-			}
-		}
-	}
 
 	// car alarms
 	if (!(CRunningScriptHack::debugMode & DEBUG_VICECITY)) {
@@ -383,6 +372,9 @@ bool cAudioManagerHack::initialise()
 
 	// radio station text shadow fix (SilentPatch)
 	InjectHook(0x005FA1FD, &cAudioManagerHack::DisplayRadioStationNameHack);
+
+	// vehicle sfx
+	InjectHook(0x005F8A30, &cAudioManagerHack::InitialiseHack, PATCH_JUMP);
 
 	return true;
 }
@@ -1093,4 +1085,22 @@ void cAudioManagerHack::ProcessHomeScriptObject(unsigned int)
 void cAudioManagerHack::DisplayRadioStationNameHack(float fX, float fY, wchar_t *pText)
 {
 	CFont::PrintString(fX - 2.0f + (2.0f * VCGlobals::resolutionXMultiplier * VCGlobals::resolutionX), fY - 2.0f + (2.0f * VCGlobals::resolutionYMultiplier * VCGlobals::resolutionY), pText);
+}
+
+void cAudioManagerHack::InitialiseHack(void)
+{
+	VehicleSfx *vehicleSfx = (VehicleSfx *)vcversion::AdjustOffset(0x006AD1A0);
+	int filename = CFileMgr::OpenFile("vehicleSfx.dat", "r");
+	if (filename) {
+		char buffer[200];
+		for (int i = 0; CFileMgr::ReadLine(filename, buffer, 200) && i < 107; i++) {
+			VCGlobals::sscanf(buffer, "%d %d %d %d %d %d %d",
+				&vehicleSfx[i].npcEngine, &vehicleSfx[i].playerEngine, &vehicleSfx[i].horn, &vehicleSfx[i].hornPitch, &vehicleSfx[i].siren, &vehicleSfx[i].sirenPitch, &vehicleSfx[i].door);
+		}
+		CFileMgr::CloseFile(filename);
+	} else {
+		for (int i = 0; i < 107; i++) {
+			vehicleSfx[i] = presetVehicleSfx[i];
+		}
+	}
 }

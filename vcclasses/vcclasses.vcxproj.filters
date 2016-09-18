@@ -178,5 +178,11 @@
     <ClCompile Include="src\CRenderer.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CFileMgr.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CObject.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

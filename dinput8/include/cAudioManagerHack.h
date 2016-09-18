@@ -24,4 +24,5 @@ public:
 	void ProcessAirportScriptObject(unsigned int);
 	void ProcessHomeScriptObject(unsigned int);
 	static void DisplayRadioStationNameHack(float, float, wchar_t *);
+	static void InitialiseHack(void);
 };

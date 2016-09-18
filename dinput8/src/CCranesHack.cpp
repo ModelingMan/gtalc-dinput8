@@ -5,6 +5,7 @@
 #include "Vehicles.h"
 
 #include <math.h>
+#include <new>
 
 // FindCarInSectorListHack
 unsigned long findCarProceedJump = vcversion::AdjustOffset(0x0005A81EC);
@@ -196,17 +197,15 @@ void CCranesHack::AddThisOneCrane(CEntity *entity)
 		cranes[index].hook = 0;
 		// new! magnet for cranes!
 		if (cranes[index].isNotCab || entity->GetY() > 0.0) {
-			auto allocateObject = (CObject *(__cdecl *)(unsigned int))vcversion::AdjustOffset(0x004E4070);
-			CObject *object = allocateObject(0x194);
+			void *place = CObject::operator new(0x194);
+			CObject *object = ::new (place)CObject(1365, false);
 			if (object) {
-				auto createObject = (CObject *(__thiscall *)(CObject *, int, bool))vcversion::AdjustOffset(0x004E41B0);
-				object = createObject(object, 1365, false);
+				object->field_16C = 2;
+				object->field_051 &= 0xFE;
+				object->field_052 |= 2;
+				object->field_11A &= 0xFD;
+				cranes[index].hook = object;
 			}
-			object->field_16C = 2;
-			object->field_051 &= 0xFE;
-			object->field_052 = (object->field_052 & 0xFD) | 2;
-			object->field_11A &= 0xFD;
-			cranes[index].hook = object;
 		}
 		audioEntities[index] = VCGlobals::DMAudio.CreateEntity(12, &CCranes::cranes[index]);
 		if (audioEntities[index]) {

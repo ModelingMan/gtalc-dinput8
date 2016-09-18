@@ -31,6 +31,7 @@
     <ClCompile Include="src\cDMAudio.cpp" />
     <ClCompile Include="src\CEntity.cpp" />
     <ClCompile Include="src\CExplosion.cpp" />
+    <ClCompile Include="src\CFileMgr.cpp" />
     <ClCompile Include="src\CFireManager.cpp" />
     <ClCompile Include="src\CFont.cpp" />
     <ClCompile Include="src\CGarages.cpp" />
@@ -39,6 +40,7 @@
     <ClCompile Include="src\CMatrix.cpp" />
     <ClCompile Include="src\CMessages.cpp" />
     <ClCompile Include="src\CMissionCleanup.cpp" />
+    <ClCompile Include="src\CObject.cpp" />
     <ClCompile Include="src\CPad.cpp" />
     <ClCompile Include="src\CPathFind.cpp" />
     <ClCompile Include="src\CPathInfoForObject.cpp" />

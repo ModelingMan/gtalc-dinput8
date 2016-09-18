@@ -1,7 +1,7 @@
 #include "vcclasses.h"
 #include "vcversion.h"
 
-static unsigned long g_RenderOneXLUSprite = vcversion::AdjustOffset(0x00576690);
+static unsigned long g_RenderOneXLUSprite = vcversion::AdjustOffset(0x00576FE0);
 static unsigned long g_RenderBufferedOneXLUSprite = vcversion::AdjustOffset(0x00577350);
 static unsigned long g_InitSpriteBuffer = vcversion::AdjustOffset(0x00577770);
 static unsigned long g_FlushSpriteBuffer = vcversion::AdjustOffset(0x00577790);
