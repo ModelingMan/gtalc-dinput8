@@ -75,6 +75,18 @@ public:
 };
 
 //########################################################################
+//# cPedParams
+//########################################################################
+
+struct cPedParams
+{
+	unsigned char flag1;           // 0x0
+	unsigned char padding[3];      // 0x1
+	float         distanceSquared; // 0x4
+	unsigned int  flag2;           // 0x8
+};
+
+//########################################################################
 //# cAudioManager
 //########################################################################
 
@@ -111,12 +123,13 @@ protected:
 	unsigned char spaceend[0x54F0];
 
 public:
+	unsigned int GetPhrase(unsigned int &, unsigned int &, unsigned int, unsigned int);
+	void ProcessLoopingScriptObject(unsigned char);
+	void SetupPedComments(cPedParams &, unsigned short);
 	void AddSampleToRequestedQueue();
 	unsigned int RandomDisplacement(unsigned int);
 	unsigned char ComputeVolume(unsigned char, float, float);
 	float GetDistanceSquared(const CVector &); // INLINED!
-	void ProcessLoopingScriptObject(unsigned char);
-	unsigned int GetPhrase(unsigned int &, unsigned int &, unsigned int, unsigned int);
 };
 
 //########################################################################
@@ -1152,6 +1165,7 @@ public:
 class CTheZones
 {
 public:
+	static void InitialiseAudioZoneArray(void);
 	static int GetLevelFromPosition(CVector const *);
 };
 

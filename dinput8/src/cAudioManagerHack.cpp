@@ -93,6 +93,11 @@ static unsigned char scriptObjectAirportCounter;
 #define LOOPING_SCRIPT_OBJECT_59E 494
 static unsigned int scriptObjectHomeTime;
 static unsigned char scriptObjectHomeCounter;
+#define LOOPING_SCRIPT_OBJECT_77A 165
+#define LOOPING_SCRIPT_OBJECT_77B 167
+static unsigned int scriptObjectCellBeatingTime;
+static unsigned char scriptObjectCellBeatingCounter;
+#define LOOPING_SCRIPT_OBJECT_102 153
 
 #define BRIDGE_WARNING 495
 #define BRIDGE_ONE_SHOT 132
@@ -263,41 +268,7 @@ struct VehicleSfx
 	{ 269,  5, 6, 11025, 52, 13600, 1 } // vicechee
 };
 
-// this must be changed if navig.zon is modified
-short audioZones[TOTAL_AUDIO_ZONES] =
-{
-	0x001F,
-	0x001E,
-	0x0010,
-	0x0011,
-	0x0012,
-	0x0014,
-	0x0015,
-	0x001D,
-	0x0017,
-	0x0018,
-	0x0019,
-	0x001A,
-	0x001B,
-	0x001C,
-	0x0016,
-	0x000E,
-	0x0013,
-	0x000F,
-	0x0002,
-	0x0003,
-	0x0004,
-	0x0005,
-	0x0006,
-	0x0007,
-	0x0008,
-	0x0009,
-	0x000A,
-	0x000B,
-	0x000C,
-	0x000D,
-	0x0000
-};
+short audioZones[TOTAL_AUDIO_ZONES] = {};
 
 // ProcessFrontEndHackProxy
 unsigned long JumpTableForFrontEnd = vcversion::AdjustOffset(0x006B28B8);
@@ -305,6 +276,9 @@ unsigned long OffsetIfWeHackedFrontEnd = vcversion::AdjustOffset(0x005DBE5E);
 // SetupSuspectLastSeenReportHackProxy
 unsigned long setupSuspectLastSeenReportMatch = vcversion::AdjustOffset(0x005FD6B8);
 unsigned long setupSuspectLastSeenReportNoMatch = vcversion::AdjustOffset(0x005FD6B0);
+// ProcessVehicleSirenOrAlarmHack
+unsigned long fbiNoMatchEndJump = vcversion::AdjustOffset(0x005F03F0);
+unsigned long fbiMatchEndJump = vcversion::AdjustOffset(0x005F03FF);
 
 bool cAudioManagerHack::initialise()
 {
@@ -346,7 +320,7 @@ bool cAudioManagerHack::initialise()
 	Patch<unsigned long>(0x005FCF75, (unsigned long)&policeRadioZones + 8);
 
 	// do not use game's audio zone array
-	InjectHook(0x004DDAEB, &cAudioManagerHack::InitialiseAudioZoneArray);
+	InjectHook(0x004DDAEB, &cAudioManagerHack::InitialiseAudioZoneArrayHack);
 	
 	// crane audio
 	void(__thiscall cAudioManagerHack::* function2)() = &cAudioManagerHack::ProcessCraneAndBridge;
@@ -356,8 +330,8 @@ bool cAudioManagerHack::initialise()
 	// looping script objects
 	void(__thiscall cAudioManagerHack::* function3)(unsigned char) = &cAudioManagerHack::ProcessLoopingScriptObjectHack;
 	InjectHook(0x005F58F3, (unsigned long &)function3);
-	scriptObjectCinemaTime = scriptObjectSawmillTime = scriptObjectAirportTime = scriptObjectHomeTime = CTimer::m_snTimeInMilliseconds;
-	scriptObjectAirportCounter = scriptObjectHomeCounter = 0;
+	scriptObjectCinemaTime = scriptObjectSawmillTime = scriptObjectAirportTime = scriptObjectHomeTime = scriptObjectCellBeatingTime = CTimer::m_snTimeInMilliseconds;
+	scriptObjectAirportCounter = scriptObjectHomeCounter = scriptObjectCellBeatingCounter = 0;
 
 	// RC Baron process engine - temporary workaround affects RC helicopters
 	Patch<unsigned int>(0x005F3925, 342);
@@ -375,6 +349,12 @@ bool cAudioManagerHack::initialise()
 
 	// vehicle sfx
 	InjectHook(0x005F8A30, &cAudioManagerHack::InitialiseHack, PATCH_JUMP);
+
+	// do not change vice cheetah siren pitch
+	InjectHook(0x005F0417, vcversion::AdjustOffset(0x005F03F0), PATCH_JUMP);
+
+	// fbi alt siren
+	InjectHook(0x005F03DD, &cAudioManagerHack::ProcessVehicleSirenOrAlarmHack, PATCH_JUMP);
 
 	return true;
 }
@@ -536,6 +516,20 @@ void cAudioManagerHack::ProcessLoopingScriptObjectHack(unsigned char id)
 		this->m_Unk6 = 3;
 		this->m_Unk4 = 2.0;
 		break;
+	case 77:
+		this->ProcessPoliceCellBeatingScriptObject(id);
+		break;
+	case 102:
+		maxDistance = 2500.0;
+		this->m_MaxRange = 50.0;
+		this->m_SampleID = LOOPING_SCRIPT_OBJECT_102;
+		this->m_Unk0 = 0;
+		maxVolume = 80;
+		this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+		this->m_Unk2 = 8;
+		this->m_Unk6 = 10;
+		this->m_Unk4 = 2.0;
+		break;
 	default:
 		this->ProcessLoopingScriptObject(id);
 		return;
@@ -590,12 +584,17 @@ unsigned int __thiscall cAudioManagerHack::GetPlayerTalkSfx(CPed *ped, unsigned 
 	return store;
 }
 
-void cAudioManagerHack::InitialiseAudioZoneArray()
+void cAudioManagerHack::InitialiseAudioZoneArrayHack()
 {
-	*reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x00A10A46)) = TOTAL_AUDIO_ZONES - 5;
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004DC392)) = (unsigned long)&audioZones;
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FCF49)) = (unsigned long)&audioZones;
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FDC0F)) = (unsigned long)&audioZones;
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004DC392)) = (unsigned long)&audioZones; // CTheZones::FindAudioZone
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FCF49)) = (unsigned long)&audioZones; // cAudioManager::PlaySuspectLastSeen
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FDC0F)) = (unsigned long)&audioZones; // cAudioManager::SetupCrimeReport
+
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x004DC475)) = TOTAL_AUDIO_ZONES;
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004DC48A)) = (unsigned long)&audioZones;
+	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x004DC4C4)) = TOTAL_AUDIO_ZONES;
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004DC4D9)) = (unsigned long)&audioZones;
+	CTheZones::InitialiseAudioZoneArray();
 }
 
 void __declspec(naked) cAudioManagerHack::SetupSuspectLastSeenReportHackProxy()
@@ -901,7 +900,7 @@ void cAudioManagerHack::ProcessCinemaScriptObject(unsigned int id)
 				rand &= 1;
 				this->m_SampleID = rand + LOOPING_SCRIPT_OBJECT_A;
 				this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
-				this->m_Frequency = this->RandomDisplacement(this->m_Frequency >> 4);
+				this->m_Frequency += this->RandomDisplacement(this->m_Frequency >> 4);
 				this->m_Unk7 = rand + 1;
 				this->m_Unk1 = 0;
 				this->m_Unk8 = 1;
@@ -913,7 +912,7 @@ void cAudioManagerHack::ProcessCinemaScriptObject(unsigned int id)
 				this->m_Unk10 = 1;
 				this->m_Unk12 = 0;
 				this->AddSampleToRequestedQueue();
-				scriptObjectCinemaTime = CTimer::m_snTimeInMilliseconds + 2000 + *(unsigned int *)((unsigned long)this + 0x5548) % 0x1770;
+				scriptObjectCinemaTime = CTimer::m_snTimeInMilliseconds + 2000 + *(unsigned int *)((unsigned long)this + 0x5548) % 6000;
 			}
 		}
 	}
@@ -1009,7 +1008,7 @@ void cAudioManagerHack::ProcessSawMillScriptObject(unsigned int)
 				this->m_Unk10 = 1;
 				this->m_Unk12 = 0;
 				this->AddSampleToRequestedQueue();
-				scriptObjectSawmillTime = CTimer::m_snTimeInMilliseconds + 2000 + *(unsigned int *)((unsigned long)this + 0x5548) % 0xFA0;
+				scriptObjectSawmillTime = CTimer::m_snTimeInMilliseconds + 2000 + *(unsigned int *)((unsigned long)this + 0x5548) % 4000;
 			}
 		}
 	}
@@ -1043,7 +1042,7 @@ void cAudioManagerHack::ProcessAirportScriptObject(unsigned int)
 				this->m_Unk10 = 1;
 				this->m_Unk12 = 0;
 				this->AddSampleToRequestedQueue();
-				scriptObjectAirportTime = CTimer::m_snTimeInMilliseconds + 10000 + *(unsigned int *)((unsigned long)this + 0x5548) % 0x4E20;
+				scriptObjectAirportTime = CTimer::m_snTimeInMilliseconds + 10000 + *(unsigned int *)((unsigned long)this + 0x5548) % 20000;
 			}
 		}
 	}
@@ -1057,8 +1056,8 @@ void cAudioManagerHack::ProcessHomeScriptObject(unsigned int)
 		this->m_MaxRange = 80.0;
 		distance = this->GetDistanceSquared(this->m_Position);
 		if (distance < maxDistance) {
+			unsigned char randomVolume = 40 + *(unsigned int *)((unsigned long)this + 0x553C) % 30;
 			this->m_DistanceToCamera = (distance > 0 ? sqrt(distance) : 0.0f);
-			unsigned char randomVolume = 40 + *(unsigned int *)((unsigned long)this + 0x553C) % 0x1E;
 			this->m_Volume = this->ComputeVolume(randomVolume, this->m_MaxRange, this->m_DistanceToCamera);
 			if (this->m_Volume) {
 				this->m_SampleID = LOOPING_SCRIPT_OBJECT_59A + *(unsigned int *)((unsigned long)this + 0x553C) % 5;
@@ -1076,7 +1075,47 @@ void cAudioManagerHack::ProcessHomeScriptObject(unsigned int)
 				this->m_Unk10 = 1;
 				this->m_Unk12 = 1;
 				this->AddSampleToRequestedQueue();
-				scriptObjectHomeTime = CTimer::m_snTimeInMilliseconds + 1000 + *(unsigned int *)((unsigned long)this + 0x5548) % 0xFA0;
+				scriptObjectHomeTime = CTimer::m_snTimeInMilliseconds + 1000 + *(unsigned int *)((unsigned long)this + 0x5548) % 4000;
+			}
+		}
+	}
+}
+
+void cAudioManagerHack::ProcessPoliceCellBeatingScriptObject(unsigned int)
+{
+	if (CTimer::m_snTimeInMilliseconds > scriptObjectCellBeatingTime) {
+		float maxDistance, distance;
+		maxDistance = 6400.0;
+		this->m_MaxRange = 80.0;
+		distance = this->GetDistanceSquared(this->m_Position);
+		if (distance < maxDistance) {
+			unsigned char randomVolume = 55 + *(unsigned int *)((unsigned long)this + 0x553C) % 50;
+			this->m_DistanceToCamera = (distance > 0 ? sqrt(distance) : 0.0f);
+			this->m_Volume = this->ComputeVolume(randomVolume, this->m_MaxRange, this->m_DistanceToCamera);
+			if (this->m_Volume) {
+				if (*(unsigned int *)((unsigned long)this + 0x5554) & 1) {
+					this->m_SampleID = LOOPING_SCRIPT_OBJECT_77A + (*(unsigned int *)((unsigned long)this + 0x5548) & 1);
+				} else {
+					this->m_SampleID = LOOPING_SCRIPT_OBJECT_77B + (*(unsigned int *)((unsigned long)this + 0x5540) & 3);
+				}
+				this->m_Unk0 = 0;
+				this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
+				this->m_Frequency += this->RandomDisplacement(this->m_Frequency >> 4);
+				this->m_Unk7 = scriptObjectCellBeatingCounter++;
+				this->m_Unk1 = 0;
+				this->m_Unk8 = 1;
+				this->m_Unk9 = 1;
+				this->m_Unk2 = 3;
+				this->m_Unk4 = 0;
+				this->m_MaxVolume = randomVolume;
+				this->m_LoopStartOff = 0;
+				this->m_LoopEndOff = -1;
+				this->m_Unk10 = 1;
+				this->m_Unk12 = 0;
+				this->AddSampleToRequestedQueue();
+				cPedParams parameters = { 1, {}, distance, 0 };
+				this->SetupPedComments(parameters, 0xC8);
+				scriptObjectCellBeatingTime = CTimer::m_snTimeInMilliseconds + 500 + *(unsigned int *)((unsigned long)this + 0x5548) % 1500;
 			}
 		}
 	}
@@ -1102,5 +1141,23 @@ void cAudioManagerHack::InitialiseHack(void)
 		for (int i = 0; i < 107; i++) {
 			vehicleSfx[i] = presetVehicleSfx[i];
 		}
+	}
+}
+
+void __declspec(naked) cAudioManagerHack::ProcessVehicleSirenOrAlarmHack()
+{
+	__asm
+	{
+		cmp eax, 5Ah                   // test for fbicar
+		jnz fbiranchtest
+		mov dword ptr [esi+28h], 3EF1h // set fbicar alt siren pitch
+		jmp fbiMatchEndJump
+	fbiranchTest:
+		cmp eax, 11h                   // test for fbiranch
+		jnz noMatch
+		mov dword ptr [esi+28h], 317Ch // set fbiranch alt siren pitch
+		jmp fbiMatchEndJump
+	noMatch:
+		jmp fbiNoMatchEndJump
 	}
 }
