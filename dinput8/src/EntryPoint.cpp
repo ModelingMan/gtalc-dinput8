@@ -4,7 +4,7 @@
 
 #include "cAudioManagerHack.h"
 #include "CFontHack.h"
-#include "CHudHack.h"
+//#include "CHudHack.h"
 #include "CMovingThingsHack.h"
 #include "CPagerHack.h"
 #include "CRunningScriptHack.h"
@@ -21,6 +21,7 @@
 #include "CPathFindHack.h"
 #include "CBridgeHack.h"
 #include "CStatsHack.h"
+#include "CWeaponEffectsHack.h"
 
 HMODULE hOrigDLL = NULL;
 
@@ -172,7 +173,8 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			!CFileLoaderHack::initialise() ||
 			!CPathFindHack::initialise() ||
 			!CBridgeHack::initialise() ||
-			!CStatsHack::initialise())
+			!CStatsHack::initialise() ||
+			!CWeaponEffectsHack::initialise())
 		{
 			VirtualProtect((LPVOID)(0x400000 + sectionheader->VirtualAddress), sectionheader->Misc.VirtualSize, OldProtect, &OldProtect);
 			return FALSE;

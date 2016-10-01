@@ -245,7 +245,7 @@ void CGarageHack::UpdateType7Hack(void)
 				}
 			}
 		}
-		this->UpdateDoor();
+		this->UpdateDoorsHeight();
 	}
 	
 	// closed
@@ -270,7 +270,7 @@ void CGarageHack::UpdateType7Hack(void)
 			this->state = 1; // opened
 			VCGlobals::DMAudio.PlayOneShot(cDMAudio::garageEntity, 0x4B, 1.0);
 		}
-		this->UpdateDoor();
+		this->UpdateDoorsHeight();
 	}
 }
 
@@ -340,7 +340,7 @@ void CGarageHack::UpdateType14Hack(void)
 				this->state = 0; // closed
 			}
 		}
-		this->UpdateDoor();
+		this->UpdateDoorsHeight();
 	}
 
 	// closed
@@ -361,7 +361,7 @@ void CGarageHack::UpdateType14Hack(void)
 			this->state = 1; // opened
 			VCGlobals::DMAudio.PlayOneShot(cDMAudio::garageEntity, 0x4B, 1.0);
 		}
-		this->UpdateDoor();
+		this->UpdateDoorsHeight();
 	}
 
 	// closed and serviced

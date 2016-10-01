@@ -34,6 +34,7 @@
     <ClCompile Include="src\CFileMgr.cpp" />
     <ClCompile Include="src\CFireManager.cpp" />
     <ClCompile Include="src\CFont.cpp" />
+    <ClCompile Include="src\CGame.cpp" />
     <ClCompile Include="src\CGarages.cpp" />
     <ClCompile Include="src\CGeneral.cpp" />
     <ClCompile Include="src\CHud.cpp" />

@@ -17,12 +17,12 @@ __declspec(naked) void CRadar::ChangeBlipScale(int, int)
 	__asm jmp g_ChangeBlipScale;
 }
 
-__declspec(naked) int CRadar::SetEntityBlip(int, int, int, int)
+__declspec(naked) int CRadar::SetEntityBlip(int, int, unsigned int, int)
 {
 	__asm jmp g_SetEntityBlip;
 }
 
-__declspec(naked) int CRadar::SetShortRangeCoordBlip(int, float, float, float, int, int)
+__declspec(naked) int CRadar::SetShortRangeCoordBlip(int, CVector, unsigned int, int)
 {
 	__asm jmp g_SetShortRangeCoordBlip;
 }

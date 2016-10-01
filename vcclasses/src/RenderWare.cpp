@@ -3,6 +3,7 @@
 
 static unsigned long g_RsMouseSetPos = vcversion::AdjustOffset(0x006030C0);
 static unsigned long g_RwRenderStateSet = vcversion::AdjustOffset(0x00649BA0);
+static unsigned long g_RwTextureRead = vcversion::AdjustOffset(0x0064E110);
 
 __declspec(naked) void RsMouseSetPos(RwV2d *)
 {
@@ -12,4 +13,9 @@ __declspec(naked) void RsMouseSetPos(RwV2d *)
 __declspec(naked) int RwRenderStateSet(int, int)
 {
 	__asm jmp g_RwRenderStateSet;
+}
+
+__declspec(naked) unsigned long RwTextureRead(const char *, const char *)
+{
+	__asm jmp g_RwTextureRead;
 }

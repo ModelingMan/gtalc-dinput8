@@ -187,10 +187,8 @@ void CPacManPickupsHack::GeneratePMPickUps(CVector center, float radius, short c
 
 			do {
 				// prevents infinite loop in invalid areas
-				if (counter++ * CTimer::ms_fTimeStep > 5000.0) {
-					aPMPickups[i].position.x = 0;
-					aPMPickups[i].position.y = 0;
-					aPMPickups[i].position.z = 0;
+				if (counter++ * CTimer::ms_fTimeStep > 4000.0) {
+					colpoint = {};
 					break;
 				}
 				random = VCGlobals::rand();
@@ -200,7 +198,7 @@ void CPacManPickupsHack::GeneratePMPickUps(CVector center, float radius, short c
 				pos.y = center.y + randY * radius / 128;
 				pos.z = 1000.0;
 				t = CWorld::ProcessVerticalLine(pos, -1000.0, colpoint, pentity, true, false, false, false, true, false, 0);
-			} while (!t || (pentity->status & 7) != 1 || !(*(unsigned short *)(baseModelInfo[pentity->modelIndex] + 0x42) & 4));
+			} while (!t || (pentity->status & 7) != 1 || !(*reinterpret_cast<unsigned short *>(baseModelInfo[pentity->modelIndex] + 0x42) & 4));
 
 			aPMPickups[i].state = 1;
 			aPMPickups[i].position.x = colpoint.point.x;
@@ -285,14 +283,14 @@ void CPacManPickupsHack::Render(void)
 				float width;
 				float height;
 				if (CSprite::CalcScreenCoors(pickup, &pos, &width, &height, true) && pos.z < 100.0) {
-					float time = ((float)CTimer::m_snTimeInMilliseconds) * 6.1359233e-3f;
+					float time = static_cast<float>(CTimer::m_snTimeInMilliseconds) * 6.1359233e-3f;
 					if (aPMPickups[i].object) {
 						CMatrix *matrix = &aPMPickups[i].object->GetMatrix();
 						matrix->SetRotateZOnly(time);
 						matrix->UpdateRW();
 						aPMPickups[i].object->UpdateRwFrame();
 					}
-					CSprite::RenderOneXLUSprite(pos.x, pos.y, pos.z, width * 0.8f * sin(time), height * 0.8f, 100, 50, 5, 255, 1.0f / pos.z, 255);
+					CSprite::RenderOneXLUSprite(pos.x, pos.y, pos.z, abs(width * 0.8f * sin(time)), height * 0.8f, 100, 50, 5, 255, 1.0f / pos.z, 255);
 				}
 			}
 		}

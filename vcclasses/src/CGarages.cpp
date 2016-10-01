@@ -22,7 +22,7 @@ __declspec(naked) void CGarages::TriggerMessage(char *, short, unsigned short, s
 	__asm jmp g_TriggerMessage;
 }
 
-__declspec(naked) void CGarage::UpdateDoor(void)
+__declspec(naked) void CGarage::UpdateDoorsHeight(void)
 {
 	__asm jmp g_UpdateDoor;
 }

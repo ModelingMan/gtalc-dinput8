@@ -83,6 +83,9 @@
     <ClCompile Include="src\CStatsHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CWeaponEffectsHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CRunningScriptHack.h">
@@ -161,6 +164,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\CStatsHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CWeaponEffectsHack.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

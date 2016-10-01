@@ -1,5 +1,4 @@
 #include "CRendererHack.h"
-#include "CRunningScriptHack.h"
 #include "vcversion.h"
 #include "Globals.h"
 #include "SilentCall.h"
@@ -25,22 +24,10 @@ bool CRendererHack::initialise()
 	}
 
 	// control backface culling of non-transparent buildings
-	InjectHook(0x004C9F87, &RenderEverythingBarRoadsHackProxy, PATCH_JUMP);
-	
-	// auto-aim crosshair
-	if (!(CRunningScriptHack::debugMode & DEBUG_VICECITY)) {
-		VCGlobals::strcpy((char *)vcversion::AdjustOffset(0x0069D818), "crosshair");
-		VCGlobals::strcpy((char *)vcversion::AdjustOffset(0x0069D80C), "crosshairm");
-		memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x005D4ECC)), 0x90, 11);
-		Patch<unsigned char>(0x005D4EE3, 2);
-		Patch<unsigned char>(0x005D4EEE, 2);
-	} else {
-		Patch<unsigned char>(0x005D4EEE, 9);
-	}
+	InjectHook(0x004C9F87, &CRendererHack::RenderEverythingBarRoadsHackProxy, PATCH_JUMP);
 
 	// get optional data to draw backfaces
 	InjectHook(0x004CA421, &CRendererHack::InitHack, PATCH_JUMP);
-
 	return true;
 }
 

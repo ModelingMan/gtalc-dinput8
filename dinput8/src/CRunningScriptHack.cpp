@@ -371,7 +371,7 @@ bool CRunningScriptHack::_02FB_activate_crusher_crane()
 
 bool CRunningScriptHack::_0351_is_nasty_game()
 {
-	this->UpdateCompareFlag(*(bool *)vcversion::AdjustOffset(0x68DD68));
+	this->UpdateCompareFlag(!!CGame::nastyGame);
 	return 0;
 }
 
@@ -424,7 +424,7 @@ bool CRunningScriptHack::_03EC_has_military_crane_collected_all_cars()
 bool CRunningScriptHack::_0410_set_gang_ped_model_preference()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	*(BYTE *)(ScriptParams[0].int32 * 0x18 + vcversion::AdjustOffset(0x7D925C)) = (BYTE)ScriptParams[1].int32;
+	*(BYTE *)(ScriptParams[0].uint8 * 0x18 + vcversion::AdjustOffset(0x7D925C)) = ScriptParams[1].uint8;
 	return 0;
 }
 
@@ -439,7 +439,7 @@ bool CRunningScriptHack::_0422_does_garage_contain_car()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
 	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[1].int32);
-	this->UpdateCompareFlag(vehicle && CGarages::garages[ScriptParams[0].int32].IsEntityEntirelyInside3D(vehicle, 0.0));
+	this->UpdateCompareFlag(CGarages::garages[ScriptParams[0].int32].IsEntityEntirelyInside3D(vehicle, 0.0));
 	return 0;
 }
 
@@ -555,16 +555,13 @@ bool CRunningScriptHack::_0130_has_player_been_arrested()
 bool CRunningScriptHack::_0178_is_player_touching_object()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	if (CObject *object = CPools::ms_pObjectPool->GetAt(ScriptParams[1].int32)) {
-		CPlayerPed *player = CWorld::Players[ScriptParams[0].int32].playerEntity;
-		CPhysical *source = player;
-		if (player->isInAnyVehicle && player->vehicle) {
-			source = player->vehicle;
-		}
-		this->UpdateCompareFlag(source->GetHasCollidedWith(object));
-		return 0;
+	CPlayerPed *player = CWorld::Players[ScriptParams[0].int32].playerEntity;
+	CObject *object = CPools::ms_pObjectPool->GetAt(ScriptParams[1].int32);
+	CPhysical *source = player;
+	if (player->isInAnyVehicle && player->vehicle) {
+		source = player->vehicle;
 	}
-	this->UpdateCompareFlag(false);
+	this->UpdateCompareFlag(source->GetHasCollidedWith(object));
 	return 0;
 }
 
@@ -579,18 +576,17 @@ bool CRunningScriptHack::_0228_is_car_armed_with_bomb()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
 	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32);
-	this->UpdateCompareFlag(vehicle && (vehicle->bombState & 7) == ScriptParams[1].int32);
+	this->UpdateCompareFlag((vehicle->bombState & 7) == ScriptParams[1].int32);
 	return 0;
 }
 
 bool CRunningScriptHack::_0240_flash_object()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	if (CObject *object = CPools::ms_pObjectPool->GetAt(ScriptParams[0].int32)) {
-		object->field_052 &= 0xDF;
-		if (ScriptParams[1].int32) {
-			object->field_052 |= 0x20;
-		}
+	CObject *object = CPools::ms_pObjectPool->GetAt(ScriptParams[0].int32);
+	object->field_052 &= 0xDF;
+	if (ScriptParams[1].int32) {
+		object->field_052 |= 0x20;
 	}
 	return 0;
 }
@@ -598,20 +594,19 @@ bool CRunningScriptHack::_0240_flash_object()
 bool CRunningScriptHack::_0242_arm_car_with_bomb()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	if (CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32)) {
-		vehicle->bombState = (vehicle->bombState & 0xF8) | (((unsigned char)ScriptParams[1].int32) & 7);
-		vehicle->bombOwner = VCGlobals::FindPlayerPed();
-	}
+	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32);
+	vehicle->bombState = (vehicle->bombState & 0xF8) | (ScriptParams[1].uint8 & 7);
+	vehicle->bombOwner = VCGlobals::FindPlayerPed();
 	return 0;
 }
 
 bool CRunningScriptHack::_0255_restart_critical_mission()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 4);
-	if (ScriptParams[2].float32 <= -100.0) {
-		ScriptParams[2].float32 = CWorld::FindGroundZForCoord(ScriptParams[0].float32, ScriptParams[1].float32);
-	}
 	CVector pos = { ScriptParams[0].float32, ScriptParams[1].float32, ScriptParams[2].float32 };
+	if (pos.z <= -100.0) {
+		pos.z = CWorld::FindGroundZForCoord(pos.x, pos.y);
+	}
 	CRestart::OverrideNextRestart(pos, ScriptParams[3].float32);
 	CPlayerInfo *player = &CWorld::Players[CWorld::PlayerInFocus];
 	if (player->deathArrestState == 0) {
@@ -637,25 +632,24 @@ bool CRunningScriptHack::_029C_is_boat()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
 	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32);
-	this->UpdateCompareFlag(vehicle && vehicle->type == 1);
+	this->UpdateCompareFlag(vehicle->type == 1);
 	return 0;
 }
 
 bool CRunningScriptHack::_02A0_is_char_stopped()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
-	if (CPed *ped = CPools::ms_pPedPool->GetAt(ScriptParams[0].int32)) {
-		if (ped->isInAnyVehicle) {
-			CVehicle *vehicle = ped->vehicle;
-			if (vehicle && vehicle->speed < CTimer::ms_fTimeStep * 0.01) {
-				this->UpdateCompareFlag(true);
-				return 0;
-			}
-		} else {
-			if (ped->moveState <= 1) {
-				this->UpdateCompareFlag(true);
-				return 0;
-			}
+	CPed *ped = CPools::ms_pPedPool->GetAt(ScriptParams[0].int32);
+	if (ped->isInAnyVehicle) {
+		CVehicle *vehicle = ped->vehicle;
+		if (vehicle && vehicle->speed < CTimer::ms_fTimeStep * 0.01) {
+			this->UpdateCompareFlag(true);
+			return 0;
+		}
+	} else {
+		if (ped->moveState <= 1) {
+			this->UpdateCompareFlag(true);
+			return 0;
 		}
 	}
 	this->UpdateCompareFlag(false);
@@ -692,10 +686,10 @@ bool CRunningScriptHack::_02C6_clear_pacman()
 bool CRunningScriptHack::_02C7_start_pacman_scramble()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 5);
-	if (ScriptParams[2].float32 <= -100.0) {
-		ScriptParams[2].float32 = CWorld::FindGroundZForCoord(ScriptParams[0].float32, ScriptParams[1].float32);
-	}
 	CVector pos = { ScriptParams[0].float32, ScriptParams[1].float32, ScriptParams[2].float32 };
+	if (pos.z <= -100.0) {
+		pos.z = CWorld::FindGroundZForCoord(pos.x, pos.y);
+	}
 	CPacManPickupsHack::StartPacManScramble(pos, ScriptParams[3].float32, ScriptParams[4].int16);
 	return 0;
 }
@@ -768,10 +762,10 @@ bool CRunningScriptHack::_02EF_destroy_projectiles_in_area()
 bool CRunningScriptHack::_02F0_drop_mine()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 3);
-	if (ScriptParams[2].float32 <= -100.0) {
-		ScriptParams[2].float32 = CWorld::FindGroundZForCoord(ScriptParams[0].float32, ScriptParams[1].float32) + 0.5f;
-	}
 	CVector pos = { ScriptParams[0].float32, ScriptParams[1].float32, ScriptParams[2].float32 };
+	if (pos.z <= -100.0) {
+		pos.z = CWorld::FindGroundZForCoord(pos.x, pos.y) + 0.5f;
+	}
 	CPickups::GenerateNewOne(pos, VCGlobals::MI_CARMINE, 9, 0, 0, 0, 0);
 	return 0;
 }
@@ -779,10 +773,10 @@ bool CRunningScriptHack::_02F0_drop_mine()
 bool CRunningScriptHack::_02F1_drop_nautical_mine()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 3);
-	if (ScriptParams[2].float32 <= -100.0) {
-		ScriptParams[2].float32 = CWorld::FindGroundZForCoord(ScriptParams[0].float32, ScriptParams[1].float32) + 0.5f;
-	}
 	CVector pos = { ScriptParams[0].float32, ScriptParams[1].float32, ScriptParams[2].float32 };
+	if (pos.z <= -100.0) {
+		pos.z = CWorld::FindGroundZForCoord(pos.x, pos.y) + 0.5f;
+	}
 	CPickups::GenerateNewOne(pos, VCGlobals::MI_NAUTICALMINE, 11, 0, 0, 0, 0);
 	return 0;
 }
@@ -814,25 +808,23 @@ bool CRunningScriptHack::_03C9_is_car_visibly_damaged()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
 	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32);
-	this->UpdateCompareFlag(vehicle && (vehicle->field_1FB & 2));
+	this->UpdateCompareFlag(!!(vehicle->field_1FB & 2));
 	return 0;
 }
 
 bool CRunningScriptHack::_03FB_set_car_stays_in_current_level()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	if (CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32)) {
-		vehicle->originLevel = ScriptParams[1].int32 ? (char)CTheZones::GetLevelFromPosition(&vehicle->GetPos()) : 0;
-	}
+	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32);
+	vehicle->originLevel = ScriptParams[1].int32 ? (char)CTheZones::GetLevelFromPosition(&vehicle->GetPos()) : 0;
 	return 0;
 }
 
 bool CRunningScriptHack::_03FC_set_char_stays_in_current_level()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	if (CPed *ped = CPools::ms_pPedPool->GetAt(ScriptParams[0].int32)) {
-		ped->originLevel = ScriptParams[1].int32 ? (char)CTheZones::GetLevelFromPosition(&ped->GetPos()) : 0;
-	}
+	CPed *ped = CPools::ms_pPedPool->GetAt(ScriptParams[0].int32);
+	ped->originLevel = ScriptParams[1].int32 ? (char)CTheZones::GetLevelFromPosition(&ped->GetPos()) : 0;
 	return 0;
 }
 
@@ -853,29 +845,26 @@ bool CRunningScriptHack::_0420_override_police_station_level()
 bool CRunningScriptHack::_0438_set_char_ignore_level_transitions()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	if (CPed *ped = CPools::ms_pPedPool->GetAt(ScriptParams[0].int32)) {
-		ped->originLevel = ScriptParams[1].int32 ? -1 : (char)CTheZones::GetLevelFromPosition(&ped->GetPos());
-	}
+	CPed *ped = CPools::ms_pPedPool->GetAt(ScriptParams[0].int32);
+	ped->originLevel = ScriptParams[1].int32 ? -1 : (char)CTheZones::GetLevelFromPosition(&ped->GetPos());
 	return 0;
 }
 
 bool CRunningScriptHack::_044E_set_car_ignore_level_transitions()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	if (CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32)) {
-		vehicle->originLevel = ScriptParams[1].int32 ? -1 : (char)CTheZones::GetLevelFromPosition(&vehicle->GetPos());
-	}
+	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32);
+	vehicle->originLevel = ScriptParams[1].int32 ? -1 : (char)CTheZones::GetLevelFromPosition(&vehicle->GetPos());
 	return 0;
 }
 
 bool CRunningScriptHack::_044F_make_craigs_car_a_bit_stronger()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	if (CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32)) {
-		vehicle->field_501 &= 0xDF;
-		if (ScriptParams[1].int32) {
-			vehicle->field_501 |= 0x20;
-		}
+	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32);
+	vehicle->field_501 &= 0xDF;
+	if (ScriptParams[1].int32) {
+		vehicle->field_501 |= 0x20;
 	}
 	return 0;
 }

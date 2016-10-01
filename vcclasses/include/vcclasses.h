@@ -80,10 +80,10 @@ public:
 
 struct cPedParams
 {
-	unsigned char flag1;           // 0x0
+	unsigned char unk1;            // 0x0
 	unsigned char padding[3];      // 0x1
 	float         distanceSquared; // 0x4
-	unsigned int  flag2;           // 0x8
+	unsigned int  unk2;            // 0x8
 };
 
 //########################################################################
@@ -279,10 +279,12 @@ class CMessages
 public:
 	static void AddMessageJumpQWithNumber(wchar_t *, unsigned int, unsigned short, int, int, int, int, int, int);
 	static void AddMessageWithNumber(wchar_t *, unsigned int, unsigned short, int, int, int, int, int, int);
+	static void InsertStringInString(wchar_t *, wchar_t *);
 	static void InsertNumberInString(wchar_t *, int, int, int, int, int, int, wchar_t *);
 	static void AddToPreviousBriefArray(wchar_t *, int, int, int, int, int, int, unsigned short *);
 	static void AddBigMessageQ(wchar_t *, unsigned int, unsigned short);
 	static void AddBigMessage(wchar_t *, unsigned int, unsigned short);
+	static void AddMessageJumpQ(wchar_t *, unsigned int, unsigned short);
 };
 
 //########################################################################
@@ -332,6 +334,8 @@ public:
 	int            level;                      // 0x020
 	unsigned char  space4[0x1C4];
 	unsigned long  policeInPursuit[10];        // 0x1E8
+
+	static unsigned int &MaximumWantedLevel;
 
 	void SetWantedLevelCheat(int);
 	void UpdateWantedLevel(void);
@@ -589,7 +593,7 @@ static_assert(sizeof(CPlayerInfo) == 0x170, "Size of CPlayerInfo is not 0x170 by
 
 class CRunningScript
 {
-protected:
+public:
 	// Thanks to CyQ, PatrickW and spookie for this info.
 	void *m_pNext;                   // 0x00
 	void *m_pPrev;                   // 0x04
@@ -612,7 +616,7 @@ protected:
 
 	template <class T>
 	T SCM_Read(bool bIncreaseIP);
-public:
+
 	void StoreParameters(unsigned int *, short);
 	void CollectParameters(unsigned int *scriptIP, int paramCount);
 	bool ProcessOneCommand();
@@ -965,7 +969,7 @@ public:
 	unsigned char unk8[0x28];
 
 	bool IsAnyCarBlockingDoor(void);
-	void UpdateDoor(void);
+	void UpdateDoorsHeight(void);
 	bool IsAnyOtherCarTouchingGarage(CVehicle *);
 	bool IsEntityEntirelyOutside(CEntity *, float);
 	bool IsEntityEntirelyInside3D(CEntity *, float);
@@ -1048,8 +1052,8 @@ class CRadar
 public:
 	static void SetBlipSprite(int, int);
 	static void ChangeBlipScale(int, int);
-	static int SetEntityBlip(int, int, int, int);
-	static int SetShortRangeCoordBlip(int, float, float, float, int, int);
+	static int SetEntityBlip(int, int, unsigned int, int);
+	static int SetShortRangeCoordBlip(int, CVector, unsigned int, int);
 	static int GetActualBlipArrayIndex(int);
 };
 
@@ -1159,12 +1163,49 @@ public:
 };
 
 //########################################################################
+//# CZone
+//########################################################################
+
+class CZone
+{
+public:
+	char name[8];
+	CVector corner1;
+	CVector corner2;
+	unsigned int type;
+	unsigned int level;
+	unsigned short night;
+	unsigned short day;
+	unsigned int childZone;
+	unsigned int parentZone;
+	unsigned int unk;
+};
+
+//########################################################################
+//# CZoneInfo
+//########################################################################
+
+struct CZoneInfo
+{
+	unsigned short carDensity;   // 0x00
+	unsigned char  space1[0x2A];
+	unsigned short pedDensity;   // 0x2C
+	unsigned char  space2[0x16];
+};
+
+//########################################################################
 //# CTheZones
 //########################################################################
 
 class CTheZones
 {
 public:
+	static CZoneInfo *ZoneInfoArray;
+	static CZone *InfoZoneArray;
+	static CZone *NavigationZoneArray;
+	static unsigned short &TotalNumberOfInfoZones;
+	static unsigned short &TotalNumberOfNavigationZones;
+
 	static void InitialiseAudioZoneArray(void);
 	static int GetLevelFromPosition(CVector const *);
 };
@@ -1267,6 +1308,17 @@ public:
 	static int CloseFile(int);
 	static bool ReadLine(int, char *, int);
 	static int OpenFile(char const *, char const *);
+};
+
+//########################################################################
+//# CGame
+//########################################################################
+
+class CGame
+{
+public:
+	static unsigned char &nastyGame;
+	static int &currLevel;
 };
 
 #endif

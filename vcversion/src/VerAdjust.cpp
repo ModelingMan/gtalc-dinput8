@@ -1,10 +1,10 @@
-/*******************************************************************************
+/*************************************************************************
 	vcversion - 
 
 	Ported from Delphi source code courtesy of Artem Khassanov (Hammer83)
 	Original file: uVerAdjust.pas
 	http://www.artemkh.com/gtalc.php
-*******************************************************************************/
+*************************************************************************/
 
 unsigned long AdjustOffsetUS11(unsigned long Offset)
 {
@@ -224,4 +224,149 @@ unsigned long AdjustOffsetGER11(unsigned long Offset)
 		return AdjustOffsetUS11(Offset) - 0x10;
 	else
 		return AdjustOffsetUS11(Offset);
+}
+
+// steam offsets from maxorator
+unsigned long AdjustOffsetSTEAM(unsigned long Offset)
+{
+	if (Offset < 0x0041CC07)
+		return Offset - 0x0;
+	else if (Offset < 0x0041CC20)
+		return Offset - 0x37;
+	else if (Offset < 0x00434730)
+		return Offset - 0x30;
+	else if (Offset < 0x00435029)
+		return Offset - 0x40;
+	else if (Offset < 0x00435040)
+		return Offset - 0x83;
+	else if (Offset < 0x00443E00)
+		return Offset - 0x90;
+	else if (Offset < 0x004518D3)
+		return Offset - 0xF0;
+	else if (Offset < 0x004518E0)
+		return Offset - 0x124;
+	else if (Offset < 0x00489D10)
+		return Offset - 0x120;
+	else if (Offset < 0x00489D82)
+		return Offset - 0x113;
+	else if (Offset < 0x00489E10)
+		return Offset - 0x112;
+	else if (Offset < 0x0048E6FD)
+		return Offset - 0x110;
+	else if (Offset < 0x0048E830)
+		return Offset - 0x10E;
+	else if (Offset < 0x0048EC30)
+		return Offset - 0xF2;
+	else if (Offset < 0x00498FF3)
+		return Offset - 0xF0;
+	else if (Offset < 0x0049B993)
+		return Offset - 0xDF;
+	else if (Offset < 0x0049BB91)
+		return Offset - 0xF6;
+	else if (Offset < 0x0049BD00)
+		return Offset - 0x131;
+	else if (Offset < 0x004A4360)
+		return Offset - 0x141;
+	else if (Offset < 0x004A448A)
+		return Offset - 0x140;
+	else if (Offset < 0x004A4586)
+		return Offset - 0x18D;
+	else if (Offset < 0x004A4670)
+		return Offset - 0x186;
+	else if (Offset < 0x004A4734)
+		return Offset - 0x180;
+	else if (Offset < 0x004A47B0)
+		return Offset - 0x144;
+	else if (Offset < 0x004A4BE3)
+		return Offset - 0x140;
+	else if (Offset < 0x004A4CF3)
+		return Offset - 0x139;
+	else if (Offset < 0x004A4FD0)
+		return Offset - 0x133;
+	else if (Offset < 0x004C4230)
+		return Offset - 0x130;
+	else if (Offset < 0x00516F87)
+		return Offset - 0x140;
+	else if (Offset < 0x00517060)
+		return Offset - 0x111;
+	else if (Offset < 0x0057BF40)
+		return Offset - 0x110;
+	else if (Offset < 0x005CC921)
+		return Offset - 0x1D0;
+	else if (Offset < 0x005CC9E0)
+		return Offset - 0x225;
+	else if (Offset < 0x005D7270)
+		return Offset - 0x230;
+	else if (Offset < 0x005D7A12)
+		return Offset - 0x2D0;
+	else if (Offset < 0x005D7A40)
+		return Offset - 0x3A2;
+	else if (Offset < 0x00600FB0)
+		return Offset - 0x3A0;
+	else if (Offset < 0x00602000)
+		return Offset - 0x390;
+	else if (Offset < 0x0061D3D0)
+		return Offset - 0x3E0;
+	else if (Offset < 0x0062121B)
+		return Offset - 0x3C0;
+	else if (Offset < 0x00621230)
+		return Offset - 0x3AF;
+	else if (Offset < 0x00626F80)
+		return Offset - 0x3B0;
+	else if (Offset < 0x0062721B)
+		return Offset - 0x3B0;
+	else if (Offset < 0x006272E0)
+		return Offset - 0x381;
+	else if (Offset < 0x006274D0)
+		return Offset - 0x380;
+	else if (Offset < 0x00627570)
+		return Offset - 0x370;
+	else if (Offset < 0x00627590)
+		return Offset - 0x34A;
+	else if (Offset < 0x0063762B)
+		return Offset - 0x340;
+	else if (Offset < 0x00639268)
+		return Offset - 0x341;
+	else if (Offset < 0x0067E000)
+		return Offset - 0x1050;
+	else if (Offset < 0x00683000)
+		return Offset - 0x1000;
+	else if (Offset < 0x0068DD7C)
+		return Offset - 0x1000;
+	else if (Offset < 0x0069A020)
+		return Offset - 0xFF8;
+	else if (Offset < 0x0069A0C8)
+		return Offset - 0x1004;
+	else if (Offset < 0x006A5580)
+		return Offset - 0x1000;
+	else if (Offset < 0x006A5740)
+		return Offset - 0x1004;
+	else if (Offset < 0x006D668C)
+		return Offset - 0x1008;
+	else if (Offset < 0x006D6B28)
+		return Offset - 0x1034;
+	else if (Offset < 0x006DB8F0)
+		return Offset - 0x1030;
+	else if (Offset < 0x006DB924)
+		return Offset - 0x1038;
+	else if (Offset < 0x006DCAE0)
+		return Offset - 0x1018;
+	else if (Offset < 0x006F23C0)
+		return Offset - 0x1068;
+	else if (Offset < 0x006F2434)
+		return Offset - 0x1008;
+	else if (Offset < 0x006F245C)
+		return Offset - 0x100C;
+	else if (Offset < 0x006F7000)
+		return Offset - 0x1010;
+	else if (Offset < 0x00786BA8)
+		return Offset - 0x1000;
+	else if (Offset < 0x00786D40)
+		return Offset - 0xFFC;
+	else if (Offset < 0x00A10B20)
+		return Offset - 0xFF8;
+	else if (Offset < 0x00A10B4E)
+		return Offset - 0xFF7;
+	else
+		return Offset - 0xFF6;
 }

@@ -157,6 +157,7 @@
     <ClCompile Include="src\CStatsHack.cpp" />
     <ClCompile Include="src\CTowerClockHack.cpp" />
     <ClCompile Include="src\CWantedHack.cpp" />
+    <ClCompile Include="src\CWeaponEffectsHack.cpp" />
     <ClCompile Include="src\EntryPoint.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -183,6 +184,7 @@
     <ClInclude Include="include\CStatsHack.h" />
     <ClInclude Include="include\CTowerClockHack.h" />
     <ClInclude Include="include\CWantedHack.h" />
+    <ClInclude Include="include\CWeaponEffectsHack.h" />
     <ClInclude Include="include\SilentCall.h" />
     <ClInclude Include="include\Utils.h" />
     <ClInclude Include="include\Vehicles.h" />
