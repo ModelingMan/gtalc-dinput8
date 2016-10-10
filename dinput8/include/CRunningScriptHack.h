@@ -18,9 +18,12 @@ public:
 	bool _034C_suburban_passed();
 
 	// additional opcodes
+	bool _00A2_is_char_still_alive();
 	bool _01EE_activate_crane();
 	bool _01EF_deactivate_crane();
 	bool _024C_set_phone_message();
+	bool _0250_draw_light();
+	bool _02A2_add_particle_effect();
 	bool _02BD_is_debug_mode();
 	bool _02FB_activate_crusher_crane();
 	bool _0351_is_nasty_game();
@@ -28,6 +31,7 @@ public:
 	bool _0368_activate_military_crane();
 	bool _03A0_is_crane_lifting_car();
 	bool _03C2_is_phone_displaying_message();
+	bool _03DD_add_sprite_blip_for_pickup();
 	bool _03EC_has_military_crane_collected_all_cars();
 	bool _0410_set_gang_ped_model_preference();
 	bool _0421_force_rain();
@@ -62,6 +66,7 @@ public:
 	bool _032D_set_car_block_car();
 	bool _03A5_change_garage_type_with_car_model();
 	bool _03C9_is_car_visibly_damaged();
+	bool _03F8_get_body_cast_health();
 	bool _03FB_set_car_stays_in_current_level();
 	bool _03FC_set_char_stays_in_current_level();
 	bool _041F_override_hospital_level();

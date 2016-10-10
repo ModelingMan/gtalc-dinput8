@@ -22,6 +22,8 @@
 #include "CBridgeHack.h"
 #include "CStatsHack.h"
 #include "CWeaponEffectsHack.h"
+#include "CObjectHack.h"
+#include "CRadarHack.h"
 
 HMODULE hOrigDLL = NULL;
 
@@ -174,7 +176,9 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			!CPathFindHack::initialise() ||
 			!CBridgeHack::initialise() ||
 			!CStatsHack::initialise() ||
-			!CWeaponEffectsHack::initialise())
+			!CWeaponEffectsHack::initialise() ||
+			!CObjectHack::initialise() ||
+			!CRadarHack::initialise())
 		{
 			VirtualProtect((LPVOID)(0x400000 + sectionheader->VirtualAddress), sectionheader->Misc.VirtualSize, OldProtect, &OldProtect);
 			return FALSE;

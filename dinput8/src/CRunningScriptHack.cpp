@@ -5,6 +5,7 @@
 #include "CExplosionHack.h"
 #include "CProjectileInfoHack.h"
 #include "CPacManPickupsHack.h"
+#include "CObjectHack.h"
 #include "Globals.h"
 #include "vcclasses.h"
 #include "vcversion.h"
@@ -159,12 +160,18 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 		return this->_034C_suburban_passed();
 
 	// additional opcodes
+	case 0x00A2:
+		return this->_00A2_is_char_still_alive();
 	case 0x01EE:
 		return this->_01EE_activate_crane();
 	case 0x01EF:
 		return this->_01EF_deactivate_crane();
 	case 0x024C:
 		return this->_024C_set_phone_message();
+	case 0x0250:
+		return this->_0250_draw_light();
+	case 0x02A2:
+		return this->_02A2_add_particle_effect();
 	case 0x02BD:
 		return this->_02BD_is_debug_mode(); // custom opcode
 	case 0x02FB:
@@ -179,6 +186,8 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 		return this->_03A0_is_crane_lifting_car();
 	case 0x03C2:
 		return this->_03C2_is_phone_displaying_message();
+	case 0x03DD:
+		return this->_03DD_add_sprite_blip_for_pickup();
 	case 0x03EC:
 		return this->_03EC_has_military_crane_collected_all_cars();
 	case 0x0410:
@@ -246,6 +255,8 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 		return this->_03A5_change_garage_type_with_car_model();
 	case 0x03C9:
 		return this->_03C9_is_car_visibly_damaged();
+	case 0x03F8:
+		return this->_03F8_get_body_cast_health();
 	case 0x03FB:
 		return this->_03FB_set_car_stays_in_current_level();
 	case 0x03FC:
@@ -307,6 +318,14 @@ bool CRunningScriptHack::_034C_suburban_passed()
 	return 0;
 }
 
+bool CRunningScriptHack::_00A2_is_char_still_alive()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 1);
+	CPed *ped = CPools::ms_pPedPool->GetAt(ScriptParams[0].int32);
+	this->UpdateCompareFlag(ped && ped->state != 0x37 && ped->state != 0x36);
+	return 0;
+}
+
 bool CRunningScriptHack::_01EE_activate_crane()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 10);
@@ -340,6 +359,26 @@ bool CRunningScriptHack::_024C_set_phone_message()
 	VCGlobals::strncpy(text, reinterpret_cast<char *>(&CTheScripts::ScriptSpace[this->m_dwScriptIP]), 8);
 	this->m_dwScriptIP += 8;
 	VCGlobals::ThePhoneInfo.SetPhoneMessage_JustOnce(ScriptParams[0].int32, TheText.Get(text), 0, 0, 0, 0, 0);
+	return 0;
+}
+
+bool CRunningScriptHack::_0250_draw_light()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 6);
+	CVector pos1 = { ScriptParams[0].float32, ScriptParams[1].float32, ScriptParams[2].float32 };
+	CVector pos2 = { 0, 0, 0 };
+	CPointLights::AddLight(0, pos1, pos2, 12.0, ScriptParams[3].uint32 / 255.0f, ScriptParams[4].uint32 / 255.0f, ScriptParams[5].uint32 / 255.0f, 0, true);
+	return 0;
+}
+
+bool CRunningScriptHack::_02A2_add_particle_effect()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 5);
+	CVector pos = { ScriptParams[1].float32, ScriptParams[2].float32, ScriptParams[3].float32 };
+	if (pos.z <= -100.0) {
+		pos.z = CWorld::FindGroundZForCoord(pos.x, pos.y);
+	}
+	CParticleObject::AddObject(ScriptParams[0].uint16, pos, !!ScriptParams[4].int32);
 	return 0;
 }
 
@@ -404,7 +443,8 @@ bool CRunningScriptHack::_0368_activate_military_crane()
 bool CRunningScriptHack::_03A0_is_crane_lifting_car()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 3);
-	this->UpdateCompareFlag(CCranesHack::IsThisCarPickedUp(ScriptParams[0].float32, ScriptParams[1].float32, CPools::ms_pVehiclePool->GetAt(ScriptParams[2].int32)));
+	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[2].int32);
+	this->UpdateCompareFlag(CCranesHack::IsThisCarPickedUp(ScriptParams[0].float32, ScriptParams[1].float32, vehicle));
 	return 0;
 }
 
@@ -412,6 +452,16 @@ bool CRunningScriptHack::_03C2_is_phone_displaying_message()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
 	this->UpdateCompareFlag((unsigned long)&VCGlobals::ThePhoneInfo.phones[ScriptParams[0].int32] == *(unsigned long *)vcversion::AdjustOffset(0x007030E8));
+	return 0;
+}
+
+bool CRunningScriptHack::_03DD_add_sprite_blip_for_pickup()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 2);
+	CRadar::GetActualBlipArrayIndex(this->CollectNextParameterWithoutIncreasingPC(this->m_dwScriptIP));
+	ScriptParams[0].int32 = CRadar::SetEntityBlip(3, CPools::ms_pObjectPool->GetIndex(CPickups::pickups[CPickups::GetActualPickupIndex(ScriptParams[0].int32)].object), 6, 3);
+	CRadar::SetBlipSprite(ScriptParams[0].int32, ScriptParams[1].int32);
+	this->StoreParameters(&this->m_dwScriptIP, 1);
 	return 0;
 }
 
@@ -424,7 +474,7 @@ bool CRunningScriptHack::_03EC_has_military_crane_collected_all_cars()
 bool CRunningScriptHack::_0410_set_gang_ped_model_preference()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	*(BYTE *)(ScriptParams[0].uint8 * 0x18 + vcversion::AdjustOffset(0x7D925C)) = ScriptParams[1].uint8;
+	*(BYTE *)(ScriptParams[0].int16 * 0x18 + vcversion::AdjustOffset(0x7D925C)) = ScriptParams[1].uint8;
 	return 0;
 }
 
@@ -439,7 +489,7 @@ bool CRunningScriptHack::_0422_does_garage_contain_car()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
 	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[1].int32);
-	this->UpdateCompareFlag(CGarages::garages[ScriptParams[0].int32].IsEntityEntirelyInside3D(vehicle, 0.0));
+	this->UpdateCompareFlag(CGarages::garages[ScriptParams[0].int16].IsEntityEntirelyInside3D(vehicle, 0.0));
 	return 0;
 }
 
@@ -453,7 +503,7 @@ bool CRunningScriptHack::_042A_is_threat_for_ped_type()
 bool CRunningScriptHack::_0444_set_script_fire_audio()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	CFireManager::fires[ScriptParams[0].int32].sfx = !!ScriptParams[1].int32;
+	CFireManager::fires[ScriptParams[0].int16].sfx = !!ScriptParams[1].int32;
 	return 0;
 }
 
@@ -620,7 +670,7 @@ bool CRunningScriptHack::_0255_restart_critical_mission()
 bool CRunningScriptHack::_0299_activate_garage()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
-	CGarage *garage = &CGarages::garages[ScriptParams[0].int32];
+	CGarage *garage = &CGarages::garages[ScriptParams[0].int16];
 	if (garage->type == 11 && garage->state == 0) {
 		garage->state = 3;
 	}
@@ -659,7 +709,7 @@ bool CRunningScriptHack::_02A0_is_char_stopped()
 bool CRunningScriptHack::_02B9_deactivate_garage()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
-	CGarages::garages[ScriptParams[0].int32].isInactive = 1;
+	CGarages::garages[ScriptParams[0].int16].isInactive = 1;
 	return 0;
 }
 
@@ -800,7 +850,7 @@ bool CRunningScriptHack::_032D_set_car_block_car()
 bool CRunningScriptHack::_03A5_change_garage_type_with_car_model()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 3);
-	CGarages::ChangeGarageType(ScriptParams[0].int16, ScriptParams[1].int8, ScriptParams[2].int32);
+	CGarages::ChangeGarageType(ScriptParams[0].int16, ScriptParams[1].uint8, ScriptParams[2].uint32);
 	return 0;
 }
 
@@ -809,6 +859,13 @@ bool CRunningScriptHack::_03C9_is_car_visibly_damaged()
 	this->CollectParameters(&this->m_dwScriptIP, 1);
 	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32);
 	this->UpdateCompareFlag(!!(vehicle->field_1FB & 2));
+	return 0;
+}
+
+bool CRunningScriptHack::_03F8_get_body_cast_health()
+{
+	ScriptParams[0].int32 = CObjectHack::nBodyCastHealth;
+	this->StoreParameters(&this->m_dwScriptIP, 1);
 	return 0;
 }
 

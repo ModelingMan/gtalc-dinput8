@@ -505,6 +505,7 @@ public:
 	unsigned char space2[0x0032];
 	// 0x1A0
 
+	void ObjectDamage(float);
 	void *operator new(unsigned int);
 	CObject(int, bool);
 	CObject(void);
@@ -620,6 +621,7 @@ public:
 	void StoreParameters(unsigned int *, short);
 	void CollectParameters(unsigned int *scriptIP, int paramCount);
 	bool ProcessOneCommand();
+	int CollectNextParameterWithoutIncreasingPC(unsigned int);
 	void UpdateCompareFlag(bool flag);
 	short GetPadState(unsigned short, unsigned short);
 };
@@ -1319,6 +1321,37 @@ class CGame
 public:
 	static unsigned char &nastyGame;
 	static int &currLevel;
+};
+
+//########################################################################
+//# CParticleObject
+//########################################################################
+
+class CParticleObject
+{
+public:
+	static void AddObject(unsigned short, CVector const &, unsigned char);
+};
+
+//########################################################################
+//# CPointLights
+//########################################################################
+
+class CPointLights
+{
+public:
+	static void AddLight(unsigned char, CVector, CVector, float, float, float, float, unsigned char, bool);
+};
+
+
+//########################################################################
+//# CParticle
+//########################################################################
+
+class CParticle
+{
+public:
+	static void AddParticle(int, CVector const &, CVector const &, CEntity *, float, RwRGBA const &, int, int, int, int);
 };
 
 #endif

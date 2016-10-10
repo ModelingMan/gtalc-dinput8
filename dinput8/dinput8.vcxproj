@@ -139,6 +139,7 @@
     <ClCompile Include="src\CExplosionHack.cpp" />
     <ClCompile Include="src\CFileLoaderHack.cpp" />
     <ClCompile Include="src\CGaragesHack.cpp" />
+    <ClCompile Include="src\CObjectHack.cpp" />
     <ClCompile Include="src\CPacManPickupsHack.cpp" />
     <ClCompile Include="src\CPadHack.cpp" />
     <ClCompile Include="src\CCranesHack.cpp" />
@@ -151,6 +152,7 @@
     <ClCompile Include="src\CPathFindHack.cpp" />
     <ClCompile Include="src\CPickupsHack.cpp" />
     <ClCompile Include="src\CProjectileInfoHack.cpp" />
+    <ClCompile Include="src\CRadarHack.cpp" />
     <ClCompile Include="src\CRendererHack.cpp" />
     <ClCompile Include="src\CRunningScriptHack.cpp" />
     <ClCompile Include="src\CScrollBarHack.cpp" />
@@ -167,6 +169,7 @@
     <ClInclude Include="include\CExplosionHack.h" />
     <ClInclude Include="include\CFileLoaderHack.h" />
     <ClInclude Include="include\CGaragesHack.h" />
+    <ClInclude Include="include\CObjectHack.h" />
     <ClInclude Include="include\CPacManPickupsHack.h" />
     <ClInclude Include="include\CPadHack.h" />
     <ClInclude Include="include\CCranesHack.h" />
@@ -178,6 +181,7 @@
     <ClInclude Include="include\CPathFindHack.h" />
     <ClInclude Include="include\CPickupsHack.h" />
     <ClInclude Include="include\CProjectileInfoHack.h" />
+    <ClInclude Include="include\CRadarHack.h" />
     <ClInclude Include="include\CRendererHack.h" />
     <ClInclude Include="include\CRunningScriptHack.h" />
     <ClInclude Include="include\CScrollBarHack.h" />

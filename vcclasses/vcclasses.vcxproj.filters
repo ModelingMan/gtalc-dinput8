@@ -187,5 +187,14 @@
     <ClCompile Include="src\CGame.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CParticleObject.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPointLights.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CParticle.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

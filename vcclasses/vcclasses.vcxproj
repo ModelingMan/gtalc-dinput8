@@ -43,6 +43,8 @@
     <ClCompile Include="src\CMissionCleanup.cpp" />
     <ClCompile Include="src\CObject.cpp" />
     <ClCompile Include="src\CPad.cpp" />
+    <ClCompile Include="src\CParticle.cpp" />
+    <ClCompile Include="src\CParticleObject.cpp" />
     <ClCompile Include="src\CPathFind.cpp" />
     <ClCompile Include="src\CPathInfoForObject.cpp" />
     <ClCompile Include="src\CPed.cpp" />
@@ -50,6 +52,7 @@
     <ClCompile Include="src\CPhysical.cpp" />
     <ClCompile Include="src\CPickups.cpp" />
     <ClCompile Include="src\CPlaceable.cpp" />
+    <ClCompile Include="src\CPointLights.cpp" />
     <ClCompile Include="src\CPools.cpp" />
     <ClCompile Include="src\CProjectileInfo.cpp" />
     <ClCompile Include="src\CRadar.cpp" />
