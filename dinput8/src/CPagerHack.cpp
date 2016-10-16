@@ -147,8 +147,8 @@ void CPagerHack::Draw()
 			break;
 		}
 
-		const float width = static_cast<float>(Globals.currentWidth);
-		const float height = static_cast<float>(Globals.currentHeight);
+		const float width = static_cast<float>(RsGlobal.currentWidth);
+		const float height = static_cast<float>(RsGlobal.currentHeight);
 
 		if (width / height < 1.5f )
 		{

@@ -216,7 +216,7 @@ void CGarageHack::UpdateType7Hack(void)
 			this->targetVehicle = 0;
 		}
 	}
-	
+
 	// closing
 	else if (this->state == 2) {
 		speed = this->rotatingDoor ? 0.02f : 0.04f;
@@ -247,7 +247,7 @@ void CGarageHack::UpdateType7Hack(void)
 		}
 		this->UpdateDoorsHeight();
 	}
-	
+
 	// closed
 	else if (this->state == 0) {
 		if (vehicle && vehicle->modelIndex == this->targetModel) {
@@ -256,7 +256,7 @@ void CGarageHack::UpdateType7Hack(void)
 			}
 		}
 	}
-	
+
 	// opening
 	else if (this->state == 3) {
 		if (vehicle && vehicle->modelIndex == this->targetModel) {

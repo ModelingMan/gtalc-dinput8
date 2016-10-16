@@ -419,6 +419,9 @@ public:
 	unsigned char  space12[0x0016];
 	// 0x5DC
 
+	static bool &bCheat3;
+	static bool &bAllDodosCheat;
+	static bool &bWheelsOnlyCheat;
 	bool IsSphereTouchingVehicle(float, float, float, float);
 };
 
@@ -673,8 +676,9 @@ public:
 class CTheScripts
 {
 public:
-	static unsigned short& CommandsExecuted;
 	static unsigned char *ScriptSpace;
+	static class CMissionCleanup &MissionCleanUp;
+	static unsigned short &CommandsExecuted;
 
 	static void HighlightImportantArea(unsigned int, float, float, float, float, float);
 };
@@ -878,7 +882,7 @@ class CWeather
 {
 public:
 	static unsigned char &bScriptsForceRain;
-	
+
 	static void ForceWeatherNow(short);
 };
 
@@ -1343,7 +1347,6 @@ public:
 	static void AddLight(unsigned char, CVector, CVector, float, float, float, float, unsigned char, bool);
 };
 
-
 //########################################################################
 //# CParticle
 //########################################################################
@@ -1352,6 +1355,44 @@ class CParticle
 {
 public:
 	static void AddParticle(int, CVector const &, CVector const &, CEntity *, float, RwRGBA const &, int, int, int, int);
+};
+
+//########################################################################
+//# CShadows
+//########################################################################
+
+class CShadows
+{
+public:
+	static void StoreShadowToBeRendered(unsigned char, unsigned long, CVector *, float, float, float, float, short, unsigned char, unsigned char, unsigned char, float, bool, float, unsigned long, bool);
+};
+
+//########################################################################
+//# CGangs
+//########################################################################
+
+class CGangs
+{
+public:
+	int vehicleModel;         // 0x00
+	int pedModel1;            // 0x04
+	int pedModel2;            // 0x08
+	char pedModelPreference;  // 0x0C
+	unsigned char padding[3]; // 0x0D
+	int weapon1;              // 0x10
+	int weapon2;              // 0x14
+
+	static CGangs *Gang;
+};
+
+//########################################################################
+//# CPopulation
+//########################################################################
+
+class CPopulation
+{
+public:
+	static bool &ms_bGivePedsWeapons;
 };
 
 #endif

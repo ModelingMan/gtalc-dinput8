@@ -196,5 +196,14 @@
     <ClCompile Include="src\CParticle.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CShadows.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CGangs.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPopulation.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

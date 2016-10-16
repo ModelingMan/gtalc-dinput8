@@ -21,7 +21,7 @@ char *blowUpCarsCheatString = "JSHCTiDIHYNJ";
 char *dressingUpCheatString = "SZNOVnVLSORSPlV";
 char *mayhemCheatString = "GFHBZbQPPRYTHsaO";
 char *everybodyAttacksPlayerCheatString = "HRZFXdO`EZOWU";
-char *armEverybodyCheatString = "OQHS\\aVUP[NM^";
+char *weaponsForAllCheatString = "OQHS\\aVUP[NM^";
 char *fastTimeCheatString = "XT`ORcZZFTYNLmVZ";
 char *slowTimeCheatString = "JSPS\\jRVPM";
 char *armourCheatString = "HXPPamX[";
@@ -30,7 +30,7 @@ char *sunnyWeatherCheatString = "HRYPSmHJOLPVPk`";
 char *cloudyWeatherCheatString = "GSHMajFZFVVTP";
 char *rainyWeatherCheatString = "GSHMajFZFa\\TP";
 char *foggyWeatherCheatString = "SZVTN`S";
-char *timeTravelCheatString = "UJOUN`ZKBX";
+char *fastWeatherCheatString = "UJOUN`ZKBX";
 char *onlyRenderWheelsCheatString = "VQLFUrIVUP`MJi[G";
 char *chittyChittyBangBangCheatString = "EG`UadKJZ_aQOc";
 char *strongGripCheatString = "GFTFXdOZSP[ZVc";
@@ -38,7 +38,7 @@ char *goreCheatString = "WFLIPnETJWf\\Za[";
 char *vehicleCheatString = "UFJSN^UHD";
 char *vehicleReverseCheatString = "FFYDNmFHS";
 char *skinnyCheatString = "UJTNNmJVS[";
-char weaponsForAll[12] = { 6, 17, 23, 21, 25, 26, 28, 30, 31, 15, 12, 0 };
+char weaponsForAllArr[12] = { 6, 17, 23, 21, 25, 26, 28, 30, 31, 15, 12, 0 };
 int vehicleModel = CAR_LANDSTAL;
 
 char specialCharacters[10][8] =
@@ -87,7 +87,7 @@ bool CPadHack::initialise()
 
 void CPadHack::WeaponCheat()
 {
-	char gxtKey[8] = "CHEAT2";
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT2"), true, false);
 	CStreaming::RequestModel(264, 1); // bat
 	CStreaming::RequestModel(274, 1); // colt45
 	CStreaming::RequestModel(282, 1); // uzi
@@ -122,19 +122,17 @@ void CPadHack::WeaponCheat()
 	CStreaming::SetModelIsDeletable(288);
 	CStreaming::SetModelIsDeletable(272);
 	CStreaming::SetModelIsDeletable(270);
-	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
 void CPadHack::MoneyCheat()
 {
-	char gxtKey[8] = "CHEAT6";
 	CWorld::Players[CWorld::PlayerInFocus].m_Money += 250000;
-	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT6"), true, false);
 }
 
 void CPadHack::HealthCheat()
 {
-	char gxtKey[8] = "CHEAT3";
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT3"), true, false);
 	VCGlobals::FindPlayerPed()->health = static_cast<float>(CWorld::Players[CWorld::PlayerInFocus].maxHealth);
 	if (CVehicle *vehicle = VCGlobals::FindPlayerVehicle()) {
 		vehicle->health = 1000.0;
@@ -147,38 +145,34 @@ void CPadHack::HealthCheat()
 			damageManager->SetWheelStatus(3, 0);
 		}
 	}
-	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
 void CPadHack::WantedLevelUpCheat()
 {
-	char gxtKey[8] = "CHEAT5";
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT5"), true, false);
 	CWanted *wanted = VCGlobals::FindPlayerPed()->wanted;
 	int level = wanted->level + 2;
 	if (level > 6) {
 		level = 6;
 	}
 	wanted->SetWantedLevelCheat(level);
-	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
 void CPadHack::WantedLevelDownCheat()
 {
-	char gxtKey[8] = "CHEAT5";
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT5"), true, false);
 	CWanted *wanted = VCGlobals::FindPlayerPed()->wanted;
 	wanted->SetWantedLevelCheat(0);
-	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
 void CPadHack::TankCheat()
 {
-	auto VehicleCheat = (void(__cdecl *)(int))vcversion::AdjustOffset(0x004AE8F0);
-	VehicleCheat(CAR_RHINO);
+	VCGlobals::VehicleCheat(CAR_RHINO);
 }
 
 void CPadHack::BlowUpCarsCheat()
 {
-	char gxtKey[8] = "CHEAT1";
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT1"), true, false);
 	for (int i = 0; i < CPools::ms_pVehiclePool->totalCount; i++) {
 		if ((CPools::ms_pVehiclePool->flags[i] & 0x80) != 0x80) {
 			CVehicle *vehicle = &CPools::ms_pVehiclePool->entities[i];
@@ -188,107 +182,88 @@ void CPadHack::BlowUpCarsCheat()
 			}
 		}
 	}
-	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
-void CPadHack::ArmEverybodyCheat()
+void CPadHack::WeaponsForAllCheat()
 {
-	char gxtKey[8] = "CHEAT1";
-	unsigned char &c = *(unsigned char *)vcversion::AdjustOffset(0x00A10AB3);
-	c = !c;
-	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT1"), true, false);
+	CPopulation::ms_bGivePedsWeapons = !CPopulation::ms_bGivePedsWeapons;
 }
 
 void CPadHack::FastTimeCheat()
 {
-	char gxtKey[8] = "CHEAT1";
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT1"), true, false);
 	if (CTimer::ms_fTimeScale < 4.0) {
 		CTimer::ms_fTimeScale *= 2;
 	}
-	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
 void CPadHack::SlowTimeCheat()
 {
-	char gxtKey[8] = "CHEAT1";
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT1"), true, false);
 	if (CTimer::ms_fTimeScale > 0.25) {
 		CTimer::ms_fTimeScale /= 2;
 	}
-	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
 void CPadHack::ArmourCheat()
 {
-	char gxtKey[8] = "CHEAT4";
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT4"), true, false);
 	VCGlobals::FindPlayerPed()->armour = static_cast<float>(CWorld::Players[CWorld::PlayerInFocus].maxArmour);
-	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
 void CPadHack::SunnyWeatherCheat()
 {
-	char gxtKey[8] = "CHEAT7";
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT7"), true, false);
 	CWeather::ForceWeatherNow(0);
-	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
 void CPadHack::CloudyWeatherCheat()
 {
-	char gxtKey[8] = "CHEAT7";
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT7"), true, false);
 	CWeather::ForceWeatherNow(1);
-	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
 void CPadHack::RainyWeatherCheat()
 {
-	char gxtKey[8] = "CHEAT7";
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT7"), true, false);
 	CWeather::ForceWeatherNow(2);
-	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
 void CPadHack::FoggyWeatherCheat()
 {
-	char gxtKey[8] = "CHEAT7";
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT7"), true, false);
 	CWeather::ForceWeatherNow(3);
-	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
 }
 
-void CPadHack::TimeTravelCheat()
+void CPadHack::FastWeatherCheat()
 {
-	char gxtKey[8] = "CHEAT1";
-	unsigned char &c = *(unsigned char *)vcversion::AdjustOffset(0x00A10B87);
-	c = !c;
-	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT1"), true, false);
+	VCGlobals::gbFastTime = !VCGlobals::gbFastTime;
 }
 
 void CPadHack::OnlyRenderWheelsCheat()
 {
-	char gxtKey[8] = "CHEAT1";
-	unsigned char &c = *(unsigned char *)vcversion::AdjustOffset(0x00A10B30);
-	c = !c;
-	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT1"), true, false);
+	CVehicle::bWheelsOnlyCheat = !CVehicle::bWheelsOnlyCheat;
 }
 
 void CPadHack::ChittyChittyBangBangCheat()
 {
-	char gxtKey[8] = "CHEAT1";
-	unsigned char &c = *(unsigned char *)vcversion::AdjustOffset(0x00A10B28);
-	c = !c;
-	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT1"), true, false);
+	CVehicle::bAllDodosCheat = !CVehicle::bAllDodosCheat;
 }
 
 void CPadHack::StrongGripCheat()
 {
-	char gxtKey[8] = "CHEAT1";
-	unsigned char &c = *(unsigned char *)vcversion::AdjustOffset(0x00A10B0F);
-	c = !c;
-	CHud::SetHelpMessage(VCGlobals::TheText.Get(gxtKey), true, false);
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT1"), true, false);
+	CVehicle::bCheat3 = !CVehicle::bCheat3;
 }
 
 void CPadHack::VehicleCheat()
 {
 	if (CRunningScriptHack::debugMode & DEBUG_MASTERDEBUG) {
-		auto VehicleCheat = (void(__cdecl *)(int))vcversion::AdjustOffset(0x004AE8F0);
-		VehicleCheat(vehicleModel++);
+		VCGlobals::VehicleCheat(vehicleModel++);
 		if (vehicleModel == BOAT_RIO ||
 			vehicleModel == BOAT_PREDATOR ||
 			vehicleModel == BOAT_SQUALO ||
@@ -319,8 +294,7 @@ void CPadHack::VehicleCheat()
 void CPadHack::VehicleReverseCheat()
 {
 	if (CRunningScriptHack::debugMode & DEBUG_MASTERDEBUG) {
-		auto VehicleCheat = (void(__cdecl *)(int))vcversion::AdjustOffset(0x004AE8F0);
-		VehicleCheat(vehicleModel--);
+		VCGlobals::VehicleCheat(vehicleModel--);
 		if (vehicleModel == BOAT_RIO ||
 			vehicleModel == BOAT_PREDATOR ||
 			vehicleModel == BOAT_SQUALO ||
@@ -448,17 +422,17 @@ void __declspec(naked) AddToCheatString()
 		test al, al
 		pop ecx
 		pop ecx
-		jnz armEverybody
+		jnz weaponsForAll
 		jmp end
-	armEverybody:
-		push armEverybodyCheatString
+	weaponsForAll:
+		push weaponsForAllCheatString
 		push recentKeys
 		call cipherFunction
 		test al, al
 		pop ecx
 		pop ecx
 		jnz fastTime
-		call CPadHack::ArmEverybodyCheat
+		call CPadHack::WeaponsForAllCheat
 		jmp end
 	fastTime:
 		push fastTimeCheatString
@@ -537,18 +511,18 @@ void __declspec(naked) AddToCheatString()
 		test al, al
 		pop ecx
 		pop ecx
-		jnz timeTravel
+		jnz fastWeather
 		call CPadHack::FoggyWeatherCheat
 		jmp end
-	timeTravel:
-		push timeTravelCheatString
+	fastWeather:
+		push fastWeatherCheatString
 		push recentKeys
 		call cipherFunction
 		test al, al
 		pop ecx
 		pop ecx
 		jnz onlyRenderWheels
-		call CPadHack::TimeTravelCheat
+		call CPadHack::FastWeatherCheat
 		jmp end
 	onlyRenderWheels:
 		push onlyRenderWheelsCheatString
@@ -612,7 +586,7 @@ void __declspec(naked) UpdatePedCount()
 		xor edx, edx              // zero edx
 		mov bx, 11                // divisor
 		div bx                    // divide ax by 11 -> quotient = ax, remainder = dx
-		lea eax, weaponsForAll    // get base address of weapons array
+		lea eax, weaponsForAllArr // get base address of weapons array
 		add eax, edx              // add remainder to address
 		movzx ebx, byte ptr [eax] // get array element to use as weapon number
 		jmp updatePedCountEndJump

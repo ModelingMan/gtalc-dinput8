@@ -2,12 +2,13 @@
 #include "CDigitalClockHack.h"
 #include "CScrollBarHack.h"
 #include "CTowerClockHack.h"
-#include "CRunningScriptHack.h"
 #include "Globals.h"
 #include "vcclasses.h"
 #include "vcversion.h"
 #include "SilentCall.h"
 
+#include <math.h>
+#include <Windows.h>
 #include <memory.h>
 
 using namespace VCGlobals;
@@ -47,7 +48,7 @@ bool CMovingThingsHack::initialise()
 	InjectHook(0x004A45B4, vcversion::AdjustOffset(0x0054F420), PATCH_CALL); // update
 
 	// do not update trails and banner
-	if (!(CRunningScriptHack::debugMode & DEBUG_VICECITY)) {
+	if (!GetPrivateProfileInt("Misc", "AllowPlaneTrailsBanners", 0, "./gta-lc.ini")) {
 		InjectHook(0x005AFDD3, vcversion::AdjustOffset(0x005AFE37), PATCH_JUMP);
 	}
 
@@ -56,8 +57,6 @@ bool CMovingThingsHack::initialise()
 
 	return true;
 }
-
-#include <math.h>
 
 void CMovingThingsHack::Init()
 {

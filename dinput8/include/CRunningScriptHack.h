@@ -3,7 +3,6 @@
 #include "vcclasses.h"
 
 #define DEBUG_MASTERDEBUG 1
-#define DEBUG_VICECITY 1024
 
 class CRunningScriptHack : public CRunningScript
 {
@@ -19,16 +18,21 @@ public:
 
 	// additional opcodes
 	bool _00A2_is_char_still_alive();
+	bool _0135_change_car_lock();
+	bool _016F_draw_shadow();
 	bool _01EE_activate_crane();
 	bool _01EF_deactivate_crane();
 	bool _024C_set_phone_message();
 	bool _0250_draw_light();
+	bool _02A1_message_wait();
 	bool _02A2_add_particle_effect();
 	bool _02BD_is_debug_mode();
+	bool _02CD_gosub_file();
 	bool _02FB_activate_crusher_crane();
 	bool _0351_is_nasty_game();
 	bool _0356_is_explosion_in_area();
 	bool _0368_activate_military_crane();
+	bool _037F_give_player_detonator();
 	bool _03A0_is_crane_lifting_car();
 	bool _03C2_is_phone_displaying_message();
 	bool _03DD_add_sprite_blip_for_pickup();

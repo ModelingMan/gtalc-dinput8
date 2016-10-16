@@ -11,7 +11,7 @@ public:
 	static void WantedLevelDownCheat();
 	static void TankCheat();
 	static void BlowUpCarsCheat();
-	static void ArmEverybodyCheat();
+	static void WeaponsForAllCheat();
 	static void FastTimeCheat();
 	static void SlowTimeCheat();
 	static void ArmourCheat();
@@ -19,7 +19,7 @@ public:
 	static void CloudyWeatherCheat();
 	static void RainyWeatherCheat();
 	static void FoggyWeatherCheat();
-	static void TimeTravelCheat();
+	static void FastWeatherCheat();
 	static void OnlyRenderWheelsCheat();
 	static void ChittyChittyBangBangCheat();
 	static void StrongGripCheat();

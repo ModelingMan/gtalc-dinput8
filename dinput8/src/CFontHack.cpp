@@ -47,10 +47,10 @@ void CFontHack::PrintPagerString(float posX, float posY, float scaleX, float sca
 			float cropX2 = cropX1 + 0.06f;
 			float cropY2 = cropY1 + 0.0625f;
 
-			if ((float)Globals.currentWidth / (float)Globals.currentHeight < 1.5f)
+			if ((float)RsGlobal.currentWidth / (float)RsGlobal.currentHeight < 1.5f)
 			{
-				float charWidth = Globals.currentWidth * (16.0f / 640.0f);
-				float charHeight = Globals.currentHeight * (16.0f / 448.0f);
+				float charWidth = RsGlobal.currentWidth * (16.0f / 640.0f);
+				float charHeight = RsGlobal.currentHeight * (16.0f / 448.0f);
 
 				drawRect.left = posX + (charWidth * i);
 				drawRect.right = drawRect.left + (charWidth * scaleX * 2);
@@ -59,8 +59,8 @@ void CFontHack::PrintPagerString(float posX, float posY, float scaleX, float sca
 			}
 			else
 			{
-				float charWidth = Globals.currentWidth * (32.0f / 1920.0f);
-				float charHeight = Globals.currentHeight * (32.0f / 1080.0f);
+				float charWidth = RsGlobal.currentWidth * (32.0f / 1920.0f);
+				float charHeight = RsGlobal.currentHeight * (32.0f / 1080.0f);
 
 				drawRect.left = posX + (charWidth * i);
 				drawRect.right = drawRect.left + charWidth;
@@ -76,10 +76,10 @@ void CFontHack::PrintPagerString(float posX, float posY, float scaleX, float sca
 }
 
 // subtitles shadow fix (SilentPatch)
-void __stdcall Recalculate(float& fX, float& fY, signed int nShadow)
+void __stdcall Recalculate(float &fX, float &fY, int nShadow)
 {
-	fX = nShadow * resolutionXMultiplier * resolutionX;
-	fY = nShadow * resolutionYMultiplier * resolutionY;
+	fX = nShadow * resolutionXMultiplier * RsGlobal.currentWidth;
+	fY = nShadow * resolutionYMultiplier * RsGlobal.currentHeight;
 }
 
 void __declspec(naked) SubtitlesShadowFix()

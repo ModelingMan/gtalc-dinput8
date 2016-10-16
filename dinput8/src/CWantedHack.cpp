@@ -1,11 +1,11 @@
 #include "CWantedHack.h"
-#include "CRunningScriptHack.h"
 #include "vcversion.h"
 #include "SilentCall.h"
+#include <Windows.h>
 
 bool CWantedHack::initialise()
 {
-	if (!(CRunningScriptHack::debugMode & DEBUG_VICECITY)) {
+	if (!GetPrivateProfileInt("Misc", "UseVCWantedSystem", 0, "./gta-lc.ini")) {
 		// level updater
 		Patch<unsigned int>(0x004D2126, 3200); // level 6
 		Patch<unsigned int>(0x004D2156, 1600); // level 5

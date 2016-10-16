@@ -12,130 +12,24 @@
 #include "SilentCall.h"
 
 #include <Windows.h>
+#include <math.h>
 
 using namespace VCGlobals;
-
-unsigned long *ProcessOneCommandHackAddr = reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x0044FDB6));
 
 // GetRandomCarOfTypeInAreaNoSave
 static void GetRandomCarOfTypeInAreaNoSave();
 unsigned long getRandomCarProceedJump = vcversion::AdjustOffset(0x0062F23D);
 unsigned long getRandomCarEndJump = vcversion::AdjustOffset(0x0062F269);
 
-// GangsInitialise
-static void GangsInitialise();
-unsigned long gangInitialiseEndJump = vcversion::AdjustOffset(0x004EEEDF);
-
-// GameLogicUpdate
-static void GameLogicUpdate();
-unsigned long gameLogicUpdateEndJump = vcversion::AdjustOffset(0x0042BC6D);
-
-// AutomobilePreRender
-static void AutomobilePreRender();
-unsigned long preRenderMatchAmbulan = vcversion::AdjustOffset(0x0058BE77);
-unsigned long preRenderMatchFbiranch = vcversion::AdjustOffset(0x0058C8F0);
-unsigned long preRenderNoMatch = vcversion::AdjustOffset(0x0058BE34);
-
-// RenderReflections
-float RenderReflections();
-
-// CarCtrlReInit
-void CarCtrlReInit();
-
-// CivilianAI
-void CivilianAI();
-unsigned long civilianAIValidPed = vcversion::AdjustOffset(0x004E94E6);
-unsigned long civilianAIInvalidPed = vcversion::AdjustOffset(0x004E9555);
-
-// center mouse (SilentPatch)
-static bool bGameInFocus = true;
-static LRESULT(CALLBACK **OldWndProc)(HWND, UINT, WPARAM, LPARAM);
-LRESULT CALLBACK CustomWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	switch (uMsg) {
-	case WM_KILLFOCUS:
-		bGameInFocus = false;
-		break;
-	case WM_SETFOCUS:
-		bGameInFocus = true;
-		break;
-	}
-
-	return (*OldWndProc)(hwnd, uMsg, wParam, lParam);
-}
-static auto* pCustomWndProc = CustomWndProc;
-void ResetMousePos()
-{
-	if (bGameInFocus) {
-		RwV2d vecPos = { resolutionX * 0.5f, resolutionY * 0.5f };
-		RsMouseSetPos(&vecPos);
-	}
-	CRenderer::ConstructRenderList();
-}
-
 int CRunningScriptHack::debugMode;
 
 bool CRunningScriptHack::initialise()
 {
-	//Memory is protected from write (write protection of .text section removed at startup)
-	union { bool (CRunningScriptHack::*func)(); unsigned long offset; } nasty = { &ProcessOneCommandHack };
-	*ProcessOneCommandHackAddr = nasty.offset - reinterpret_cast<unsigned long>(ProcessOneCommandHackAddr + 1);
+	auto function = &CRunningScriptHack::ProcessOneCommandHack;
+	InjectHook(0x0044FDB5, (unsigned long &)function);
 
-	// detonator weapon switch
-	Patch<unsigned char>(0x005D49C7, 0xD);
-	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x005345ED)), 0x90, 9);
-
-	// 0410 (Purple Nines) fix
-	InjectHook(0x004EEED1, &GangsInitialise, PATCH_JUMP);
-
-	// 053E accept mission vehicles - workaround for crusher
+	// make 053E accept mission vehicles - workaround for crusher
 	InjectHook(0x0062F234, &GetRandomCarOfTypeInAreaNoSave, PATCH_JUMP);
-
-	// horizon ships
-	if (!(CRunningScriptHack::debugMode & DEBUG_VICECITY)) {
-		Patch<unsigned short>(0x005BC5BC, 0xE990);
-	}
-
-	// cylindrical marker colors
-	Patch<unsigned int>(0x00458E82, 0x000080); // CTheScripts::DrawScriptSpheres
-	Patch<unsigned int>(0x00689CA8, 0xFF8000);
-	Patch<unsigned int>(0x00568E45, 0x000080); // CShadows::RenderIndicatorShadow
-	Patch<unsigned int>(0x00698D58, 0xFF8000);
-	Patch<unsigned int>(0x004C3F99, 0x000080); // CRadar::Draw3dMarkers
-	Patch<unsigned int>(0x0068F958, 0xFF8000);
-
-	// undo ocean change
-	Patch<float>(0x69CD70, 70.0);
-
-	// taxi cash
-	Patch<unsigned char>(0x005B8AB6, 25); // CVehicle::SetDriver
-
-	// hospital cost
-	InjectHook(0x0042BC64, &GameLogicUpdate, PATCH_JUMP); // CGameLogic::Update
-
-	// FBI Rancher roof light
-	InjectHook(0x0058BE2F, &AutomobilePreRender, PATCH_JUMP); // CAutomobile::PreRender
-
-	// fire light glow (SilentPatch)
-	Patch<unsigned char>(0x0048EB27, 0x10); // CFire::ProcessFire
-	
-	// wet roads reflection (SilentPatch)
-	InjectHook(0x005433BD, &RenderReflections);
-
-	// support treadables
-	Patch<unsigned int>(0x004C0325, 0x4068006A);
-	Patch<unsigned int>(0x004C0329, 0xE800001F);
-
-	// reinit firetruck/ambulance timer (SilentPatch)
-	InjectHook(0x004A489B, &CarCtrlReInit);
-
-	// investigate ped crash fix
-	InjectHook(0x004E94E0, &CivilianAI, PATCH_JUMP);
-
-	// center mouse (SilentPatch)
-	InjectHook(0x004A5E45, &ResetMousePos);
-	OldWndProc = *(LRESULT(CALLBACK***)(HWND, UINT, WPARAM, LPARAM))vcversion::AdjustOffset(0x00601727);
-	Patch(0x00601727, &pCustomWndProc);
 
 	return true;
 }
@@ -162,6 +56,10 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 	// additional opcodes
 	case 0x00A2:
 		return this->_00A2_is_char_still_alive();
+	case 0x0135:
+		return this->_0135_change_car_lock();
+	case 0x016F:
+		return this->_016F_draw_shadow();
 	case 0x01EE:
 		return this->_01EE_activate_crane();
 	case 0x01EF:
@@ -170,10 +68,14 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 		return this->_024C_set_phone_message();
 	case 0x0250:
 		return this->_0250_draw_light();
+	case 0x02A1:
+		return this->_02A1_message_wait();
 	case 0x02A2:
 		return this->_02A2_add_particle_effect();
 	case 0x02BD:
 		return this->_02BD_is_debug_mode(); // custom opcode
+	case 0x02CD:
+		return this->_02CD_gosub_file();
 	case 0x02FB:
 		return this->_02FB_activate_crusher_crane();
 	case 0x0351:
@@ -182,6 +84,8 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 		return this->_0356_is_explosion_in_area();
 	case 0x0368:
 		return this->_0368_activate_military_crane();
+	case 0x037F:
+		return this->_037F_give_player_detonator();
 	case 0x03A0:
 		return this->_03A0_is_crane_lifting_car();
 	case 0x03C2:
@@ -284,17 +188,17 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 bool CRunningScriptHack::_014D_text_pager()
 {
 	char pagerText[8];
-	
+
 	VCGlobals::strcpy(pagerText, reinterpret_cast<char *>(&CTheScripts::ScriptSpace[this->m_dwScriptIP]));
 	this->m_dwScriptIP += 8;
-	
+
 	this->CollectParameters(&this->m_dwScriptIP, 3);
 
 	wchar_t *scmPagerText = TheText.Get(pagerText);
 
 	CPagerHack *pager = reinterpret_cast<CPagerHack *>(&CUserDisplay::Pager); //YUCKY YUCKY!!! but it'll do the job
 	pager->AddMessage(scmPagerText, ScriptParams[0].uint16, ScriptParams[1].uint16, ScriptParams[2].uint16);
-	
+
 	return 0;
 }
 
@@ -323,6 +227,50 @@ bool CRunningScriptHack::_00A2_is_char_still_alive()
 	this->CollectParameters(&this->m_dwScriptIP, 1);
 	CPed *ped = CPools::ms_pPedPool->GetAt(ScriptParams[0].int32);
 	this->UpdateCompareFlag(ped && ped->state != 0x37 && ped->state != 0x36);
+	return 0;
+}
+
+bool CRunningScriptHack::_0135_change_car_lock()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 2);
+	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32);
+	vehicle->lock = ScriptParams[1].uint32;
+	return 0;
+}
+
+bool CRunningScriptHack::_016F_draw_shadow()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 10);
+	unsigned char type = 0;
+	unsigned long texture = 0;
+	CVector pos = { ScriptParams[1].float32, ScriptParams[2].float32, ScriptParams[3].float32 };
+	switch (ScriptParams[0].uint8) {
+	case 1:
+		type = 1;
+		texture = vcversion::AdjustOffset(0x0097F2EC);
+		break;
+	case 2:
+		type = 1;
+		texture = vcversion::AdjustOffset(0x009B5F2C);
+		break;
+	case 3:
+		type = 2;
+		texture = vcversion::AdjustOffset(0x00978DB4);
+		break;
+	case 4:
+		type = 1;
+		texture = vcversion::AdjustOffset(0x00A0DAC8);
+		break;
+	case 5:
+		type = 2;
+		texture = vcversion::AdjustOffset(0x00A1073C);
+		break;
+	default:
+		return 0;
+	}
+	CShadows::StoreShadowToBeRendered(type, *(unsigned long *)texture, &pos,
+		-sin(ScriptParams[4].float32) * ScriptParams[5].float32, cos(ScriptParams[4].float32) * ScriptParams[5].float32, cos(ScriptParams[4].float32) * ScriptParams[5].float32, sin(ScriptParams[4].float32) * ScriptParams[5].float32,
+		ScriptParams[6].int16, ScriptParams[7].uint8, ScriptParams[8].uint8, ScriptParams[9].uint8, 15.0, false, 1.0, 0, false);
 	return 0;
 }
 
@@ -371,6 +319,16 @@ bool CRunningScriptHack::_0250_draw_light()
 	return 0;
 }
 
+bool CRunningScriptHack::_02A1_message_wait()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 2);
+	this->m_dwWakeTime = ScriptParams[0].uint32 + CTimer::m_snTimeInMilliseconds;
+	if (ScriptParams[1].int32) {
+		this->m_bAwake = 1;
+	}
+	return 1; // special
+}
+
 bool CRunningScriptHack::_02A2_add_particle_effect()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 5);
@@ -386,6 +344,15 @@ bool CRunningScriptHack::_02BD_is_debug_mode()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
 	this->UpdateCompareFlag(!!(debugMode & ScriptParams[0].int32));
+	return 0;
+}
+
+bool CRunningScriptHack::_02CD_gosub_file()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 2);
+	this->m_dwReturnStack[this->m_dwStackPointer] = this->m_dwScriptIP;
+	this->m_dwStackPointer += 1;
+	this->m_dwScriptIP = ScriptParams[0].uint32;
 	return 0;
 }
 
@@ -440,6 +407,16 @@ bool CRunningScriptHack::_0368_activate_military_crane()
 	return 0;
 }
 
+bool CRunningScriptHack::_037F_give_player_detonator()
+{
+	CStreaming::RequestModel(291, 1);
+	CStreaming::LoadAllRequestedModels(false);
+	VCGlobals::FindPlayerPed()->GiveWeapon(34, 1, 1);
+	int slot = *(int *)(CWeaponInfo::GetWeaponInfo(34) + 0x60);
+	VCGlobals::FindPlayerPed()->weapons[slot].state = 0;
+	return 0;
+}
+
 bool CRunningScriptHack::_03A0_is_crane_lifting_car()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 3);
@@ -474,7 +451,7 @@ bool CRunningScriptHack::_03EC_has_military_crane_collected_all_cars()
 bool CRunningScriptHack::_0410_set_gang_ped_model_preference()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	*(BYTE *)(ScriptParams[0].int16 * 0x18 + vcversion::AdjustOffset(0x7D925C)) = ScriptParams[1].uint8;
+	CGangs::Gang[ScriptParams[0].int16].pedModelPreference = ScriptParams[1].int8;
 	return 0;
 }
 
@@ -512,79 +489,6 @@ bool CRunningScriptHack::_0447_is_player_lifting_a_phone()
 	this->CollectParameters(&this->m_dwScriptIP, 1);
 	this->UpdateCompareFlag(CWorld::Players[ScriptParams[0].int32].playerEntity->state == 0x13);
 	return 0;
-}
-
-void __declspec(naked) GetRandomCarOfTypeInAreaNoSave()
-{
-	__asm
-	{
-		cmp byte ptr [ebx+1F8h], 1 // is traffic vehicle
-		jz proceed
-		cmp byte ptr [ebx+1F8h], 2 // is mission vehicle
-		jz proceed
-		jmp getRandomCarEndJump
-	proceed:
-		jmp getRandomCarProceedJump
-	}
-}
-
-void GangsInitialise()
-{
-	for (int i = 0; i < 8 * 0x18; i += 0x18) {
-		*(BYTE *)(i + vcversion::AdjustOffset(0x7D925C)) = 255;
-	}
-}
-
-void __declspec(naked) GameLogicUpdate()
-{
-	__asm
-	{
-		mov eax, dword ptr [ebx+0A0h] // get current cash
-		add eax, 0FFFFFC18h           // subtract 1000
-		jmp gameLogicUpdateEndJump
-	}
-}
-
-void __declspec(naked) AutomobilePreRender()
-{
-	__asm
-	{
-		sub ecx, 9 // ambulan
-		jz matchAmbulan
-		dec ecx    // fbiranch
-		jz matchFbiranch
-		inc ecx    // resume before change
-		jmp preRenderNoMatch
-	matchAmbulan:
-		jmp preRenderMatchAmbulan
-	matchFbiranch:
-		jmp preRenderMatchFbiranch
-	}
-}
-
-float RenderReflections()
-{
-	return 1.0;
-}
-
-void CarCtrlReInit()
-{
-	CCarCtrl::ReInit();
-	CCarCtrl::LastTimeFireTruckCreated = 0;
-	CCarCtrl::LastTimeAmbulanceCreated = 0;
-}
-
-void __declspec(naked) CivilianAI()
-{
-	__asm
-	{
-		mov edx, dword ptr [ebp+1A0h] // get ped to investigate
-		test edx, edx
-		jz invalidPed
-		jmp civilianAIValidPed
-	invalidPed:
-		jmp civilianAIInvalidPed
-	}
 }
 
 bool CRunningScriptHack::_00AC_is_car_still_alive()
@@ -930,4 +834,18 @@ bool CRunningScriptHack::_0452_enable_player_control_camera()
 {
 	*(unsigned short *)(CPad::GetPad(0) + 0xF0) &= 0xFFFE;
 	return 0;
+}
+
+void __declspec(naked) GetRandomCarOfTypeInAreaNoSave()
+{
+	__asm
+	{
+		cmp byte ptr [ebx+1F8h], 1 // is traffic vehicle
+		jz proceed
+		cmp byte ptr [ebx+1F8h], 2 // is mission vehicle
+		jz proceed
+		jmp getRandomCarEndJump
+	proceed:
+		jmp getRandomCarProceedJump
+	}
 }

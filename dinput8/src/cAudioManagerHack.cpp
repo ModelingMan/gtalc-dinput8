@@ -1,10 +1,10 @@
 #include "cAudioManagerHack.h"
-#include "CRunningScriptHack.h"
 #include "CBridgeHack.h"
 #include "Globals.h"
 #include "vcversion.h"
 #include "SilentCall.h"
 #include "Vehicles.h"
+#include <Windows.h>
 #include <math.h>
 
 #define REPORT_AMBULANCE     234
@@ -290,7 +290,7 @@ bool cAudioManagerHack::initialise()
 	*reinterpret_cast<unsigned short *>(ProcessFrontEndHackAddr + 5) = 0xE1FF;				// jmp ecx
 
 	// car alarms
-	if (!(CRunningScriptHack::debugMode & DEBUG_VICECITY)) {
+	if (!GetPrivateProfileInt("Misc", "UseVCCarAlarm", 0, "./gta-lc.ini")) {
 		Patch<unsigned int>(0x005F02F9, 0);
 		Patch<unsigned long>(0x005F0457, vcversion::AdjustOffset(0x006AD1B0));
 		Patch<unsigned long>(0x005F046D, vcversion::AdjustOffset(0x006AD1B4));
@@ -1123,7 +1123,8 @@ void cAudioManagerHack::ProcessPoliceCellBeatingScriptObject(unsigned int)
 
 void cAudioManagerHack::DisplayRadioStationNameHack(float fX, float fY, wchar_t *pText)
 {
-	CFont::PrintString(fX - 2.0f + (2.0f * VCGlobals::resolutionXMultiplier * VCGlobals::resolutionX), fY - 2.0f + (2.0f * VCGlobals::resolutionYMultiplier * VCGlobals::resolutionY), pText);
+	CFont::PrintString(fX - 2.0f + (2.0f * VCGlobals::resolutionXMultiplier * VCGlobals::RsGlobal.currentWidth),
+		fY - 2.0f + (2.0f * VCGlobals::resolutionYMultiplier * VCGlobals::RsGlobal.currentHeight), pText);
 }
 
 void cAudioManagerHack::InitialiseHack(void)

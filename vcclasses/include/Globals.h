@@ -10,7 +10,6 @@ namespace VCGlobals
 	extern cSampleManager &SampleManager;
 	extern cAudioManager &AudioManager;
 	extern CPhoneInfo &ThePhoneInfo;
-	extern CMissionCleanup &TheMissionCleanup;
 	extern CPathFind &ThePaths;
 
 	extern char *ScrollCharSet;
@@ -19,8 +18,6 @@ namespace VCGlobals
 	extern unsigned short &MI_NAUTICALMINE;
 	extern unsigned short &MI_LITTLEHA_POLICE;
 	extern unsigned short &MI_LIGHTBEAM;
-	extern unsigned int &resolutionX;
-	extern unsigned int &resolutionY;
 	extern float &resolutionXMultiplier;
 	extern float &resolutionYMultiplier;
 
@@ -39,18 +36,22 @@ namespace VCGlobals
 	struct RsGlobalType
 	{
 		const char *appName;
-		int maximumWidth;
-		int maximumHeight;
+		int windowWidth;
+		int windowHeight;
 		int currentWidth;
 		int currentHeight;
-		int  quit;
+		unsigned int frameLimit;
+		int quit;
 		void *ps;
-		int keyboard[3];
-		int mouse[3];
-		int pad[3];
+		void *keyboard;
+		void *mouse;
+		void *pad;
 	};
-	extern RsGlobalType& Globals;
+	extern RsGlobalType &RsGlobal;
 
+	extern bool &gbFastTime;
+
+	void VehicleCheat(int);
 	CPlayerPed *FindPlayerPed(void);
 	CVehicle *FindPlayerVehicle(void);
 	CVector *FindPlayerCoors(CVector *);

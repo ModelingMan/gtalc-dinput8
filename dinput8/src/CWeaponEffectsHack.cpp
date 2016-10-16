@@ -1,5 +1,4 @@
 #include "CWeaponEffectsHack.h"
-#include "CRunningScriptHack.h"
 #include "vcversion.h"
 #include "Globals.h"
 #include "SilentCall.h"
@@ -27,7 +26,7 @@ unsigned long CWeaponEffectsHack::InitHack()
 {
 	unsigned long addr = RwTextureRead("crosshair", "crosshairm");
 	// use alternative target texture if it exists
-	if (!(CRunningScriptHack::debugMode & DEBUG_VICECITY) && addr) {
+	if (!GetPrivateProfileInt("Misc", "UseVCAutoAimTexture", 0, "./gta-lc.ini") && addr) {
 		VCGlobals::strcpy(reinterpret_cast<char *>(vcversion::AdjustOffset(0x0069D818)), "crosshair");
 		VCGlobals::strcpy(reinterpret_cast<char *>(vcversion::AdjustOffset(0x0069D80C)), "crosshairm");
 		memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x005D4ECC)), 0x90, 11);

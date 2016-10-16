@@ -24,6 +24,9 @@
 #include "CWeaponEffectsHack.h"
 #include "CObjectHack.h"
 #include "CRadarHack.h"
+#include "Globals.h"
+#include "vcversion.h"
+#include "SilentCall.h"
 
 HMODULE hOrigDLL = NULL;
 
@@ -34,6 +37,57 @@ FARPROC OldDllRegisterServer = NULL;
 FARPROC OldDllUnregisterServer = NULL;
 
 const char *windowName = "GTA: Liberty City";
+
+// GangsInitialise
+static void GangsInitialise();
+unsigned long gangInitialiseEndJump = vcversion::AdjustOffset(0x004EEEDF);
+
+// GameLogicUpdate
+static void GameLogicUpdate();
+unsigned long gameLogicUpdateEndJump = vcversion::AdjustOffset(0x0042BC6D);
+
+// AutomobilePreRender
+static void AutomobilePreRender();
+unsigned long preRenderMatchAmbulan = vcversion::AdjustOffset(0x0058BE77);
+unsigned long preRenderMatchFbiranch = vcversion::AdjustOffset(0x0058C8F0);
+unsigned long preRenderNoMatch = vcversion::AdjustOffset(0x0058BE34);
+
+// RenderReflections
+float RenderReflections();
+
+// CarCtrlReInit
+void CarCtrlReInit();
+
+// CivilianAI
+void CivilianAI();
+unsigned long civilianAIValidPed = vcversion::AdjustOffset(0x004E94E6);
+unsigned long civilianAIInvalidPed = vcversion::AdjustOffset(0x004E9555);
+
+// center mouse (SilentPatch)
+static bool bGameInFocus = true;
+static LRESULT(CALLBACK **OldWndProc)(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK CustomWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (uMsg) {
+	case WM_KILLFOCUS:
+		bGameInFocus = false;
+		break;
+	case WM_SETFOCUS:
+		bGameInFocus = true;
+		break;
+	}
+
+	return (*OldWndProc)(hwnd, uMsg, wParam, lParam);
+}
+static auto* pCustomWndProc = CustomWndProc;
+void ResetMousePos()
+{
+	if (bGameInFocus) {
+		RwV2d vecPos = { VCGlobals::RsGlobal.currentWidth * 0.5f, VCGlobals::RsGlobal.currentHeight * 0.5f };
+		RsMouseSetPos(&vecPos);
+	}
+	CRenderer::ConstructRenderList();
+}
 
 bool SetupDirectInputProxy()
 {
@@ -78,8 +132,6 @@ __declspec(naked) HRESULT WINAPI NewDllUnregisterServer()
 {
 	__asm jmp OldDllUnregisterServer;
 }
-
-#include "vcversion.h"
 
 BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 {
@@ -157,6 +209,59 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			}
 		}
 
+		// detonator weapon switch
+		Patch<unsigned char>(0x005D49C7, 0xD);
+		memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x005345ED)), 0x90, 9);
+
+		// 0410 (Purple Nines) fix
+		InjectHook(0x004EEED1, &GangsInitialise, PATCH_JUMP); // CGangs::Initialise
+
+		// horizon ships
+		if (!GetPrivateProfileInt("Misc", "AllowHorizonShips", 0, "./gta-lc.ini")) {
+			Patch<unsigned short>(0x005BC5BC, 0xE990); // CWaterLevel::RenderShipsOnHorizon
+		}
+
+		// cylindrical marker colors
+		Patch<unsigned int>(0x00458E82, 0x000080); // CTheScripts::DrawScriptSpheres
+		Patch<unsigned int>(0x00689CA8, 0xFF8000);
+		Patch<unsigned int>(0x00568E45, 0x000080); // CShadows::RenderIndicatorShadow
+		Patch<unsigned int>(0x00698D58, 0xFF8000);
+		Patch<unsigned int>(0x004C3F99, 0x000080); // CRadar::Draw3dMarkers
+		Patch<unsigned int>(0x0068F958, 0xFF8000);
+
+		// undo ocean change
+		Patch<float>(0x0069CD70, 70.0);
+
+		// taxi cash
+		Patch<unsigned char>(0x005B8AB6, 25); // CVehicle::SetDriver
+
+		// hospital cost
+		InjectHook(0x0042BC64, &GameLogicUpdate, PATCH_JUMP); // CGameLogic::Update
+
+		// FBI Rancher roof light
+		InjectHook(0x0058BE2F, &AutomobilePreRender, PATCH_JUMP); // CAutomobile::PreRender
+
+		// fire light glow (SilentPatch)
+		Patch<unsigned char>(0x0048EB27, 0x10); // CFire::ProcessFire
+
+		// wet roads reflection (SilentPatch)
+		InjectHook(0x005433BD, &RenderReflections); // CCoronas::RenderReflections
+
+		// support treadables
+		Patch<unsigned int>(0x004C0325, 0x4068006A); // CPools::Initialise
+		Patch<unsigned int>(0x004C0329, 0xE800001F);
+
+		// reinit firetruck/ambulance timer (SilentPatch)
+		InjectHook(0x004A489B, &CarCtrlReInit);
+
+		// investigate ped crash fix
+		InjectHook(0x004E94E0, &CivilianAI, PATCH_JUMP);
+
+		// center mouse (SilentPatch)
+		InjectHook(0x004A5E45, &ResetMousePos);
+		OldWndProc = *(LRESULT(CALLBACK***)(HWND, UINT, WPARAM, LPARAM))vcversion::AdjustOffset(0x00601727);
+		Patch(0x00601727, &pCustomWndProc);
+
 		if (!cAudioManagerHack::initialise() ||
 			!CFontHack::initialise() ||
 			//!CHudHack::initialise() ||
@@ -208,4 +313,63 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 	}
 
 	return TRUE;
+}
+
+void GangsInitialise()
+{
+	for (int i = 0; i < 9; i++) {
+		CGangs::Gang[i].pedModelPreference = -1;
+	}
+}
+
+void __declspec(naked) GameLogicUpdate()
+{
+	__asm
+	{
+		mov eax, dword ptr [ebx+0A0h] // get current cash
+		add eax, 0FFFFFC18h           // subtract 1000
+		jmp gameLogicUpdateEndJump
+	}
+}
+
+void __declspec(naked) AutomobilePreRender()
+{
+	__asm
+	{
+		sub ecx, 9 // ambulan
+		jz matchAmbulan
+		dec ecx    // fbiranch
+		jz matchFbiranch
+		inc ecx    // resume before change
+		jmp preRenderNoMatch
+	matchAmbulan:
+		jmp preRenderMatchAmbulan
+	matchFbiranch:
+		jmp preRenderMatchFbiranch
+	}
+}
+
+float RenderReflections()
+{
+	return 1.0;
+}
+
+void CarCtrlReInit()
+{
+	CCarCtrl::ReInit();
+	CCarCtrl::LastTimeFireTruckCreated = 0;
+	CCarCtrl::LastTimeAmbulanceCreated = 0;
+}
+
+void __declspec(naked) CivilianAI()
+{
+	__asm
+	{
+		mov edx, dword ptr [ebp+1A0h] // get ped to investigate
+		test edx, edx
+		jz invalidPed
+		jmp civilianAIValidPed
+	invalidPed:
+		jmp civilianAIInvalidPed
+	}
 }
