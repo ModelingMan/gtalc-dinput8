@@ -5,10 +5,8 @@
 #include <math.h>
 #include <string.h>
 
-using namespace VCGlobals;
-
 static char ScrollBarTime[22] = "THE TIME IS 12:34    ";
-static char *ScrollBarMsgs[52] =
+static char *ScrollBarMsgs[55] =
 {
 #include "ScrollBarMessages.inc"
 };
@@ -17,8 +15,8 @@ void CScrollBarHack::Update()
 {
 	char *currentMsg = text;
 
-	float x = TheCamera.GetMatrix().pos.x - xStart;
-	float y = TheCamera.GetMatrix().pos.y - yStart;
+	float x = VCGlobals::TheCamera.GetMatrix().pos.x - xStart;
+	float y = VCGlobals::TheCamera.GetMatrix().pos.y - yStart;
 	float distance = sqrt(x*x + y*y);
 
 	if (distance > 100.0f)
@@ -43,16 +41,16 @@ void CScrollBarHack::Update()
 			case 0:
 				do
 				{
-					switch (rand() & 0x0F)
+					switch (VCGlobals::rand() & 0x0F)
 					{
 					case 0:
-						text = ScrollBarMsgs[1];
+						text = ScrollBarMsgs[0];
 						break;
 					case 1:
-						text = ScrollBarMsgs[2];
+						text = ScrollBarMsgs[1];
 						break;
 					case 2:
-						text = ScrollBarMsgs[3];
+						text = ScrollBarMsgs[2];
 						break;
 					case 3:
 						text = LibertyTunnelMsgDynamic();
@@ -64,7 +62,10 @@ void CScrollBarHack::Update()
 						text = TimeMsgDynamic();
 						break;
 					case 6:
-						text = ScrollBarMsgs[50];
+						if (CMenuManager::m_PrefsLanguage == 1 || CMenuManager::m_PrefsLanguage == 2)
+							text = TimeMsgDynamic();
+						else
+							text = ScrollBarMsgs[50];
 						break;
 					}
 				} while (text == currentMsg);
@@ -73,23 +74,27 @@ void CScrollBarHack::Update()
 			case 1:
 				do
 				{
-					switch (rand() & 0x0F)
+					switch (VCGlobals::rand() & 0x0F)
 					{
 					case 0:
-						text = ScrollBarMsgs[4];
+						text = ScrollBarMsgs[3];
 						break;
 					case 1:
-						text = ScrollBarMsgs[7];
+						text = ScrollBarMsgs[6];
 						break;
 					case 2:
-						text = ScrollBarMsgs[8];
+						text = ScrollBarMsgs[7];
 						break;
 					case 3:
-						text = ScrollBarMsgs[9];
+						text = ScrollBarMsgs[8];
 						break;
 					case 4:
-						//weather stuff
-						text = ScrollBarMsgs[10];
+						if (CWeather::Foggyness > 0.5)
+							text = ScrollBarMsgs[4];
+						else if (CWeather::WetRoads > 0.5)
+							text = ScrollBarMsgs[5];
+						else
+							text = ScrollBarMsgs[9];
 						break;
 					case 5:
 						text = LibertyTunnelMsgDynamic();
@@ -107,31 +112,31 @@ void CScrollBarHack::Update()
 			case 2:
 				do
 				{
-					switch (rand() & 0x0F)
+					switch (VCGlobals::rand() & 0x0F)
 					{
 					case 0:
-						text = ScrollBarMsgs[11];
+						text = ScrollBarMsgs[10];
 						break;
 					case 1:
-						text = ScrollBarMsgs[12];
+						text = ScrollBarMsgs[11];
 						break;
 					case 2:
-						text = ScrollBarMsgs[13];
+						text = ScrollBarMsgs[12];
 						break;
 					case 3:
-						text = ScrollBarMsgs[14];
+						text = ScrollBarMsgs[13];
 						break;
 					case 4:
-						text = ScrollBarMsgs[15];
+						text = ScrollBarMsgs[14];
 						break;
 					case 5:
-						text = ScrollBarMsgs[16];
+						text = ScrollBarMsgs[15];
 						break;
 					case 6:
-						text = ScrollBarMsgs[17];
+						text = ScrollBarMsgs[16];
 						break;
 					case 7:
-						text = ScrollBarMsgs[18];
+						text = ScrollBarMsgs[17];
 						break;
 					case 8:
 						text = LibertyTunnelMsgDynamic();
@@ -152,19 +157,22 @@ void CScrollBarHack::Update()
 			case 3:
 				do
 				{
-					switch (rand() & 0x0F)
+					switch (VCGlobals::rand() & 0x0F)
 					{
 					case 0:
-						text = ScrollBarMsgs[19];
+						text = ScrollBarMsgs[18];
 						break;
 					case 1:
-						text = ScrollBarMsgs[20];
+						text = ScrollBarMsgs[19];
 						break;
 					case 2:
-						text = ScrollBarMsgs[21];
+						text = ScrollBarMsgs[20];
 						break;
 					case 3:
 						text = TimeMsgDynamic();
+						break;
+					case 4:
+						text = ScrollBarMsgs[54];
 						break;
 					}
 				} while (text == currentMsg);
@@ -173,16 +181,16 @@ void CScrollBarHack::Update()
 			case 4:
 				do
 				{
-					switch (rand() & 0x0F)
+					switch (VCGlobals::rand() & 0x0F)
 					{
 					case 0:
-						text = ScrollBarMsgs[22];
+						text = ScrollBarMsgs[21];
 						break;
 					case 1:
-						text = ScrollBarMsgs[23];
+						text = ScrollBarMsgs[22];
 						break;
 					case 2:
-						text = ScrollBarMsgs[24];
+						text = ScrollBarMsgs[23];
 						break;
 					case 3:
 						text = TimeMsgDynamic();
@@ -194,7 +202,7 @@ void CScrollBarHack::Update()
 			case 5:
 				do
 				{
-					switch (rand() & 0x0F)
+					switch (VCGlobals::rand() & 0x0F)
 					{
 					case 0:
 						text = ScrollBarMsgs[49];
@@ -226,6 +234,9 @@ void CScrollBarHack::Update()
 					case 9:
 						text = TimeMsgDynamic();
 						break;
+					case 10:
+						text = ScrollBarMsgs[53];
+						break;
 					}
 				} while (text == currentMsg);
 				break;
@@ -233,7 +244,7 @@ void CScrollBarHack::Update()
 			case 6:
 				do
 				{
-					switch (rand() & 0x0F)
+					switch (VCGlobals::rand() & 0x0F)
 					{
 					case 0:
 						text = ScrollBarMsgs[39];
@@ -263,10 +274,16 @@ void CScrollBarHack::Update()
 						text = ScrollBarMsgs[47];
 						break;
 					case 9:
-						text = ScrollBarMsgs[48];
+						if (CMenuManager::m_PrefsLanguage == 1 || CMenuManager::m_PrefsLanguage == 2)
+							text = ScrollBarMsgs[39];
+						else
+							text = ScrollBarMsgs[48];
 						break;
 					case 10:
 						text = TimeMsgDynamic();
+						break;
+					case 11:
+						text = ScrollBarMsgs[52];
 						break;
 					}
 				} while (text == currentMsg);
@@ -283,12 +300,12 @@ void CScrollBarHack::Update()
 	if (countDiv < 5)
 	{
 		char charIdx = text[charCount] - ' ';
-		letterBuffer[39] = ScrollCharSet[countDiv + charIdx * 5];
+		letterBuffer[39] = VCGlobals::ScrollCharSet[countDiv + charIdx * 5];
 	}
 	else
 		letterBuffer[39] = 0;
 
-	switch (rand() & 0x0FF)
+	switch (VCGlobals::rand() & 0x0FF)
 	{
 	case 0x0D:
 		letterBuffer[39] = 0;

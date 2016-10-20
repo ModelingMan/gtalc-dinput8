@@ -205,5 +205,11 @@
     <ClCompile Include="src\CPopulation.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CVehicleModelInfo.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CMenuManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

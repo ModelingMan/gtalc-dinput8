@@ -1123,8 +1123,8 @@ void cAudioManagerHack::ProcessPoliceCellBeatingScriptObject(unsigned int)
 
 void cAudioManagerHack::DisplayRadioStationNameHack(float fX, float fY, wchar_t *pText)
 {
-	CFont::PrintString(fX - 2.0f + (2.0f * VCGlobals::resolutionXMultiplier * VCGlobals::RsGlobal.currentWidth),
-		fY - 2.0f + (2.0f * VCGlobals::resolutionYMultiplier * VCGlobals::RsGlobal.currentHeight), pText);
+	CFont::PrintString(fX - 2.0f + (2.0f * VCGlobals::RsGlobal.currentWidth / 640.0f),
+		fY - 2.0f + (2.0f * VCGlobals::RsGlobal.currentHeight / 448.0f), pText);
 }
 
 void cAudioManagerHack::InitialiseHack(void)

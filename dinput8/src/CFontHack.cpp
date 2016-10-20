@@ -78,8 +78,8 @@ void CFontHack::PrintPagerString(float posX, float posY, float scaleX, float sca
 // subtitles shadow fix (SilentPatch)
 void __stdcall Recalculate(float &fX, float &fY, int nShadow)
 {
-	fX = nShadow * resolutionXMultiplier * RsGlobal.currentWidth;
-	fY = nShadow * resolutionYMultiplier * RsGlobal.currentHeight;
+	fX = nShadow * RsGlobal.currentWidth / 640.0f;
+	fY = nShadow * RsGlobal.currentHeight / 448.0f;
 }
 
 void __declspec(naked) SubtitlesShadowFix()

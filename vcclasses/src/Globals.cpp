@@ -8,7 +8,6 @@ namespace VCGlobals
 	cDMAudio &DMAudio = *reinterpret_cast<cDMAudio *>(vcversion::AdjustOffset(0x00A10B8A));
 	cSampleManager &SampleManager = *reinterpret_cast<cSampleManager *>(vcversion::AdjustOffset(0x00983B90));
 	cAudioManager &AudioManager = *reinterpret_cast<cAudioManager *>(vcversion::AdjustOffset(0x0078D718));
-	CPhoneInfo &ThePhoneInfo = *reinterpret_cast<CPhoneInfo *>(vcversion::AdjustOffset(0x00817CF0));
 	CPathFind &ThePaths = *reinterpret_cast<CPathFind *>(vcversion::AdjustOffset(0x009B6E5C));
 
 	char *ScrollCharSet = reinterpret_cast<char *>(vcversion::AdjustOffset(0x00696674));
@@ -17,10 +16,15 @@ namespace VCGlobals
 	unsigned short &MI_NAUTICALMINE = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E910));
 	unsigned short &MI_LITTLEHA_POLICE = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E9A0));
 	unsigned short &MI_LIGHTBEAM = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E9B4));
-	float &resolutionXMultiplier = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x006CD9BC));
-	float &resolutionYMultiplier = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x006CD9B4));
 	ScriptParameter *ScriptParams = reinterpret_cast<ScriptParameter *>(vcversion::AdjustOffset(0x007D7438));
+	CPhoneInfo &gPhoneInfo = *reinterpret_cast<CPhoneInfo *>(vcversion::AdjustOffset(0x00817CF0));
+	RwTexture *&gpShadowHeliTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x00975218));
+	RwTexture *&gpShadowExplosionTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x00978DB4));
+	RwTexture *&gpShadowCarTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x0097F2EC));
 	RsGlobalType &RsGlobal = *reinterpret_cast<RsGlobalType *>(vcversion::AdjustOffset(0x009B48D8));
+	RwTexture *&gpShadowPedTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x009B5F2C));
+	RwTexture *&gpBloodPoolTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x00A0DAC8));
+	RwTexture *&gpShadowHeadLightsTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x00A1073C));
 	bool &gbFastTime = *reinterpret_cast<bool *>(vcversion::AdjustOffset(0x00A10B87));
 
 	static unsigned long g_VehicleCheat = vcversion::AdjustOffset(0x004AE8F0);

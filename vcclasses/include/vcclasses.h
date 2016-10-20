@@ -670,14 +670,49 @@ public:
 };
 
 //########################################################################
+//# IntroTextLine
+//########################################################################
+
+struct IntroTextLine
+{
+	float         scaleX;             // 0x00
+	float         scaleY;             // 0x04
+	unsigned char colorR;             // 0x08
+	unsigned char colorG;             // 0x09
+	unsigned char colorB;             // 0x0A
+	unsigned char colorA;             // 0x0B
+	unsigned char justify;            // 0x0C
+	unsigned char centre;             // 0x0D
+	unsigned char background;         // 0x0E
+	unsigned char backgroundOnlyText; // 0x0F
+	float         wrapX;              // 0x10
+	float         centreWidth;        // 0x14
+	unsigned char backgroundColorR;   // 0x18
+	unsigned char backgroundColorG;   // 0x19
+	unsigned char backgroundColorB;   // 0x1A
+	unsigned char backgroundColorA;   // 0x1B
+	unsigned char proportional;       // 0x1C
+	unsigned char drawBeforeFade;     // 0x1D
+	unsigned char alignRight;         // 0x1E
+	unsigned char padding;
+	short         font;               // 0x20
+	unsigned char padding2[2];
+	float         positionX;          // 0x24
+	float         positionY;          // 0x28
+	wchar_t       text[100];          // 0x2C
+};
+
+//########################################################################
 //# CTheScripts
 //########################################################################
 
 class CTheScripts
 {
 public:
+	static IntroTextLine *IntroTextLines;
 	static unsigned char *ScriptSpace;
 	static class CMissionCleanup &MissionCleanUp;
+	static unsigned short &NumberOfIntroTextLinesThisFrame;
 	static unsigned short &CommandsExecuted;
 
 	static void HighlightImportantArea(unsigned int, float, float, float, float, float);
@@ -881,7 +916,9 @@ public:
 class CWeather
 {
 public:
-	static unsigned char &bScriptsForceRain;
+	static float &Foggyness;
+	static float &WetRoads;
+	static bool &bScriptsForceRain;
 
 	static void ForceWeatherNow(short);
 };
@@ -1364,7 +1401,7 @@ public:
 class CShadows
 {
 public:
-	static void StoreShadowToBeRendered(unsigned char, unsigned long, CVector *, float, float, float, float, short, unsigned char, unsigned char, unsigned char, float, bool, float, unsigned long, bool);
+	static void StoreShadowToBeRendered(unsigned char, RwTexture *, CVector *, float, float, float, float, short, unsigned char, unsigned char, unsigned char, float, bool, float, unsigned long, bool);
 };
 
 //########################################################################
@@ -1393,6 +1430,26 @@ class CPopulation
 {
 public:
 	static bool &ms_bGivePedsWeapons;
+};
+
+//########################################################################
+//# CVehicleModelInfo
+//########################################################################
+
+class CVehicleModelInfo
+{
+public:
+	static unsigned int GetMaximumNumberOfPassengersFromNumberOfDoors(int);
+};
+
+//########################################################################
+//# CMenuManager
+//########################################################################
+
+class CMenuManager
+{
+public:
+	static unsigned int &m_PrefsLanguage;
 };
 
 #endif

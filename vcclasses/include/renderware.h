@@ -16,6 +16,11 @@ struct RwRGBA
 	unsigned char r, g, b, a;
 };
 
+struct RwTexture
+{
+	unsigned char space[0x5C];
+};
+
 extern void RsMouseSetPos(RwV2d *);
 extern int RwRenderStateSet(int, int);
 extern unsigned long RwTextureRead(const char *, const char *);

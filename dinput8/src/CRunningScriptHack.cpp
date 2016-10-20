@@ -242,33 +242,37 @@ bool CRunningScriptHack::_016F_draw_shadow()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 10);
 	unsigned char type = 0;
-	unsigned long texture = 0;
+	RwTexture *texture = 0;
 	CVector pos = { ScriptParams[1].float32, ScriptParams[2].float32, ScriptParams[3].float32 };
 	switch (ScriptParams[0].uint8) {
 	case 1:
 		type = 1;
-		texture = vcversion::AdjustOffset(0x0097F2EC);
+		texture = VCGlobals::gpShadowCarTex;
 		break;
 	case 2:
 		type = 1;
-		texture = vcversion::AdjustOffset(0x009B5F2C);
+		texture = VCGlobals::gpShadowPedTex;
 		break;
 	case 3:
 		type = 2;
-		texture = vcversion::AdjustOffset(0x00978DB4);
+		texture = VCGlobals::gpShadowExplosionTex;
 		break;
 	case 4:
 		type = 1;
-		texture = vcversion::AdjustOffset(0x00A0DAC8);
+		texture = VCGlobals::gpShadowHeliTex;
 		break;
 	case 5:
 		type = 2;
-		texture = vcversion::AdjustOffset(0x00A1073C);
+		texture = VCGlobals::gpShadowHeadLightsTex;
+		break;
+	case 6:
+		type = 1;
+		texture = VCGlobals::gpBloodPoolTex;
 		break;
 	default:
 		return 0;
 	}
-	CShadows::StoreShadowToBeRendered(type, *(unsigned long *)texture, &pos,
+	CShadows::StoreShadowToBeRendered(type, texture, &pos,
 		-sin(ScriptParams[4].float32) * ScriptParams[5].float32, cos(ScriptParams[4].float32) * ScriptParams[5].float32, cos(ScriptParams[4].float32) * ScriptParams[5].float32, sin(ScriptParams[4].float32) * ScriptParams[5].float32,
 		ScriptParams[6].int16, ScriptParams[7].uint8, ScriptParams[8].uint8, ScriptParams[9].uint8, 15.0, false, 1.0, 0, false);
 	return 0;
@@ -306,7 +310,7 @@ bool CRunningScriptHack::_024C_set_phone_message()
 	char text[8];
 	VCGlobals::strncpy(text, reinterpret_cast<char *>(&CTheScripts::ScriptSpace[this->m_dwScriptIP]), 8);
 	this->m_dwScriptIP += 8;
-	VCGlobals::ThePhoneInfo.SetPhoneMessage_JustOnce(ScriptParams[0].int32, TheText.Get(text), 0, 0, 0, 0, 0);
+	VCGlobals::gPhoneInfo.SetPhoneMessage_JustOnce(ScriptParams[0].int32, TheText.Get(text), 0, 0, 0, 0, 0);
 	return 0;
 }
 
@@ -428,7 +432,7 @@ bool CRunningScriptHack::_03A0_is_crane_lifting_car()
 bool CRunningScriptHack::_03C2_is_phone_displaying_message()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
-	this->UpdateCompareFlag((unsigned long)&VCGlobals::ThePhoneInfo.phones[ScriptParams[0].int32] == *(unsigned long *)vcversion::AdjustOffset(0x007030E8));
+	this->UpdateCompareFlag((unsigned long)&VCGlobals::gPhoneInfo.phones[ScriptParams[0].int32] == *(unsigned long *)vcversion::AdjustOffset(0x007030E8));
 	return 0;
 }
 

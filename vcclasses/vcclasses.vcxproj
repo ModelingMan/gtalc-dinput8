@@ -40,6 +40,7 @@
     <ClCompile Include="src\CGeneral.cpp" />
     <ClCompile Include="src\CHud.cpp" />
     <ClCompile Include="src\CMatrix.cpp" />
+    <ClCompile Include="src\CMenuManager.cpp" />
     <ClCompile Include="src\CMessages.cpp" />
     <ClCompile Include="src\CMissionCleanup.cpp" />
     <ClCompile Include="src\CObject.cpp" />
@@ -75,6 +76,7 @@
     <ClCompile Include="src\CTxdStore.cpp" />
     <ClCompile Include="src\CUserDisplay.cpp" />
     <ClCompile Include="src\CVehicle.cpp" />
+    <ClCompile Include="src\CVehicleModelInfo.cpp" />
     <ClCompile Include="src\CWanted.cpp" />
     <ClCompile Include="src\CWeaponInfo.cpp" />
     <ClCompile Include="src\CWeather.cpp" />

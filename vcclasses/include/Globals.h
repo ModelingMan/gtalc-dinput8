@@ -9,7 +9,6 @@ namespace VCGlobals
 	extern cDMAudio &DMAudio;
 	extern cSampleManager &SampleManager;
 	extern cAudioManager &AudioManager;
-	extern CPhoneInfo &ThePhoneInfo;
 	extern CPathFind &ThePaths;
 
 	extern char *ScrollCharSet;
@@ -18,8 +17,6 @@ namespace VCGlobals
 	extern unsigned short &MI_NAUTICALMINE;
 	extern unsigned short &MI_LITTLEHA_POLICE;
 	extern unsigned short &MI_LIGHTBEAM;
-	extern float &resolutionXMultiplier;
-	extern float &resolutionYMultiplier;
 
 	union ScriptParameter
 	{
@@ -32,7 +29,10 @@ namespace VCGlobals
 		float float32;
 	};
 	extern ScriptParameter *ScriptParams;
-
+	extern CPhoneInfo &gPhoneInfo;
+	extern RwTexture *&gpShadowHeliTex;
+	extern RwTexture *&gpShadowExplosionTex;
+	extern RwTexture *&gpShadowCarTex;
 	struct RsGlobalType
 	{
 		const char *appName;
@@ -48,7 +48,9 @@ namespace VCGlobals
 		void *pad;
 	};
 	extern RsGlobalType &RsGlobal;
-
+	extern RwTexture *&gpShadowPedTex;
+	extern RwTexture *&gpBloodPoolTex;
+	extern RwTexture *&gpShadowHeadLightsTex;
 	extern bool &gbFastTime;
 
 	void VehicleCheat(int);

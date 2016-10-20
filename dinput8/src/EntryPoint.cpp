@@ -216,7 +216,7 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		// 0410 (Purple Nines) fix
 		InjectHook(0x004EEED1, &GangsInitialise, PATCH_JUMP); // CGangs::Initialise
 
-		// horizon ships
+		// remove horizon ships
 		if (!GetPrivateProfileInt("Misc", "AllowHorizonShips", 0, "./gta-lc.ini")) {
 			Patch<unsigned short>(0x005BC5BC, 0xE990); // CWaterLevel::RenderShipsOnHorizon
 		}
@@ -228,6 +228,17 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		Patch<unsigned int>(0x00698D58, 0xFF8000);
 		Patch<unsigned int>(0x004C3F99, 0x000080); // CRadar::Draw3dMarkers
 		Patch<unsigned int>(0x0068F958, 0xFF8000);
+
+		// remove arrow marker glow
+		if (!GetPrivateProfileInt("Misc", "ShowArrowMarkerGlow", 1, "./gta-lc.ini")) {
+			Patch<unsigned int>(0x00570C30, 0); // C3dMarkers::Render
+			Patch<unsigned int>(0x00699074, 0);
+		}
+
+		// remove dead ped in front of car
+		if (!GetPrivateProfileInt("Misc", "AllowDeadPedInFrontOfCar", 1, "./gta-lc.ini")) {
+			Patch<float>(0x00687238, 1.0);
+		}
 
 		// undo ocean change
 		Patch<float>(0x0069CD70, 70.0);
