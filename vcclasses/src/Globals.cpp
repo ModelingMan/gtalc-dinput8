@@ -28,6 +28,7 @@ namespace VCGlobals
 	bool &gbFastTime = *reinterpret_cast<bool *>(vcversion::AdjustOffset(0x00A10B87));
 
 	static unsigned long g_VehicleCheat = vcversion::AdjustOffset(0x004AE8F0);
+	static unsigned long g_FindPlayerHeading = vcversion::AdjustOffset(0x004BBF70);
 	static unsigned long g_FindPlayerPed = vcversion::AdjustOffset(0x004BC120);
 	static unsigned long g_FindPlayerVehicle = vcversion::AdjustOffset(0x004BC1E0);
 	static unsigned long g_FindPlayerCoors = vcversion::AdjustOffset(0x004BC240);
@@ -40,6 +41,11 @@ namespace VCGlobals
 	__declspec(naked) void VehicleCheat(int)
 	{
 		__asm jmp g_VehicleCheat;
+	}
+
+	__declspec(naked) float FindPlayerHeading(void)
+	{
+		__asm jmp g_FindPlayerHeading;
 	}
 
 	__declspec(naked) CPlayerPed *FindPlayerPed(void)

@@ -1,9 +1,9 @@
 /*************************************************************************
-	vcversion -
+    vcversion -
 
-	Ported from Delphi source code courtesy of Artem Khassanov (Hammer83)
-	Original file: vcversion.dpr
-	http://www.artemkh.com/gtalc.php
+    Ported from Delphi source code courtesy of Artem Khassanov (Hammer83)
+    Original file: vcversion.dpr
+    http://www.artemkh.com/gtalc.php
 *************************************************************************/
 
 #include <Windows.h>

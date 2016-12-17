@@ -9,6 +9,8 @@ static unsigned long g_AddToPreviousBriefArray = vcversion::AdjustOffset(0x00583
 static unsigned long g_AddBigMessageQ = vcversion::AdjustOffset(0x00583F40);
 static unsigned long g_AddBigMessage = vcversion::AdjustOffset(0x00584050);
 static unsigned long g_AddMessageJumpQ = vcversion::AdjustOffset(0x00584300);
+static unsigned long g_AddMessage = vcversion::AdjustOffset(0x00584410);
+static unsigned long g_Display = vcversion::AdjustOffset(0x00584550);
 
 __declspec(naked) void CMessages::AddMessageJumpQWithNumber(wchar_t *, unsigned int, unsigned short, int, int, int, int, int, int)
 {
@@ -48,4 +50,14 @@ __declspec(naked) void CMessages::AddBigMessage(wchar_t *, unsigned int, unsigne
 __declspec(naked) void CMessages::AddMessageJumpQ(wchar_t *, unsigned int, unsigned short)
 {
 	__asm jmp g_AddMessageJumpQ;
+}
+
+__declspec(naked) void CMessages::AddMessage(wchar_t *, unsigned int, unsigned short)
+{
+	__asm jmp g_AddMessage;
+}
+
+__declspec(naked) void CMessages::Display(void)
+{
+	__asm jmp g_Display;
 }

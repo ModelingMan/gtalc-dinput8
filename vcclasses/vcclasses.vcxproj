@@ -22,6 +22,9 @@
   <ItemGroup>
     <ClCompile Include="src\cAudioManager.cpp" />
     <ClCompile Include="src\CAutomobile.cpp" />
+    <ClCompile Include="src\CBike.cpp" />
+    <ClCompile Include="src\CBoat.cpp" />
+    <ClCompile Include="src\CBulletInfo.cpp" />
     <ClCompile Include="src\CCamera.cpp" />
     <ClCompile Include="src\CCarCtrl.cpp" />
     <ClCompile Include="src\CClock.cpp" />
@@ -43,6 +46,7 @@
     <ClCompile Include="src\CMenuManager.cpp" />
     <ClCompile Include="src\CMessages.cpp" />
     <ClCompile Include="src\CMissionCleanup.cpp" />
+    <ClCompile Include="src\CModelInfo.cpp" />
     <ClCompile Include="src\CObject.cpp" />
     <ClCompile Include="src\CPad.cpp" />
     <ClCompile Include="src\CParticle.cpp" />
@@ -63,6 +67,7 @@
     <ClCompile Include="src\CRestart.cpp" />
     <ClCompile Include="src\CRunningScript.cpp" />
     <ClCompile Include="src\cSampleManager.cpp" />
+    <ClCompile Include="src\CScriptPaths.cpp" />
     <ClCompile Include="src\CScrollBar.cpp" />
     <ClCompile Include="src\CShadows.cpp" />
     <ClCompile Include="src\CSprite.cpp" />

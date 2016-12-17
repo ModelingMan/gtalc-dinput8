@@ -1,9 +1,9 @@
 /*************************************************************************
-	vcversion - 
+    vcversion - 
 
-	Ported from Delphi source code courtesy of Artem Khassanov (Hammer83)
-	Original file: uVerAdjust.pas
-	http://www.artemkh.com/gtalc.php
+    Ported from Delphi source code courtesy of Artem Khassanov (Hammer83)
+    Original file: uVerAdjust.pas
+    http://www.artemkh.com/gtalc.php
 *************************************************************************/
 
 unsigned long AdjustOffsetUS11(unsigned long Offset)

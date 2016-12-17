@@ -211,5 +211,20 @@
     <ClCompile Include="src\CMenuManager.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CModelInfo.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CBoat.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CBike.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CBulletInfo.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CScriptPaths.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,8 +1,8 @@
 /*******************************************************************************
-	vcversion -
+    vcversion -
 
-	Ported from Delphi source code courtesy of Artem Khassanov (Hammer83)
-	http://www.artemkh.com/gtalc.php
+    Ported from Delphi source code courtesy of Artem Khassanov (Hammer83)
+    http://www.artemkh.com/gtalc.php
 *******************************************************************************/
 
 #pragma once

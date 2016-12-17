@@ -8,8 +8,14 @@ unsigned short &CTheScripts::NumberOfIntroTextLinesThisFrame = *reinterpret_cast
 unsigned short &CTheScripts::CommandsExecuted = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x00A10A66));
 
 static unsigned long g_HighlightImportantArea = vcversion::AdjustOffset(0x0045F080);
+static unsigned long g_ClearSpaceForMissionEntity = vcversion::AdjustOffset(0x0045F180);
 
 __declspec(naked) void CTheScripts::HighlightImportantArea(unsigned int, float, float, float, float, float)
 {
 	__asm jmp g_HighlightImportantArea;
+}
+
+__declspec(naked) void CTheScripts::ClearSpaceForMissionEntity(CVector const &, CEntity *)
+{
+	__asm jmp g_ClearSpaceForMissionEntity;
 }

@@ -54,6 +54,7 @@ namespace VCGlobals
 	extern bool &gbFastTime;
 
 	void VehicleCheat(int);
+	float FindPlayerHeading(void);
 	CPlayerPed *FindPlayerPed(void);
 	CVehicle *FindPlayerVehicle(void);
 	CVector *FindPlayerCoors(CVector *);

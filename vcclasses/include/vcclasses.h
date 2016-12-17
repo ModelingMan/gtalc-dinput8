@@ -143,6 +143,7 @@ public:
 
 	bool IsWithinArea(float, float, float, float, float, float);
 	bool IsWithinArea(float, float, float, float);
+	void SetHeading(float);
 };
 
 //########################################################################
@@ -165,6 +166,7 @@ public:
 	unsigned char  espace3[0x0006];
 	// 0x064
 
+	float GetDistanceFromCentreOfMassToBaseOfModel(void);
 	void UpdateRwFrame(void);
 	void RegisterReference(CEntity **);
 
@@ -285,6 +287,8 @@ public:
 	static void AddBigMessageQ(wchar_t *, unsigned int, unsigned short);
 	static void AddBigMessage(wchar_t *, unsigned int, unsigned short);
 	static void AddMessageJumpQ(wchar_t *, unsigned int, unsigned short);
+	static void AddMessage(wchar_t *, unsigned int, unsigned short);
+	static void Display(void);
 };
 
 //########################################################################
@@ -337,6 +341,7 @@ public:
 
 	static unsigned int &MaximumWantedLevel;
 
+	void SetMaximumWantedLevel(int);
 	void SetWantedLevelCheat(int);
 	void UpdateWantedLevel(void);
 };
@@ -423,6 +428,7 @@ public:
 	static bool &bAllDodosCheat;
 	static bool &bWheelsOnlyCheat;
 	bool IsSphereTouchingVehicle(float, float, float, float);
+	void *operator new(unsigned int);
 };
 
 static_assert(sizeof(CVehicle) == 0x5DC, "Size of CVehicle is not 0x5DC bytes.");
@@ -435,6 +441,8 @@ class CAutomobile : public CVehicle
 {
 public:
 	static unsigned char &m_sAllTaxiLights;
+
+	CAutomobile(int, unsigned char);
 };
 
 //########################################################################
@@ -716,6 +724,7 @@ public:
 	static unsigned short &CommandsExecuted;
 
 	static void HighlightImportantArea(unsigned int, float, float, float, float, float);
+	static void ClearSpaceForMissionEntity(CVector const &, CEntity *);
 };
 
 //########################################################################
@@ -917,7 +926,12 @@ class CWeather
 {
 public:
 	static float &Foggyness;
+	static float &Rain;
+	static float &InterpolationValue;
 	static float &WetRoads;
+	static short &NewWeatherType;
+	static short &ForcedWeatherType;
+	static short &OldWeatherType;
 	static bool &bScriptsForceRain;
 
 	static void ForceWeatherNow(short);
@@ -930,9 +944,10 @@ public:
 class CStreaming
 {
 public:
-	static void RequestModel(int, int);
-	static void LoadAllRequestedModels(bool);
+	static void SetModelTxdIsDeletable(int);
 	static void SetModelIsDeletable(int);
+	static void LoadAllRequestedModels(bool);
+	static void RequestModel(int, int);
 };
 
 //########################################################################
@@ -1450,6 +1465,61 @@ class CMenuManager
 {
 public:
 	static unsigned int &m_PrefsLanguage;
+};
+
+//########################################################################
+//# CModelInfo
+//########################################################################
+
+class CModelInfo
+{
+public:
+	static bool IsBikeModel(int);
+	static bool IsBoatModel(int);
+};
+
+//########################################################################
+//# CBoat
+//########################################################################
+
+class CBoat : public CVehicle
+{
+public:
+	CBoat(int, unsigned char);
+};
+
+//########################################################################
+//# CBike
+//########################################################################
+
+class CBike : public CVehicle
+{
+public:
+	CBike(int, unsigned char);
+};
+
+//########################################################################
+//# CBulletInfo
+//########################################################################
+
+class CBulletInfo
+{
+public:
+	static bool TestForSniperBullet(float, float, float, float, float, float);
+};
+
+//########################################################################
+//# CScriptPaths
+//########################################################################
+
+class CScriptPaths
+{
+public:
+	char space1[0x10];
+	float distanceAlongPath;
+	char space2[0x20];
+
+	static CScriptPaths *ScriptPath;
 };
 
 #endif
