@@ -226,5 +226,8 @@
     <ClCompile Include="src\CScriptPaths.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CGameLogic.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

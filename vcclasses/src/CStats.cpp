@@ -13,6 +13,7 @@ int &CStats::CommercialPassed = *reinterpret_cast<int *>(vcversion::AdjustOffset
 float &CStats::TopShootingRangeScore = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x00A0D8A4));
 float &CStats::MovieStunts = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x00A0FC8C));
 int &CStats::MissionsGiven = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x00A1023C));
+float &CStats::AutoPaintingBudget = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x00A10298));
 float &CStats::Assassinations = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x00A10918));
 
 static unsigned long g_AnotherKillFrenzyPassed = vcversion::AdjustOffset(0x004CDBA7);

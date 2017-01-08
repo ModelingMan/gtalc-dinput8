@@ -22,6 +22,7 @@ unsigned long getRandomCarProceedJump = vcversion::AdjustOffset(0x0062F23D);
 unsigned long getRandomCarEndJump = vcversion::AdjustOffset(0x0062F269);
 
 int CRunningScriptHack::debugMode;
+bool isShortcutDropoffEnabled;
 
 bool CRunningScriptHack::initialise()
 {
@@ -30,6 +31,9 @@ bool CRunningScriptHack::initialise()
 
 	// make 053E accept mission vehicles - workaround for crusher
 	InjectHook(0x0062F234, &GetRandomCarOfTypeInAreaNoSave, PATCH_JUMP);
+	
+	// shortcut dropoff
+	isShortcutDropoffEnabled = !!GetPrivateProfileInt("Misc", "UseShortcutDropoff", 0, "./gta-lc.ini");
 
 	return true;
 }
@@ -94,8 +98,12 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 		return this->_03DD_add_sprite_blip_for_pickup();
 	case 0x03EC:
 		return this->_03EC_has_military_crane_collected_all_cars();
+	case 0x03F8:
+		return this->_03F8_get_body_cast_health();
 	case 0x0410:
 		return this->_0410_set_gang_ped_model_preference();
+	case 0x041C:
+		return this->_041C_set_char_say();
 	case 0x0421:
 		return this->_0421_force_rain();
 	case 0x0422:
@@ -106,6 +114,8 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 		return this->_0444_set_script_fire_audio();
 	case 0x0447:
 		return this->_0447_is_player_lifting_a_phone();
+	case 0x058E:
+		return this->_058E_set_shortcut_dropoff_point_for_mission(); // modified
 
 	case 0x00AC:
 		return this->_00AC_is_car_still_alive();
@@ -159,8 +169,6 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 		return this->_03A5_change_garage_type_with_car_model();
 	case 0x03C9:
 		return this->_03C9_is_car_visibly_damaged();
-	case 0x03F8:
-		return this->_03F8_get_body_cast_health();
 	case 0x03FB:
 		return this->_03FB_set_car_stays_in_current_level();
 	case 0x03FC:
@@ -452,10 +460,36 @@ bool CRunningScriptHack::_03EC_has_military_crane_collected_all_cars()
 	return 0;
 }
 
+bool CRunningScriptHack::_03F8_get_body_cast_health()
+{
+	ScriptParams[0].int32 = CObjectHack::nBodyCastHealth;
+	this->StoreParameters(&this->m_dwScriptIP, 1);
+	return 0;
+}
+
 bool CRunningScriptHack::_0410_set_gang_ped_model_preference()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
 	CGangs::Gang[ScriptParams[0].int16].pedModelPreference = ScriptParams[1].int8;
+	return 0;
+}
+
+bool CRunningScriptHack::_041C_set_char_say()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 2);
+	CPed *ped = CPools::ms_pPedPool->GetAt(ScriptParams[0].int32);
+	unsigned short say = ScriptParams[1].uint16;
+	switch (say) {
+	case 95:
+		ped->Say(0x8F);
+		break;
+	case 96:
+		ped->Say(0x8F);
+		break;
+	case 101:
+		ped->Say(0x84);
+		break;
+	}
 	return 0;
 }
 
@@ -492,6 +526,16 @@ bool CRunningScriptHack::_0447_is_player_lifting_a_phone()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
 	this->UpdateCompareFlag(CWorld::Players[ScriptParams[0].int32].playerEntity->state == 0x13);
+	return 0;
+}
+
+bool CRunningScriptHack::_058E_set_shortcut_dropoff_point_for_mission()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 4);
+	if (isShortcutDropoffEnabled) {
+		CVector pos = { ScriptParams[0].float32, ScriptParams[1].float32, ScriptParams[2].float32 };
+		CGameLogic::AddShortCutDropOffPointForMission(pos, ScriptParams[3].float32);
+	}
 	return 0;
 }
 
@@ -767,13 +811,6 @@ bool CRunningScriptHack::_03C9_is_car_visibly_damaged()
 	this->CollectParameters(&this->m_dwScriptIP, 1);
 	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32);
 	this->UpdateCompareFlag(!!(vehicle->field_1FB & 2));
-	return 0;
-}
-
-bool CRunningScriptHack::_03F8_get_body_cast_health()
-{
-	ScriptParams[0].int32 = CObjectHack::nBodyCastHealth;
-	this->StoreParameters(&this->m_dwScriptIP, 1);
 	return 0;
 }
 

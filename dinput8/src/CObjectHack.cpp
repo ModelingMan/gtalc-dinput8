@@ -48,7 +48,7 @@ void CObjectHack::ObjectDamageHack(float damage)
 {
 	if (this->modelIndex == MI_BODYCAST) {
 		if (damage > 50.0) {
-			nBodyCastHealth = static_cast<unsigned short>(static_cast<float>(nBodyCastHealth) - damage / 2.0);
+			nBodyCastHealth = static_cast<short>(static_cast<float>(nBodyCastHealth) - damage / 2.0);
 		}
 		if (nBodyCastHealth < 0) {
 			nBodyCastHealth = 0;

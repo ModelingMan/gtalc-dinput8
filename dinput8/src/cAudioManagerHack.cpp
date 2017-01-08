@@ -269,6 +269,7 @@ struct VehicleSfx
 };
 
 short audioZones[TOTAL_AUDIO_ZONES] = {};
+bool isPlayerSfxTommy;
 
 // ProcessFrontEndHackProxy
 unsigned long JumpTableForFrontEnd = vcversion::AdjustOffset(0x006B28B8);
@@ -296,10 +297,6 @@ bool cAudioManagerHack::initialise()
 		Patch<unsigned long>(0x005F046D, vcversion::AdjustOffset(0x006AD1B4));
 	}
 
-	// player talk sfx
-	unsigned int(__thiscall cAudioManagerHack::* function)(CPed *, unsigned short) = &cAudioManagerHack::GetPlayerTalkSfx;
-	InjectHook(0x005EA204, (unsigned long &)function);
-
 	// suspect last seen report, requires modification of sfx
 	InjectHook(0x005FD58C, &cAudioManagerHack::SetupSuspectLastSeenReportHackProxy, PATCH_JUMP);
 
@@ -323,13 +320,13 @@ bool cAudioManagerHack::initialise()
 	InjectHook(0x004DDAEB, &cAudioManagerHack::InitialiseAudioZoneArrayHack);
 	
 	// crane audio
-	void(__thiscall cAudioManagerHack::* function2)() = &cAudioManagerHack::ProcessCraneAndBridge;
-	InjectHook(0x005F596C, (unsigned long &)function2);
+	auto function = &cAudioManagerHack::ProcessCraneAndBridge;
+	InjectHook(0x005F596C, (unsigned long &)function);
 	Patch<unsigned char>(0x005F5E6C, 5);
 
 	// looping script objects
-	void(__thiscall cAudioManagerHack::* function3)(unsigned char) = &cAudioManagerHack::ProcessLoopingScriptObjectHack;
-	InjectHook(0x005F58F3, (unsigned long &)function3);
+	auto function2 = &cAudioManagerHack::ProcessLoopingScriptObjectHack;
+	InjectHook(0x005F58F3, (unsigned long &)function2);
 	scriptObjectCinemaTime = scriptObjectSawmillTime = scriptObjectAirportTime = scriptObjectHomeTime = scriptObjectCellBeatingTime = CTimer::m_snTimeInMilliseconds;
 	scriptObjectAirportCounter = scriptObjectHomeCounter = scriptObjectCellBeatingCounter = 0;
 
@@ -355,6 +352,19 @@ bool cAudioManagerHack::initialise()
 
 	// fbi alt siren
 	InjectHook(0x005F03DD, &cAudioManagerHack::ProcessVehicleSirenOrAlarmHack, PATCH_JUMP);
+
+	// chopper dialogue
+	Patch<unsigned int>(0x005EB3EC, 0x236);
+	Patch<unsigned int>(0x005EB3FA, 0x8D3DCB09);
+	Patch<unsigned char>(0x005EB427, 0x1D);
+	Patch<unsigned int>(0x005EB42B, 0x236);
+
+	// major changes to ped talk sfx
+	auto function3 = &cAudioManagerHack::GetPedCommentSfxHack;
+	InjectHook(0x005EB2D5, (unsigned long &)function3);
+
+	// player talk sfx
+	isPlayerSfxTommy = !!GetPrivateProfileInt("Misc", "UseTommySfx", 0, "./gta-lc.ini");
 
 	return true;
 }
@@ -553,37 +563,6 @@ void cAudioManagerHack::ProcessLoopingScriptObjectHack(unsigned char id)
 	}
 }
 
-unsigned int __thiscall cAudioManagerHack::GetPlayerTalkSfx(CPed *ped, unsigned short type)
-{
-	unsigned int store, start, range;
-	switch (type) {
-	case 0x67:
-		return 9796;
-	case 0x68:
-	case 0x6B:
-		start = 9815;
-		range = 33;
-		break;
-	case 0x69:
-	case 0x8B:
-		start = 9883;
-		range = 42;
-		break;
-	case 0x6A:
-		start = 9848;
-		range = 35;
-		break;
-	case 0x6C:
-		start = 9925;
-		range = 16;
-		break;
-	default:
-		return 9942;
-	}
-	VCGlobals::AudioManager.GetPhrase(store, ped->phrase, start, range);
-	return store;
-}
-
 void cAudioManagerHack::InitialiseAudioZoneArrayHack()
 {
 	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004DC392)) = (unsigned long)&audioZones; // CTheZones::FindAudioZone
@@ -702,7 +681,7 @@ void cAudioManagerHack::ProcessCraneAndBridge()
 {
 	// process crane
 	float distance;
-	int x = this->m_Unk13;
+	int x = this->m_AudioEntity;
 	x = x + x * 4;
 	CCrane *crane = (CCrane *)*(unsigned long *)((unsigned long)&VCGlobals::AudioManager + x * 8 + 0x1F14);
 	if (crane && crane->activity == 1 && crane->status) {
@@ -730,7 +709,7 @@ void cAudioManagerHack::ProcessCraneAndBridge()
 				this->m_Unk12 = 0;
 				this->AddSampleToRequestedQueue();
 			}
-			x = this->m_Unk13;
+			x = this->m_AudioEntity;
 			x = x + x * 4;
 			if (*(unsigned char *)((unsigned long)&VCGlobals::AudioManager + x * 8 + 0x1F34)) {
 				this->m_Unk7 = 1;
@@ -1161,4 +1140,585 @@ void __declspec(naked) cAudioManagerHack::ProcessVehicleSirenOrAlarmHack()
 	noMatch:
 		jmp fbiNoMatchEndJump
 	}
+}
+
+unsigned int __thiscall cAudioManagerHack::GetPedCommentSfxHack(CPed *ped, unsigned short type)
+{
+	switch (ped->modelIndex) {
+	case 0:   // 0
+		if (isPlayerSfxTommy) {
+			return cAudioManager::GetPlayerTalkSfx(ped, type);
+		} else {
+			return this->GetPlayerTalkSfx(ped, type);
+		}
+	case 5:   // 5
+		return this->GetMedicTalkSfx(ped, type);
+	case 6:   // 6
+		return this->GetFiremanTalkSfx(ped, type);
+	case 7:   // 7
+		return this->GetNormalMaleTalkSfx(ped, type);
+	case 28:  // 8
+		return this->GetAsianTaxiDriverTalkSfx(ped, type);
+	case 73:  // 9
+		return this->GetPimpTalkSfx(ped, type);
+	case 83:  // 10
+	case 84:  // 11
+		return this->GetMafiaTalkSfx(ped, type);
+	case 85:  // 12
+	case 86:  // 13
+		return this->GetTriadTalkSfx(ped, type);
+	case 87:  // 14
+	case 88:  // 15
+		return this->GetDiabloTalkSfx(ped, type);
+	case 89:  // 16
+	case 90:  // 17
+		return this->GetYakuzaTalkSfx(ped, type);
+	case 91:  // 18
+	case 92:  // 19
+		return this->GetYardieTalkSfx(ped, type);
+	case 93:  // 20
+	case 94:  // 21
+		return this->GetColombianTalkSfx(ped, type);
+	case 95:  // 22
+	case 96:  // 23
+		return this->GetHoodTalkSfx(ped, type);
+	case 30:  // 24
+		return this->GetBlackCriminalTalkSfx(ped, type);
+	case 48:  // 25
+		return this->GetWhiteCriminalTalkSfx(ped, type);
+	case 97:  // 97
+	case 98:  // 98
+	case 99:  // 99
+	case 100: // 100
+	case 101: // 101
+	case 103: // 103
+	case 104: // 104
+		return this->GetViceWhiteTalkSfx(ped, type);
+	case 102: // 102
+		return this->GetViceBlackTalkSfx(ped, type);
+	}
+	return 9942;
+}
+
+unsigned int cAudioManagerHack::GetPlayerTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x68:
+		this->GetPhrase(store, ped->phrase, 663, 11);
+		break;
+	case 0x69:
+		this->GetPhrase(store, ped->phrase, 653, 10);
+		break;
+	case 0x6A:
+		this->GetPhrase(store, ped->phrase, 674, 6);
+		break;
+	default:
+		return 9942;
+	}
+	return store;
+}
+
+unsigned int cAudioManagerHack::GetMedicTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x77:
+		this->GetPhrase(store, ped->phrase, 920, 5);
+		break;
+	case 0x7B:
+		this->GetPhrase(store, ped->phrase, 925, 5);
+		break;
+	case 0x8C:
+		this->GetPhrase(store, ped->phrase, 945, 12);
+		break;
+	case 0x8D:
+		this->GetPhrase(store, ped->phrase, 936, 9);
+		break;
+	case 0x8F:
+		this->GetPhrase(store, ped->phrase, 930, 6);
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store + 0x25 * (this->m_AudioEntity & 1);
+}
+
+unsigned int cAudioManagerHack::GetFiremanTalkSfx(CPed *ped, unsigned short type)
+{
+	return GetGenericMaleTalkSfx(ped, type);
+}
+
+unsigned int cAudioManagerHack::GetNormalMaleTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x77:
+		this->GetPhrase(store, ped->phrase, 832, 7);
+		break;
+	case 0x7B:
+		this->GetPhrase(store, ped->phrase, 839, 7);
+		break;
+	case 0x8E:
+		this->GetPhrase(store, ped->phrase, 815, 9);
+		break;
+	case 0x8F:
+		this->GetPhrase(store, ped->phrase, 846, 5);
+		break;
+	case 0x90:
+	case 0x91:
+	case 0x92:
+		this->GetPhrase(store, ped->phrase, 778, 12);
+		break;
+	case 0x9A:
+		this->GetPhrase(store, ped->phrase, 824, 8);
+		break;
+	case 0x9B:
+		this->GetPhrase(store, ped->phrase, 851, 10);
+		break;
+	case 0x9C:
+	case 0x9D:
+		this->GetPhrase(store, ped->phrase, 790, 25);
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store;
+}
+
+unsigned int cAudioManagerHack::GetAsianTaxiDriverTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x7B:
+		this->GetPhrase(store, ped->phrase, 2648, 7);
+		break;
+	case 0x90:
+	case 0x91:
+	case 0x92:
+		this->GetPhrase(store, ped->phrase, 2642, 6);
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store;
+}
+
+unsigned int cAudioManagerHack::GetPimpTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x76:
+		this->GetPhrase(store, ped->phrase, 765, 7);
+		break;
+	case 0x7B:
+		this->GetPhrase(store, ped->phrase, 772, 4);
+		break;
+	case 0x8B:
+		this->GetPhrase(store, ped->phrase, 756, 9);
+		break;
+	case 0x8E:
+		this->GetPhrase(store, ped->phrase, 750, 6);
+		break;
+	case 0x90:
+	case 0x91:
+	case 0x92:
+		this->GetPhrase(store, ped->phrase, 728, 5);
+		break;
+	case 0x9B:
+		this->GetPhrase(store, ped->phrase, 776, 2);
+		break;
+	case 0x9C:
+	case 0x9D:
+		this->GetPhrase(store, ped->phrase, 733, 17);
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store;
+}
+
+unsigned int cAudioManagerHack::GetMafiaTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x79:
+		this->GetPhrase(store, ped->phrase, 2504, 2);
+		break;
+	case 0x7B:
+		this->GetPhrase(store, ped->phrase, 2502, 2);
+		break;
+	case 0x8A:
+		this->GetPhrase(store, ped->phrase, 2497, 5);
+		break;
+	case 0x8E:
+		this->GetPhrase(store, ped->phrase, 2489, 5);
+		break;
+	case 0x90:
+	case 0x91:
+	case 0x92:
+		this->GetPhrase(store, ped->phrase, 2476, 6);
+		break;
+	case 0x9A:
+		this->GetPhrase(store, ped->phrase, 2494, 3);
+		break;
+	case 0x9C:
+	case 0x9D:
+		this->GetPhrase(store, ped->phrase, 2482, 7);
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store + 0x1E * (this->m_AudioEntity & 1);
+}
+
+unsigned int cAudioManagerHack::GetTriadTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x76:
+		this->GetPhrase(store, ped->phrase, 2469, 3);
+		break;
+	case 0x79:
+		this->GetPhrase(store, ped->phrase, 2474, 2);
+		break;
+	case 0x7B:
+		this->GetPhrase(store, ped->phrase, 2472, 2);
+		break;
+	case 0x8A:
+		this->GetPhrase(store, ped->phrase, 2464, 5);
+		break;
+	case 0x8E:
+		this->GetPhrase(store, ped->phrase, 2457, 4);
+		break;
+	case 0x90:
+	case 0x91:
+	case 0x92:
+		this->GetPhrase(store, ped->phrase, 2442, 7);
+		break;
+	case 0x9A:
+		this->GetPhrase(store, ped->phrase, 2461, 3);
+		break;
+	case 0x9C:
+	case 0x9D:
+		this->GetPhrase(store, ped->phrase, 2449, 8);
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store;
+}
+
+unsigned int cAudioManagerHack::GetDiabloTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x76:
+		this->GetPhrase(store, ped->phrase, 2990, 4);
+		break;
+	case 0x79:
+		this->GetPhrase(store, ped->phrase, 2980, 2);
+		break;
+	case 0x7B:
+		this->GetPhrase(store, ped->phrase, 2978, 2);
+		break;
+	case 0x8A:
+		this->GetPhrase(store, ped->phrase, 2982, 4);
+		break;
+	case 0x8E:
+		this->GetPhrase(store, ped->phrase, 2974, 4);
+		break;
+	case 0x90:
+	case 0x91:
+	case 0x92:
+		this->GetPhrase(store, ped->phrase, 2994, 5);
+		break;
+	case 0x9A:
+		this->GetPhrase(store, ped->phrase, 2986, 4);
+		break;
+	case 0x9C:
+	case 0x9D:
+		this->GetPhrase(store, ped->phrase, 2969, 5);
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store + 0x1E * (this->m_AudioEntity & 1);
+}
+
+unsigned int cAudioManagerHack::GetYakuzaTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x79:
+		this->GetPhrase(store, ped->phrase, 2588, 2);
+		break;
+	case 0x7B:
+		this->GetPhrase(store, ped->phrase, 2586, 2);
+		break;
+	case 0x8A:
+		this->GetPhrase(store, ped->phrase, 2581, 5);
+		break;
+	case 0x8E:
+		this->GetPhrase(store, ped->phrase, 2577, 4);
+		break;
+	case 0x90:
+	case 0x91:
+	case 0x92:
+		this->GetPhrase(store, ped->phrase, 2566, 6);
+		break;
+	case 0x9C:
+	case 0x9D:
+		this->GetPhrase(store, ped->phrase, 2572, 5);
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store + 0x18 * (this->m_AudioEntity & 1);
+}
+
+unsigned int cAudioManagerHack::GetYardieTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x76:
+		store = 1707;
+		break;
+	case 0x79:
+		this->GetPhrase(store, ped->phrase, 1709, 2);
+		break;
+	case 0x7B:
+		store = 1708;
+		break;
+	case 0x8A:
+		this->GetPhrase(store, ped->phrase, 1701, 6);
+		break;
+	case 0x8E:
+		this->GetPhrase(store, ped->phrase, 1694, 5);
+		break;
+	case 0x90:
+	case 0x91:
+	case 0x92:
+		this->GetPhrase(store, ped->phrase, 1680, 6);
+		break;
+	case 0x9A:
+		this->GetPhrase(store, ped->phrase, 1699, 2);
+		break;
+	case 0x9C:
+	case 0x9D:
+		this->GetPhrase(store, ped->phrase, 1686, 8);
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store + 0x1F * (this->m_AudioEntity & 1);
+}
+
+unsigned int cAudioManagerHack::GetColombianTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x79:
+		this->GetPhrase(store, ped->phrase, 2192, 2);
+		break;
+	case 0x7B:
+		this->GetPhrase(store, ped->phrase, 2190, 2);
+		break;
+	case 0x8A:
+		this->GetPhrase(store, ped->phrase, 2185, 5);
+		break;
+	case 0x8E:
+		this->GetPhrase(store, ped->phrase, 2178, 5);
+		break;
+	case 0x90:
+	case 0x91:
+	case 0x92:
+		this->GetPhrase(store, ped->phrase, 2167, 6);
+		break;
+	case 0x9A:
+		this->GetPhrase(store, ped->phrase, 2183, 2);
+		break;
+	case 0x9C:
+	case 0x9D:
+		this->GetPhrase(store, ped->phrase, 2173, 5);
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store + 0x1B * (this->m_AudioEntity & 1);
+}
+
+unsigned int cAudioManagerHack::GetHoodTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x76:
+		this->GetPhrase(store, ped->phrase, 1636, 5);
+		break;
+	case 0x79:
+		this->GetPhrase(store, ped->phrase, 1643, 2);
+		break;
+	case 0x7B:
+		this->GetPhrase(store, ped->phrase, 1641, 2);
+		break;
+	case 0x8A:
+		this->GetPhrase(store, ped->phrase, 1630, 6);
+		break;
+	case 0x8E:
+		this->GetPhrase(store, ped->phrase, 1623, 5);
+		break;
+	case 0x90:
+	case 0x91:
+	case 0x92:
+		this->GetPhrase(store, ped->phrase, 1610, 7);
+		break;
+	case 0x9A:
+		this->GetPhrase(store, ped->phrase, 1628, 2);
+		break;
+	case 0x9C:
+	case 0x9D:
+		this->GetPhrase(store, ped->phrase, 1617, 6);
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store + 0x23 * (this->m_AudioEntity & 1);
+}
+
+unsigned int cAudioManagerHack::GetBlackCriminalTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x76:
+		this->GetPhrase(store, ped->phrase, 2325, 4);
+		break;
+	case 0x79:
+		store = 2329;
+		break;
+	case 0x7A:
+		this->GetPhrase(store, ped->phrase, 2330, 2);
+		break;
+	case 0x8A:
+		this->GetPhrase(store, ped->phrase, 2320, 5);
+		break;
+	case 0x8E:
+		this->GetPhrase(store, ped->phrase, 2314, 6);
+		break;
+	case 0x90:
+	case 0x91:
+	case 0x92:
+		this->GetPhrase(store, ped->phrase, 2309, 5);
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store;
+}
+
+unsigned int cAudioManagerHack::GetWhiteCriminalTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x76:
+		this->GetPhrase(store, ped->phrase, 2345, 3);
+		break;
+	case 0x79:
+		store = 2348;
+		break;
+	case 0x7A:
+		this->GetPhrase(store, ped->phrase, 2349, 2);
+		break;
+	case 0x8A:
+		this->GetPhrase(store, ped->phrase, 2341, 4);
+		break;
+	case 0x8E:
+		this->GetPhrase(store, ped->phrase, 2336, 5);
+		break;
+	case 0x90:
+	case 0x91:
+	case 0x92:
+		this->GetPhrase(store, ped->phrase, 2332, 4);
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store;
+}
+
+unsigned int cAudioManagerHack::GetViceWhiteTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x6E:
+		this->GetPhrase(store, ped->phrase, 1874, 3);
+		break;
+	case 0x6F:
+		store = 1877;
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store + 4 * (this->m_AudioEntity % 5) + 3000; // vc talk sfx moved by 3000
+}
+
+unsigned int cAudioManagerHack::GetViceBlackTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x6E:
+		this->GetPhrase(store, ped->phrase, 1894, 3);
+		break;
+	case 0x6F:
+		store = 1897;
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store + 3000; // vc talk sfx moved by 3000
+}
+
+unsigned int cAudioManagerHack::GetGenericMaleTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x6B:
+	case 0x8B:
+		this->GetPhrase(store, ped->phrase, 2857, 15);
+		break;
+	case 0x67:
+		this->GetPhrase(store, ped->phrase, 2841, 8);
+		break;
+	case 0x6C:
+		this->GetPhrase(store, ped->phrase, 2849, 8);
+		break;
+	case 0x78:
+		this->GetPhrase(store, ped->phrase, 2872, 6);
+		break;
+	default:
+		return 9942;
+	}
+	return store;
+}
+
+unsigned int cAudioManagerHack::GetGenericFemaleTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x6B:
+	case 0x8B:
+		this->GetPhrase(store, ped->phrase, 2290, 11);
+		break;
+	case 0x67:
+		this->GetPhrase(store, ped->phrase, 2271, 10);
+		break;
+	case 0x6C:
+		this->GetPhrase(store, ped->phrase, 2281, 9);
+		break;
+	case 0x78:
+		this->GetPhrase(store, ped->phrase, 2301, 8);
+		break;
+	default:
+		return 9942;
+	}
+	return store;
 }

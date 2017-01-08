@@ -37,12 +37,15 @@ public:
 	bool _03C2_is_phone_displaying_message();
 	bool _03DD_add_sprite_blip_for_pickup();
 	bool _03EC_has_military_crane_collected_all_cars();
+	bool _03F8_get_body_cast_health();
 	bool _0410_set_gang_ped_model_preference();
+	bool _041C_set_char_say();
 	bool _0421_force_rain();
 	bool _0422_does_garage_contain_car();
 	bool _042A_is_threat_for_ped_type();
 	bool _0444_set_script_fire_audio();
 	bool _0447_is_player_lifting_a_phone();
+	bool _058E_set_shortcut_dropoff_point_for_mission();
 
 	bool _00AC_is_car_still_alive();
 	bool _0130_has_player_been_arrested();
@@ -70,7 +73,6 @@ public:
 	bool _032D_set_car_block_car();
 	bool _03A5_change_garage_type_with_car_model();
 	bool _03C9_is_car_visibly_damaged();
-	bool _03F8_get_body_cast_health();
 	bool _03FB_set_car_stays_in_current_level();
 	bool _03FC_set_char_stays_in_current_level();
 	bool _041F_override_hospital_level();

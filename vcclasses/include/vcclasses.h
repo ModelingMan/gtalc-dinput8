@@ -83,7 +83,7 @@ struct cPedParams
 	unsigned char unk1;            // 0x0
 	unsigned char padding[3];      // 0x1
 	float         distanceSquared; // 0x4
-	unsigned int  unk2;            // 0x8
+	class CPed    *ped;            // 0x8
 };
 
 //########################################################################
@@ -94,7 +94,7 @@ class cAudioManager
 {
 protected:
 	unsigned char space1[0x14];     // 0x0000
-	unsigned int m_Unk13;           // 0x0014
+	int m_AudioEntity;              // 0x0014
 	unsigned int m_Unk7;            // 0x0018
 	unsigned int m_SampleID;        // 0x001C
 	unsigned char m_Unk0;           // 0x0020
@@ -125,10 +125,12 @@ protected:
 public:
 	unsigned int GetPhrase(unsigned int &, unsigned int &, unsigned int, unsigned int);
 	void ProcessLoopingScriptObject(unsigned char);
+	unsigned int GetPlayerTalkSfx(class CPed *, unsigned short);
 	void SetupPedComments(cPedParams &, unsigned short);
 	void AddSampleToRequestedQueue();
 	unsigned int RandomDisplacement(unsigned int);
 	unsigned char ComputeVolume(unsigned char, float, float);
+	void PlayOneShot(int, unsigned short, float);
 	float GetDistanceSquared(const CVector &); // INLINED!
 };
 
@@ -354,7 +356,8 @@ class CPhysical : public CEntity
 {
 public:
 	// 0x064
-	unsigned char  pspace1[0x000C];
+	int            audioEntity;            // 0x064
+	unsigned char  pspace1[0x0008];
 	float          forceX;                 // 0x070
 	float          forceY;                 // 0x074
 	float          forceZ;                 // 0x078
@@ -428,6 +431,7 @@ public:
 	static bool &bAllDodosCheat;
 	static bool &bWheelsOnlyCheat;
 	bool IsSphereTouchingVehicle(float, float, float, float);
+	int FindTyreNearestPoint(float, float);
 	void *operator new(unsigned int);
 };
 
@@ -465,7 +469,9 @@ public:
 	unsigned char space5[0x004C];
 	CVehicle      *vehicle;       // 0x3A8
 	unsigned char isInAnyVehicle; // 0x3AC
-	unsigned char space6[0x005B];
+	unsigned char space6[0x0027];
+	unsigned int  pedType;        // 0x3D4
+	unsigned char space7[0x0030];
 	struct Weapon
 	{
 		unsigned int type;  // 0x00
@@ -475,13 +481,13 @@ public:
 		unsigned int unk1;  // 0x10
 		unsigned int unk2;  // 0x14
 	} weapons[10];                // 0x408
-	unsigned char space7[0x00E8];
+	unsigned char space8[0x00E8];
 	unsigned int  phrase;         // 0x5E0
-	unsigned char space8[0x0010];
+	unsigned char space9[0x0010];
 	CWanted       *wanted;        // 0x5F4
-	unsigned char space9[0x0040];
+	unsigned char space10[0x0040];
 	unsigned char drunkenness;    // 0x638
-	unsigned char space10[0x009F];
+	unsigned char space11[0x009F];
 	// 0x6D8
 
 	void SetAmmo(int, unsigned int);
@@ -584,16 +590,21 @@ public:
 	unsigned int  m_MoneyCounter;        // 0x0A4
 	unsigned int  m_HiddenPackagesFound; // 0x0A8
 	unsigned int  m_TotalHiddenPackages; // 0x0AC
-	unsigned char space2[0x001C];
+	unsigned char space2[0x0004];
+	unsigned int  timeTaxiTimer;         // 0x0B4
+	bool          isTaxiTimerOn;         // 0x0B8
+	unsigned char space3[0x0013];
 	unsigned char deathArrestState;      // 0x0CC
-	unsigned char space3[0x0003];
+	unsigned char space4[0x0003];
 	unsigned int  timeDeathArrest;       // 0x0D0
-	unsigned char space4[0x006F];
+	unsigned char space5[0x0002];
+	unsigned char fadeJumpCutRcExplode;  // 0x0D6
+	unsigned char space6[0x006C];
 	unsigned char maxHealth;             // 0x143
 	unsigned char maxArmour;             // 0x144
 	unsigned char getOutOfJailFree;      // 0x145
 	unsigned char freeHealthCare;        // 0x146
-	unsigned char space5[0x0029];
+	unsigned char space7[0x0029];
 	// 0x170
 };
 
@@ -1287,6 +1298,7 @@ public:
 	static float &TopShootingRangeScore;
 	static float &MovieStunts;
 	static int &MissionsGiven;
+	static float &AutoPaintingBudget;
 	static float &Assassinations;
 
 	static void AnotherKillFrenzyPassed(void);
@@ -1319,7 +1331,7 @@ public:
 		char          NextNode;
 		char          LeftLanes;
 		char          RightLanes;
-		unsigned char SpeedLimit;
+		char          SpeedLimit;
 		char          Median;
 		bool          IsCrossroad : 1;
 		bool          Unknown2 : 1;
@@ -1343,7 +1355,9 @@ public:
 	static CPathInfoForObject *&InfoForTileCars;
 	static CPathInfoForObject *&InfoForTilePeds;
 
+	void FindNodeCoorsForScript(CVector &, int);
 	void StoreDetachedNodeInfoPed(int, char, int, float, float, float, float, bool, bool, bool, unsigned char);
+	int FindNthNodeClosestToCoors(CVector, unsigned char, float, bool, bool, int, bool);
 };
 
 //########################################################################
@@ -1520,6 +1534,16 @@ public:
 	char space2[0x20];
 
 	static CScriptPaths *ScriptPath;
+};
+
+//########################################################################
+//# CGameLogic
+//########################################################################
+
+class CGameLogic
+{
+public:
+	static void AddShortCutDropOffPointForMission(CVector, float);
 };
 
 #endif

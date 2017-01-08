@@ -46,7 +46,7 @@ void CBridgeHack::Init()
 void CBridgeHack::Update()
 {
 	if (pLiftPart && pWeight) {
-		int timeDifference;
+		unsigned int timeDifference;
 		float lift;
 		OldState = State;
 		if (!CStats::CommercialPassed) {
