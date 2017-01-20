@@ -26,7 +26,7 @@ public:
 	bool _0250_draw_light();
 	bool _02A1_message_wait();
 	bool _02A2_add_particle_effect();
-	bool _02BD_is_debug_mode();
+	bool _02BD_is_debug_mode(); // custom opcode
 	bool _02CD_gosub_file();
 	bool _02FB_activate_crusher_crane();
 	bool _0351_is_nasty_game();
@@ -45,7 +45,7 @@ public:
 	bool _042A_is_threat_for_ped_type();
 	bool _0444_set_script_fire_audio();
 	bool _0447_is_player_lifting_a_phone();
-	bool _058E_set_shortcut_dropoff_point_for_mission();
+	bool _058E_set_shortcut_dropoff_point_for_mission(); // modified opcode
 
 	bool _00AC_is_car_still_alive();
 	bool _0130_has_player_been_arrested();

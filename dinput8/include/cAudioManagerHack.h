@@ -42,6 +42,13 @@ public:
 	unsigned int GetHoodTalkSfx(CPed *, unsigned short);
 	unsigned int GetBlackCriminalTalkSfx(CPed *, unsigned short);
 	unsigned int GetWhiteCriminalTalkSfx(CPed *, unsigned short);
+	unsigned int GetSpecialCharacterTalkSfx(CPed *, unsigned short);
+	unsigned int GetEightBallTalkSfx(CPed *, unsigned short);
+	unsigned int GetSalvatoreTalkSfx(CPed *, unsigned short);
+	unsigned int GetMistyTalkSfx(CPed *, unsigned short);
+	unsigned int GetBomberTalkSfx(CPed *, unsigned short);
+	unsigned int GetSecurityGuardTalkSfx(CPed *, unsigned short);
+	unsigned int GetChunkyTalkSfx(CPed *, unsigned short);
 	unsigned int GetViceWhiteTalkSfx(CPed *, unsigned short);
 	unsigned int GetViceBlackTalkSfx(CPed *, unsigned short);
 	unsigned int GetGenericMaleTalkSfx(CPed *, unsigned short);

@@ -183,7 +183,6 @@ void CPacManPickupsHack::GeneratePMPickUps(CVector center, float radius, short c
 			int random;
 			float randX, randY;
 			int counter = 0;
-			unsigned long *baseModelInfo = (unsigned long *)vcversion::AdjustOffset(0x0092D4C8);
 
 			do {
 				// prevents infinite loop in invalid areas
@@ -198,7 +197,7 @@ void CPacManPickupsHack::GeneratePMPickUps(CVector center, float radius, short c
 				pos.y = center.y + randY * radius / 128;
 				pos.z = 1000.0;
 				t = CWorld::ProcessVerticalLine(pos, -1000.0, colpoint, pentity, true, false, false, false, true, false, 0);
-			} while (!t || (pentity->status & 7) != 1 || !(*reinterpret_cast<unsigned short *>(baseModelInfo[pentity->modelIndex] + 0x42) & 4));
+			} while (!t || (pentity->status & 7) != 1 || !(*reinterpret_cast<unsigned short *>(CModelInfo::ms_modelInfoPtrs[pentity->modelIndex] + 0x42) & 4));
 
 			aPMPickups[i].state = 1;
 			aPMPickups[i].position.x = colpoint.point.x;

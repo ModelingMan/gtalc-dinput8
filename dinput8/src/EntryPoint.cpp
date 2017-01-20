@@ -24,6 +24,7 @@
 #include "CWeaponEffectsHack.h"
 #include "CObjectHack.h"
 #include "CRadarHack.h"
+#include "CPedHack.h"
 #include "Globals.h"
 #include "vcversion.h"
 #include "SilentCall.h"
@@ -62,6 +63,11 @@ void CarCtrlReInit();
 void CivilianAI();
 unsigned long civilianAIValidPed = vcversion::AdjustOffset(0x004E94E6);
 unsigned long civilianAIInvalidPed = vcversion::AdjustOffset(0x004E9555);
+
+// PedCommentsProcess
+static void PedCommentsProcess();
+unsigned long sfxNoMatch = vcversion::AdjustOffset(0x005DDB73);
+unsigned long sfxMatch = vcversion::AdjustOffset(0x005DDBAC);
 
 // center mouse (SilentPatch)
 static bool bGameInFocus = true;
@@ -268,6 +274,12 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		// investigate ped crash fix
 		InjectHook(0x004E94E0, &CivilianAI, PATCH_JUMP);
 
+		// script paths allow replay
+		memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x00624EDB)), 0x90, 9);
+
+		// prioritize specific ped sfx
+		InjectHook(0x005DDB6C, &PedCommentsProcess, PATCH_JUMP);
+
 		// center mouse (SilentPatch)
 		InjectHook(0x004A5E45, &ResetMousePos);
 		OldWndProc = *(LRESULT(CALLBACK***)(HWND, UINT, WPARAM, LPARAM))vcversion::AdjustOffset(0x00601727);
@@ -294,7 +306,8 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			!CStatsHack::initialise() ||
 			!CWeaponEffectsHack::initialise() ||
 			!CObjectHack::initialise() ||
-			!CRadarHack::initialise())
+			!CRadarHack::initialise() ||
+			!CPedHack::initialise())
 		{
 			VirtualProtect((LPVOID)(0x400000 + sectionheader->VirtualAddress), sectionheader->Misc.VirtualSize, OldProtect, &OldProtect);
 			return FALSE;
@@ -382,5 +395,42 @@ void __declspec(naked) CivilianAI()
 		jmp civilianAIValidPed
 	invalidPed:
 		jmp civilianAIInvalidPed
+	}
+}
+
+void __declspec(naked) PedCommentsProcess()
+{
+	__asm
+	{
+		mov eax, [esi+edi] // get sfx id
+		mov [esp+8], eax
+
+		// chunky
+		sub eax, 723
+		cmp eax, 5
+		jbe match
+		add eax, 723
+
+		// bomber
+		sub eax, 861
+		cmp eax, 7
+		jbe match
+		add eax, 861
+		
+		// s_guard
+		sub eax, 2668
+		cmp eax, 12
+		jbe match
+		add eax, 2668
+
+		// sam
+		sub eax, 3029
+		cmp eax, 3
+		jbe match
+		add eax, 3029
+
+		jmp sfxNoMatch
+	match:
+		jmp sfxMatch
 	}
 }

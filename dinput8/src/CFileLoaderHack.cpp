@@ -5,7 +5,7 @@
 #include "CPathFindHack.h"
 
 // LoadObjectTypesHack
-unsigned long endJump = vcversion::AdjustOffset(0x0048D47E);
+unsigned long loadObjectTypesEndJump = vcversion::AdjustOffset(0x0048D47E);
 
 // paths improvements from Silent
 bool CFileLoaderHack::initialise()
@@ -43,6 +43,6 @@ void __declspec(naked) CFileLoaderHack::LoadObjectTypesHack()
 		push esi
 		call CFileLoaderHack::LoadPedPathNode
 		add esp, 0Ch
-		jmp endJump
+		jmp loadObjectTypesEndJump
 	}
 }

@@ -268,6 +268,72 @@ struct VehicleSfx
 	{ 269,  5, 6, 11025, 52, 13600, 1 } // vicechee
 };
 
+struct PedSfxDelay
+{
+	int fixedDelay;
+	int randomDelay;
+	int reuseDelay;
+	int reuseRandomDelay;
+} presetPedSfxDelay[56] =
+{
+	{  500,  800,  500,    2 },
+	{  500,  800,  500,    2 },
+	{  500,  800,  500,    2 },
+	{  500,  800,  500,    2 },
+	{  100,    2,  100,    2 },
+	{  700,  500, 1000,  500 },
+	{ 2000,   50, 2050, 1000 },
+	{ 5000, 2000, 15000, 3000 },
+	{ 5000, 2000, 7000, 3000 },
+	{ 6000, 6000, 6000, 6000 },
+	{ 3000, 1000, 4000, 1000 },
+	{ 6000, 6000, 6000, 6000 },
+	{ 4000, 1000, 5000, 1000 },
+	{ 3000, 1000, 4000, 1000 },
+	{ 1000, 1000, 2000, 2000 },
+	{ 1000, 1000, 2000, 2000 },
+	{ 1000,  500, 2000, 1500 },
+	{ 1000,  500, 2000, 1500 },
+	{  800,  200, 1000,  500 },
+	{  800,  200, 1000,  500 },
+	{  800,  400, 2000, 1000 },
+	{  800,  400, 2000, 1000 },
+	{ 2000, 2000, 4000, 1000 },
+	{ 4000, 1000, 5000, 1000 },
+	{  800,  400, 1200,  500 },
+	{ 5000, 1000, 6000, 2000 },
+	{ 5000, 1000, 6000, 2000 },
+	{ 5000, 1000, 6000, 2000 },
+	{ 5000, 1000, 6000, 2000 },
+	{ 5000, 1000, 6000, 2000 },
+	{ 5000, 1000, 6000, 2000 },
+	{ 5000, 1000, 6000, 2000 },
+	{ 4000, 2000, 7000, 2000 },
+	{ 1000,  300, 2000, 1000 },
+	{  400,  300, 2000, 1000 },
+	{ 2000, 1000, 2500, 1500 },
+	{  200,  200,  200,  200 },
+	{  400,  300, 4000, 1000 },
+	{  400,  300, 4000, 1000 },
+	{ 1000,  500, 3000, 1000 },
+	{ 1000,  500, 1000, 1000 },
+	{ 3000, 2000, 3000, 2000 },
+	{ 3000, 2000, 3000, 2000 },
+	{ 3000, 2000, 3000, 2000 },
+	{ 2500, 1000, 5000, 5000 },
+	{ 1000,  500, 3000, 6000 },
+	{ 4000, 1000, 5000, 1000 },
+	{ 1000,  500, 2000, 4000 },
+	{ 1000,  500, 2000, 4000 },
+	{ 1000,  500, 2000, 5000 },
+	{ 1000,  500, 3000, 2000 },
+	{ 1000,  500, 3000, 2000 },
+	{ 1600, 1000, 2000, 2000 },
+	{ 3000, 2000, 5000, 3000 },
+	{ 3000, 2000, 5000, 3000 },
+	{ 0, 0, 0, 0 }
+};
+
 short audioZones[TOTAL_AUDIO_ZONES] = {};
 bool isPlayerSfxTommy;
 
@@ -1108,7 +1174,7 @@ void cAudioManagerHack::DisplayRadioStationNameHack(float fX, float fY, wchar_t 
 
 void cAudioManagerHack::InitialiseHack(void)
 {
-	VehicleSfx *vehicleSfx = (VehicleSfx *)vcversion::AdjustOffset(0x006AD1A0);
+	VehicleSfx *vehicleSfx = reinterpret_cast<VehicleSfx *>(vcversion::AdjustOffset(0x006AD1A0));
 	int filename = CFileMgr::OpenFile("vehicleSfx.dat", "r");
 	if (filename) {
 		char buffer[200];
@@ -1121,6 +1187,10 @@ void cAudioManagerHack::InitialiseHack(void)
 		for (int i = 0; i < 107; i++) {
 			vehicleSfx[i] = presetVehicleSfx[i];
 		}
+	}
+	PedSfxDelay *pedSfxDelay = reinterpret_cast<PedSfxDelay *>(vcversion::AdjustOffset(0x00693800));
+	for (int i = 0; i < 56; i++) {
+		pedSfxDelay[i] = presetPedSfxDelay[i];
 	}
 }
 
@@ -1144,6 +1214,14 @@ void __declspec(naked) cAudioManagerHack::ProcessVehicleSirenOrAlarmHack()
 
 unsigned int __thiscall cAudioManagerHack::GetPedCommentSfxHack(CPed *ped, unsigned short type)
 {
+	switch (type) {
+	case 0xA0:
+		return 3029;
+	case 0xA1:
+		return 3030;
+	case 0xA2:
+		return 3031;
+	}
 	switch (ped->modelIndex) {
 	case 0:   // 0
 		if (isPlayerSfxTommy) {
@@ -1186,6 +1264,11 @@ unsigned int __thiscall cAudioManagerHack::GetPedCommentSfxHack(CPed *ped, unsig
 		return this->GetBlackCriminalTalkSfx(ped, type);
 	case 48:  // 25
 		return this->GetWhiteCriminalTalkSfx(ped, type);
+	case 109: // 26
+	case 110: // 27
+	case 111: // 28
+	case 112: // 29
+		return this->GetSpecialCharacterTalkSfx(ped, type);
 	case 97:  // 97
 	case 98:  // 98
 	case 99:  // 99
@@ -1638,6 +1721,162 @@ unsigned int cAudioManagerHack::GetWhiteCriminalTalkSfx(CPed *ped, unsigned shor
 	case 0x91:
 	case 0x92:
 		this->GetPhrase(store, ped->phrase, 2332, 4);
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store;
+}
+
+unsigned int cAudioManagerHack::GetSpecialCharacterTalkSfx(CPed *ped, unsigned short type)
+{
+	char *modelName = reinterpret_cast<char *>(CModelInfo::ms_modelInfoPtrs[ped->modelIndex] + 0x4);
+	if (VCGlobals::strcmp(modelName, "eight") == 0 || VCGlobals::strcmp(modelName, "eight2") == 0) {
+		return this->GetEightBallTalkSfx(ped, type);
+	}
+	if (VCGlobals::strcmp(modelName, "frankie") == 0) {
+		return this->GetSalvatoreTalkSfx(ped, type);
+	}
+	if (VCGlobals::strcmp(modelName, "misty") == 0) {
+		return this->GetMistyTalkSfx(ped, type);
+	}
+	if (VCGlobals::strcmp(modelName, "ojg") == 0 || VCGlobals::strcmp(modelName, "ojg_p") == 0) {
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	if (VCGlobals::strcmp(modelName, "cat") == 0) {
+		return GetGenericFemaleTalkSfx(ped, type);
+	}
+	if (VCGlobals::strcmp(modelName, "bomber") == 0) {
+		return this->GetBomberTalkSfx(ped, type);
+	}
+	if (VCGlobals::strcmp(modelName, "s_guard") == 0) {
+		return this->GetSecurityGuardTalkSfx(ped, type);
+	}
+	if (VCGlobals::strcmp(modelName, "chunky") == 0) {
+		return this->GetChunkyTalkSfx(ped, type);
+	}
+	if (VCGlobals::strcmp(modelName, "asuka") == 0) {
+		return GetGenericFemaleTalkSfx(ped, type);
+	}
+	if (VCGlobals::strcmp(modelName, "maria") == 0) {
+		return GetGenericFemaleTalkSfx(ped, type);
+	}
+	return 9942;
+}
+
+unsigned int cAudioManagerHack::GetEightBallTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x76:
+		this->GetPhrase(store, ped->phrase, 881, 2);
+		break;
+	case 0x7C:
+		this->GetPhrase(store, ped->phrase, 883, 2);
+		break;
+	case 0x8A:
+		this->GetPhrase(store, ped->phrase, 875, 6);
+		break;
+	case 0x8E:
+		this->GetPhrase(store, ped->phrase, 868, 7);
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store;
+}
+
+unsigned int cAudioManagerHack::GetSalvatoreTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x76:
+		this->GetPhrase(store, ped->phrase, 894, 4);
+		break;
+	case 0x7C:
+		this->GetPhrase(store, ped->phrase, 898, 2);
+		break;
+	case 0x8A:
+		this->GetPhrase(store, ped->phrase, 888, 6);
+		break;
+	case 0x8E:
+		this->GetPhrase(store, ped->phrase, 885, 3);
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store;
+}
+
+unsigned int cAudioManagerHack::GetMistyTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x76:
+		this->GetPhrase(store, ped->phrase, 909, 5);
+		break;
+	case 0x7C:
+		this->GetPhrase(store, ped->phrase, 918, 2);
+		break;
+	case 0x8A:
+		this->GetPhrase(store, ped->phrase, 905, 4);
+		break;
+	case 0x8E:
+		this->GetPhrase(store, ped->phrase, 900, 5);
+		break;
+	//case:
+	//	this->GetPhrase(store, ped->phrase, 914, 4);
+	//	break;
+	default:
+		return GetGenericFemaleTalkSfx(ped, type);
+	}
+	return store;
+}
+
+unsigned int cAudioManagerHack::GetBomberTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x6C:
+		this->GetPhrase(store, ped->phrase, 861, 7);
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store;
+}
+
+unsigned int cAudioManagerHack::GetSecurityGuardTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x76:
+		this->GetPhrase(store, ped->phrase, 2676, 2);
+		break;
+	case 0x77:
+		store = 2678;
+		break;
+	case 0x7B:
+		this->GetPhrase(store, ped->phrase, 2668, 6);
+		break;
+	case 0x8A:
+		this->GetPhrase(store, ped->phrase, 2674, 2);
+		break;
+	case 0x8F:
+		this->GetPhrase(store, ped->phrase, 2668, 12);
+		break;
+	default:
+		return GetGenericMaleTalkSfx(ped, type);
+	}
+	return store;
+}
+
+unsigned int cAudioManagerHack::GetChunkyTalkSfx(CPed *ped, unsigned short type)
+{
+	unsigned int store;
+	switch (type) {
+	case 0x8F:
+		this->GetPhrase(store, ped->phrase, 723, 5);
 		break;
 	default:
 		return GetGenericMaleTalkSfx(ped, type);

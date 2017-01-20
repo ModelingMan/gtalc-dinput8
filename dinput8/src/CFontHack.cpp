@@ -47,7 +47,7 @@ void CFontHack::PrintPagerString(float posX, float posY, float scaleX, float sca
 			float cropX2 = cropX1 + 0.06f;
 			float cropY2 = cropY1 + 0.0625f;
 
-			if ((float)RsGlobal.currentWidth / (float)RsGlobal.currentHeight < 1.5f)
+			if (static_cast<float>(RsGlobal.currentWidth) / static_cast<float>(RsGlobal.currentHeight) < 1.5f)
 			{
 				float charWidth = RsGlobal.currentWidth * (16.0f / 640.0f);
 				float charHeight = RsGlobal.currentHeight * (16.0f / 448.0f);

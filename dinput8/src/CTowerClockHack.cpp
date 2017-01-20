@@ -36,9 +36,9 @@ void CTowerClockHack::Render()
 {
 	//if (CSprite::GetIsOnScreen(this->m_Position, this->m_1C))
 	{
-		unsigned char alpha = (unsigned char)(255 * this->m_fScale);
-		float hourHand = ((CClock::ms_nGameClockHours * 60 + CClock::ms_nGameClockMinutes) / 720.0f) * (float)M_PI * 2;
-		float minuteHand = ((CClock::ms_nGameClockMinutes * 60 + CClock::ms_nGameClockSeconds) / 3600.0f) * (float)M_PI * 2;
+		unsigned char alpha = static_cast<unsigned char>(255 * this->m_fScale);
+		float hourHand = ((CClock::ms_nGameClockHours * 60 + CClock::ms_nGameClockMinutes) / 720.0f) * 6.2831855f;
+		float minuteHand = ((CClock::ms_nGameClockMinutes * 60 + CClock::ms_nGameClockSeconds) / 3600.0f) * 6.2831855f;
 		
 		//RwRenderStateSet(rwRENDERSTATEZWRITEENABLE, (void *)1);
 		//RwRenderStateSet(rwRENDERSTATEZTESTENABLE, (void *)1);

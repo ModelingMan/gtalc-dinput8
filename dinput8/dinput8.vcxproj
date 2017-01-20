@@ -150,6 +150,7 @@
     <ClCompile Include="src\cAudioManagerHack.cpp" />
     <ClCompile Include="src\CHudHack.cpp" />
     <ClCompile Include="src\CPathFindHack.cpp" />
+    <ClCompile Include="src\CPedHack.cpp" />
     <ClCompile Include="src\CPickupsHack.cpp" />
     <ClCompile Include="src\CProjectileInfoHack.cpp" />
     <ClCompile Include="src\CRadarHack.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="include\CMovingThingsHack.h" />
     <ClInclude Include="include\CPagerHack.h" />
     <ClInclude Include="include\CPathFindHack.h" />
+    <ClInclude Include="include\CPedHack.h" />
     <ClInclude Include="include\CPickupsHack.h" />
     <ClInclude Include="include\CProjectileInfoHack.h" />
     <ClInclude Include="include\CRadarHack.h" />

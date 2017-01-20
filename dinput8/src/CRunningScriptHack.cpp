@@ -77,7 +77,7 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 	case 0x02A2:
 		return this->_02A2_add_particle_effect();
 	case 0x02BD:
-		return this->_02BD_is_debug_mode(); // custom opcode
+		return this->_02BD_is_debug_mode();
 	case 0x02CD:
 		return this->_02CD_gosub_file();
 	case 0x02FB:
@@ -115,7 +115,7 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 	case 0x0447:
 		return this->_0447_is_player_lifting_a_phone();
 	case 0x058E:
-		return this->_058E_set_shortcut_dropoff_point_for_mission(); // modified
+		return this->_058E_set_shortcut_dropoff_point_for_mission();
 
 	case 0x00AC:
 		return this->_00AC_is_car_still_alive();
@@ -489,6 +489,19 @@ bool CRunningScriptHack::_041C_set_char_say()
 	case 101:
 		ped->Say(0x84);
 		break;
+	case 103:
+		ped->Say(0xA0);
+		break;
+	case 104:
+		ped->Say(0xA1);
+		break;
+	case 105:
+		ped->Say(0xA2);
+		break;
+	default:
+		if (CRunningScriptHack::debugMode & DEBUG_MASTERDEBUG) {
+			ped->Say(say);
+		}
 	}
 	return 0;
 }
