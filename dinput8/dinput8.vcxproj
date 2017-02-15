@@ -108,7 +108,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (Without WPO)|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
@@ -136,6 +136,7 @@
   <ItemGroup>
     <ClCompile Include="src\CBridgeHack.cpp" />
     <ClCompile Include="src\CCameraHack.cpp" />
+    <ClCompile Include="src\CCarCtrlHack.cpp" />
     <ClCompile Include="src\CExplosionHack.cpp" />
     <ClCompile Include="src\CFileLoaderHack.cpp" />
     <ClCompile Include="src\CGaragesHack.cpp" />
@@ -157,6 +158,7 @@
     <ClCompile Include="src\CRendererHack.cpp" />
     <ClCompile Include="src\CRunningScriptHack.cpp" />
     <ClCompile Include="src\CScrollBarHack.cpp" />
+    <ClCompile Include="src\CShinyTextsHack.cpp" />
     <ClCompile Include="src\CStatsHack.cpp" />
     <ClCompile Include="src\CTowerClockHack.cpp" />
     <ClCompile Include="src\CWantedHack.cpp" />
@@ -167,6 +169,7 @@
     <ClInclude Include="include\cAudioManagerHack.h" />
     <ClInclude Include="include\CBridgeHack.h" />
     <ClInclude Include="include\CCameraHack.h" />
+    <ClInclude Include="include\CCarCtrlHack.h" />
     <ClInclude Include="include\CExplosionHack.h" />
     <ClInclude Include="include\CFileLoaderHack.h" />
     <ClInclude Include="include\CGaragesHack.h" />
@@ -187,6 +190,7 @@
     <ClInclude Include="include\CRendererHack.h" />
     <ClInclude Include="include\CRunningScriptHack.h" />
     <ClInclude Include="include\CScrollBarHack.h" />
+    <ClInclude Include="include\CShinyTextsHack.h" />
     <ClInclude Include="include\CStatsHack.h" />
     <ClInclude Include="include\CTowerClockHack.h" />
     <ClInclude Include="include\CWantedHack.h" />

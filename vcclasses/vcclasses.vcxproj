@@ -71,6 +71,7 @@
     <ClCompile Include="src\CScriptPaths.cpp" />
     <ClCompile Include="src\CScrollBar.cpp" />
     <ClCompile Include="src\CShadows.cpp" />
+    <ClCompile Include="src\CShinyTexts.cpp" />
     <ClCompile Include="src\CSprite.cpp" />
     <ClCompile Include="src\CSprite2d.cpp" />
     <ClCompile Include="src\CStats.cpp" />
@@ -79,6 +80,7 @@
     <ClCompile Include="src\CTheScripts.cpp" />
     <ClCompile Include="src\CTheZones.cpp" />
     <ClCompile Include="src\CTimer.cpp" />
+    <ClCompile Include="src\CTrafficLights.cpp" />
     <ClCompile Include="src\CTxdStore.cpp" />
     <ClCompile Include="src\CUserDisplay.cpp" />
     <ClCompile Include="src\CVehicle.cpp" />

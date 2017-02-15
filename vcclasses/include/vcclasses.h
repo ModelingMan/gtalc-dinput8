@@ -69,6 +69,7 @@ public:
 	unsigned int pad3;  // 0x3C
 
 	void SetRotate(float, float, float);
+	void SetRotateZ(float);
 	void SetRotateZOnly(float);
 	void ResetOrientation(void);
 	void UpdateRW(void);
@@ -358,9 +359,7 @@ public:
 	// 0x064
 	int            audioEntity;            // 0x064
 	unsigned char  pspace1[0x0008];
-	float          forceX;                 // 0x070
-	float          forceY;                 // 0x074
-	float          forceZ;                 // 0x078
+	CVector        movement;               // 0x070
 	unsigned char  pspace2[0x003C];
 	float          mass;                   // 0x0B8
 	float          turnResistance;         // 0x0BC
@@ -375,6 +374,7 @@ public:
 	// 0x120
 
 	bool GetHasCollidedWith(CEntity *);
+	void RemoveAndAdd(void);
 };
 
 static_assert(sizeof(CPhysical) == 0x120, "Size of CPhysical is not 0x120 bytes.");
@@ -431,6 +431,7 @@ public:
 	static bool &bAllDodosCheat;
 	static bool &bWheelsOnlyCheat;
 	bool IsSphereTouchingVehicle(float, float, float, float);
+	CPed *SetUpDriver(void);
 	int FindTyreNearestPoint(float, float);
 	void *operator new(unsigned int);
 };
@@ -750,9 +751,13 @@ class CTimer
 {
 public:
 	static unsigned int &m_snTimeInMilliseconds;
+	static float &ms_fTimeStepNonClipped;
 	static float &ms_fTimeStep;
 	static float &ms_fTimeScale;
 	static unsigned int &m_FrameCounter;
+
+	static void Resume(void);
+	static void Suspend(void);
 };
 
 //########################################################################
@@ -802,6 +807,9 @@ class CWorld
 public:
 	static unsigned char &PlayerInFocus;
 	static CPlayerInfo *Players;
+
+	static void RepositionOneObject(CEntity *);
+	static float FindGroundZFor3DCoord(float, float, float, bool *);
 	static float FindGroundZForCoord(float x, float y);
 	static bool ProcessVerticalLine(CVector const &, float, CColPoint &, CEntity *&, bool, bool, bool, bool, bool, bool, unsigned long);
 	static void Remove(CEntity *);
@@ -1394,6 +1402,7 @@ class CGame
 {
 public:
 	static unsigned char &nastyGame;
+	static unsigned int &currArea;
 	static int &currLevel;
 };
 
@@ -1551,5 +1560,41 @@ class CGameLogic
 public:
 	static void AddShortCutDropOffPointForMission(CVector, float);
 };
+
+//########################################################################
+//# CTrafficLights
+//########################################################################
+
+class CTrafficLights
+{
+public:
+	static bool &bGreenLightsCheat;
+
+	static unsigned char LightForPeds(void);
+};
+
+//########################################################################
+//# CShinyTexts
+//########################################################################
+
+class CShinyTexts
+{
+public:
+	CVector vec1;
+	CVector vec2;
+	CVector vec3;
+	CVector vec4;
+	float unk[8];
+	float distance;
+	unsigned char type;
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+
+	static CShinyTexts *aShinyTexts;
+	static unsigned int &NumShinyTexts;
+};
+
+static_assert(sizeof(CShinyTexts) == 0x58, "Size of CShinyTexts is not 0x58 bytes.");
 
 #endif

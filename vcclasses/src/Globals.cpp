@@ -12,6 +12,7 @@ namespace VCGlobals
 
 	char *ScrollCharSet = reinterpret_cast<char *>(vcversion::AdjustOffset(0x00696674));
 
+	unsigned short &MI_DOUBLESTREETLIGHTS = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E82C));
 	unsigned short &MI_CARMINE = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E8B0));
 	unsigned short &MI_NAUTICALMINE = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E910));
 	unsigned short &MI_LITTLEHA_POLICE = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E9A0));

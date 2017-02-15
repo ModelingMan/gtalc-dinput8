@@ -25,6 +25,8 @@
 #include "CObjectHack.h"
 #include "CRadarHack.h"
 #include "CPedHack.h"
+#include "CShinyTextsHack.h"
+#include "CCarCtrlHack.h"
 #include "Globals.h"
 #include "vcversion.h"
 #include "SilentCall.h"
@@ -56,9 +58,6 @@ unsigned long preRenderNoMatch = vcversion::AdjustOffset(0x0058BE34);
 // RenderReflections
 float RenderReflections();
 
-// CarCtrlReInit
-void CarCtrlReInit();
-
 // CivilianAI
 void CivilianAI();
 unsigned long civilianAIValidPed = vcversion::AdjustOffset(0x004E94E6);
@@ -68,6 +67,14 @@ unsigned long civilianAIInvalidPed = vcversion::AdjustOffset(0x004E9555);
 static void PedCommentsProcess();
 unsigned long sfxNoMatch = vcversion::AdjustOffset(0x005DDB73);
 unsigned long sfxMatch = vcversion::AdjustOffset(0x005DDBAC);
+
+// support treadables
+static void Treadables();
+unsigned long treadablesEndJump = vcversion::AdjustOffset(0x004C0331);
+unsigned long treadablesCall = vcversion::AdjustOffset(0x004C0DD0);
+
+// reposition objects
+static void RepositionOneObjectHack(CEntity *);
 
 // center mouse (SilentPatch)
 static bool bGameInFocus = true;
@@ -265,11 +272,7 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		InjectHook(0x005433BD, &RenderReflections); // CCoronas::RenderReflections
 
 		// support treadables
-		Patch<unsigned int>(0x004C0325, 0x4068006A); // CPools::Initialise
-		Patch<unsigned int>(0x004C0329, 0xE800001F);
-
-		// reinit firetruck/ambulance timer (SilentPatch)
-		InjectHook(0x004A489B, &CarCtrlReInit);
+		InjectHook(0x004C032C, &Treadables, PATCH_JUMP); // CPools::Initialise
 
 		// investigate ped crash fix
 		InjectHook(0x004E94E0, &CivilianAI, PATCH_JUMP);
@@ -279,6 +282,12 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 
 		// prioritize specific ped sfx
 		InjectHook(0x005DDB6C, &PedCommentsProcess, PATCH_JUMP);
+
+		// reposition streetlights
+		InjectHook(0x004D4889, &RepositionOneObjectHack);
+
+		// allow grouped security guards
+		Patch<unsigned char>(0x0053BFD0, 0);
 
 		// center mouse (SilentPatch)
 		InjectHook(0x004A5E45, &ResetMousePos);
@@ -307,7 +316,9 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			!CWeaponEffectsHack::initialise() ||
 			!CObjectHack::initialise() ||
 			!CRadarHack::initialise() ||
-			!CPedHack::initialise())
+			!CPedHack::initialise() ||
+			!CShinyTextsHack::initialise() ||
+			!CCarCtrlHack::initialise())
 		{
 			VirtualProtect((LPVOID)(0x400000 + sectionheader->VirtualAddress), sectionheader->Misc.VirtualSize, OldProtect, &OldProtect);
 			return FALSE;
@@ -378,13 +389,6 @@ float RenderReflections()
 	return 1.0;
 }
 
-void CarCtrlReInit()
-{
-	CCarCtrl::ReInit();
-	CCarCtrl::LastTimeFireTruckCreated = 0;
-	CCarCtrl::LastTimeAmbulanceCreated = 0;
-}
-
 void __declspec(naked) CivilianAI()
 {
 	__asm
@@ -433,4 +437,29 @@ void __declspec(naked) PedCommentsProcess()
 	match:
 		jmp sfxMatch
 	}
+}
+
+void __declspec(naked) Treadables()
+{
+	__asm
+	{
+		pop eax
+		push 8000
+		call treadablesCall
+		jmp treadablesEndJump
+	}
+}
+
+void RepositionOneObjectHack(CEntity *entity)
+{
+	if (entity->modelIndex == VCGlobals::MI_DOUBLESTREETLIGHTS) {
+		float updateZ = CWorld::FindGroundZFor3DCoord(entity->GetX(), entity->GetY(), entity->GetZ() + 2.0f, 0);
+		unsigned long collisionModel = *reinterpret_cast<unsigned long *>(CModelInfo::ms_modelInfoPtrs[entity->modelIndex] + 0x1C);
+		updateZ += *reinterpret_cast<float *>(collisionModel + 0x24);
+		entity->GetZ() = updateZ;
+		entity->GetMatrix().UpdateRW();
+		entity->UpdateRwFrame();
+		return;
+	}
+	CWorld::RepositionOneObject(entity);
 }

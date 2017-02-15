@@ -747,9 +747,7 @@ void cAudioManagerHack::ProcessCraneAndBridge()
 {
 	// process crane
 	float distance;
-	int x = this->m_AudioEntity;
-	x = x + x * 4;
-	CCrane *crane = (CCrane *)*(unsigned long *)((unsigned long)&VCGlobals::AudioManager + x * 8 + 0x1F14);
+	CCrane *crane = (CCrane *)*(unsigned long *)((unsigned long)&VCGlobals::AudioManager + this->m_AudioEntity * 0x28 + 0x1F14);
 	if (crane && crane->activity == 1 && crane->status) {
 		this->m_Position = crane->object->GetPos();
 		distance = this->GetDistanceSquared(this->m_Position);
@@ -775,9 +773,7 @@ void cAudioManagerHack::ProcessCraneAndBridge()
 				this->m_Unk12 = 0;
 				this->AddSampleToRequestedQueue();
 			}
-			x = this->m_AudioEntity;
-			x = x + x * 4;
-			if (*(unsigned char *)((unsigned long)&VCGlobals::AudioManager + x * 8 + 0x1F34)) {
+			if (*(unsigned char *)((unsigned long)&VCGlobals::AudioManager + this->m_AudioEntity * 0x28 + 0x1F34)) {
 				this->m_Unk7 = 1;
 				this->m_SampleID = 139;
 				this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);

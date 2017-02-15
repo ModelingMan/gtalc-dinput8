@@ -13,6 +13,7 @@ namespace VCGlobals
 
 	extern char *ScrollCharSet;
 
+	extern unsigned short &MI_DOUBLESTREETLIGHTS;
 	extern unsigned short &MI_CARMINE;
 	extern unsigned short &MI_NAUTICALMINE;
 	extern unsigned short &MI_LITTLEHA_POLICE;

@@ -60,7 +60,7 @@ void CBridgeHack::Update()
 			timeDifference = (CTimer::m_snTimeInMilliseconds - TimeOfBridgeBecomingOperational) & 0xFFFF;
 			if (timeDifference < 10000) {
 				State = 2; // moving down
-				lift = 25.0f - static_cast<float>(timeDifference)* 25.0f * 0.0001f;
+				lift = 25.0f - static_cast<float>(timeDifference) * 25.0f * 0.0001f;
 			} else if (timeDifference < 40000) {
 				State = 3; // fully closed
 				lift = 0.0;

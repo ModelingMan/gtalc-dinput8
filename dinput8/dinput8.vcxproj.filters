@@ -95,6 +95,12 @@
     <ClCompile Include="src\CPedHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CShinyTextsHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCarCtrlHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CRunningScriptHack.h">
@@ -185,6 +191,12 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\CPedHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CShinyTextsHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CCarCtrlHack.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

@@ -310,9 +310,9 @@ void CPacManPickupHack::Update(void)
 	}
 	if (state == 1) {
 		vehicle->powerPillsCarried++;
-		vehicle->forceX *= 0.65f;
-		vehicle->forceY *= 0.65f;
-		vehicle->forceZ *= 0.65f;
+		vehicle->movement.x *= 0.65f;
+		vehicle->movement.y *= 0.65f;
+		vehicle->movement.z *= 0.65f;
 		float multiplier = (250.0f + vehicle->mass) / vehicle->mass;
 		vehicle->mass *= multiplier;
 		vehicle->turnResistance *= multiplier;
