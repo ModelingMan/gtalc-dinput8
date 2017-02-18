@@ -101,6 +101,9 @@
     <ClCompile Include="src\CCarCtrlHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\ModelIndices.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CRunningScriptHack.h">
@@ -110,9 +113,6 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\CHudHack.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Utils.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\CPagerHack.h">
@@ -157,9 +157,6 @@
     <ClInclude Include="include\SilentCall.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\Vehicles.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\CPacManPickupsHack.h">
       <Filter>include</Filter>
     </ClInclude>
@@ -197,6 +194,12 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\CCarCtrlHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Offset.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ModelIndices.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

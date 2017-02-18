@@ -54,6 +54,8 @@ namespace VCGlobals
 	extern RwTexture *&gpShadowHeadLightsTex;
 	extern bool &gbFastTime;
 
+	void MatchModelString(char *, unsigned short);
+	void InitModelIndices(void);
 	void VehicleCheat(int);
 	float FindPlayerHeading(void);
 	CPlayerPed *FindPlayerPed(void);

@@ -2,7 +2,8 @@
 #include "vcversion.h"
 #include "Globals.h"
 #include "SilentCall.h"
-#include "Vehicles.h"
+#include "ModelIndices.h"
+#include "Offset.h"
 
 #include <math.h>
 #include <new>
@@ -26,7 +27,7 @@ bool CCranesHack::initialise()
 	InjectHook(0x005A8232, &CCranesHack::DoesMilitaryCraneHaveThisOneAlready);
 	InjectHook(0x004A4EC4, &CCranesHack::InitCranes);
 	InjectHook(0x004A4993, &CCranesHack::InitCranes);
-	bool(__thiscall CCraneHack::* function)(unsigned int) = &CCraneHack::DoesCranePickUpThisCarType;
+	auto function = &CCraneHack::DoesCranePickUpThisCarType;
 	InjectHook(0x005A821E, (unsigned long &)function);
 	InjectHook(0x005A8275, (unsigned long &)function);
 	InjectHook(0x005A81DF, &CCraneHack::FindCarInSectorListHack, PATCH_JUMP);
@@ -162,9 +163,9 @@ void CCranesHack::ActivateCrane(float pickupX1, float pickupX2, float pickupY1, 
 	craneObjectX = cranes[index].object->GetX();
 	craneObjectY = cranes[index].object->GetY();
 	if (isCrusher) {
-		cranes[index].armPickupHeight = -0.95099998f + OFFSETHEIGHT;
+		cranes[index].armPickupHeight = -0.95099998f + OFFSETZ;
 	} else if (isMilitary) {
-		cranes[index].armPickupHeight = 10.7862f + OFFSETHEIGHT;
+		cranes[index].armPickupHeight = 10.7862f + OFFSETZ;
 	} else {
 		cranes[index].armPickupHeight = CWorld::FindGroundZForCoord(pickupCenterX, pickupCenterY);
 	}
@@ -189,7 +190,7 @@ void CCranesHack::AddThisOneCrane(CEntity *entity)
 			cranes[index].armCurrentRotation -= 6.283;
 		}
 		cranes[index].armCurrentDistance = 20.0f;
-		cranes[index].armCurrentHeight = 20.0f + OFFSETHEIGHT;
+		cranes[index].armCurrentHeight = 20.0f + OFFSETZ;
 		cranes[index].timer = 0;
 		cranes[index].status = 0;
 		cranes[index].unk3 = 0;
@@ -198,7 +199,7 @@ void CCranesHack::AddThisOneCrane(CEntity *entity)
 		// new! magnet for cranes!
 		if (cranes[index].isNotCab || entity->GetY() > 0.0) {
 			void *place = CObject::operator new(0x194);
-			CObject *object = ::new (place)CObject(1365, false);
+			CObject *object = ::new (place)CObject(ModelIndices::MI_MAGNET, false);
 			if (object) {
 				object->field_16C = 2;
 				object->field_051 &= 0xFE;
@@ -222,7 +223,9 @@ void CCranesHack::InitCranes()
 	for (int i = 0; i < CPools::ms_pBuildingPool->totalCount; i++) {
 		if ((CPools::ms_pBuildingPool->flags[i] & 0x80) != 0x80) {
 			unsigned short model = CPools::ms_pBuildingPool->entities[i].modelIndex;
-			if (model == 882 || model == 883 || model == 893) {
+			if (model == ModelIndices::MODELID_CRANE_1 ||
+				model == ModelIndices::MODELID_CRANE_2 ||
+				model == ModelIndices::MODELID_CRANE_3) {
 				CCranesHack::AddThisOneCrane(&CPools::ms_pBuildingPool->entities[i]);
 			}
 		}

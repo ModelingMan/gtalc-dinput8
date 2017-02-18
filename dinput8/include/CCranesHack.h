@@ -2,7 +2,6 @@
 
 #include "vcclasses.h"
 
-#define OFFSETHEIGHT 6.0f
 #define MILITARYCRANETOTAL 0xFF
 
 class CCranesHack : public CCranes

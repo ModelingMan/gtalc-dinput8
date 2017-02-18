@@ -28,6 +28,7 @@
 #include "CShinyTextsHack.h"
 #include "CCarCtrlHack.h"
 #include "Globals.h"
+#include "ModelIndices.h"
 #include "vcversion.h"
 #include "SilentCall.h"
 
@@ -288,6 +289,12 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 
 		// allow grouped security guards
 		Patch<unsigned char>(0x0053BFD0, 0);
+
+		// additional model matches
+		InjectHook(0x004A4C75, &ModelIndices::InitModelIndicesHack);
+		InjectHook(0x0048C511, &ModelIndices::MatchModelStringHack);
+		InjectHook(0x0048C6E3, &ModelIndices::MatchModelStringHack);
+		InjectHook(0x0048CA7B, &ModelIndices::MatchModelStringHack);
 
 		// center mouse (SilentPatch)
 		InjectHook(0x004A5E45, &ResetMousePos);

@@ -1,12 +1,8 @@
 #include "CBridgeHack.h"
 #include "vcversion.h"
 #include "SilentCall.h"
-
-#define MI_BRIDGEWEIGHT 1130
-#define MI_BRIDGELIFT 1131
-#define MI_BRIDGEROADSEGMENT 1138
-#define MI_LODDGEWEIGHT 1180
-#define MI_LODDGELIFT 1178
+#include "ModelIndices.h"
+#include "Offset.h"
 
 CEntity *CBridgeHack::pWeight;
 CEntity *CBridgeHack::pLiftPart;
@@ -116,19 +112,19 @@ void CBridgeHack::FindBridgeEntities(void)
 		if ((CPools::ms_pBuildingPool->flags[i] & 0x80) != 0x80) {
 			CEntity *entity = &CPools::ms_pBuildingPool->entities[i];
 			unsigned short model = CPools::ms_pBuildingPool->entities[i].modelIndex;
-			if (model == MI_BRIDGEWEIGHT) {
+			if (model == ModelIndices::MI_BRIDGEWEIGHT) {
 				pWeight = entity;
 			}
-			if (model == MI_BRIDGELIFT) {
+			if (model == ModelIndices::MI_BRIDGELIFT) {
 				pLiftPart = entity;
 			}
-			if (model == MI_BRIDGEROADSEGMENT) {
+			if (model == ModelIndices::MI_BRIDGEROADSEGMENT) {
 				pLiftRoad = entity;
 			}
-			if (model == MI_LODDGEWEIGHT) {
+			if (model == ModelIndices::MI_LODDGEWEIGHT) {
 				pLodWeight = entity;
 			}
-			if (model == MI_LODDGELIFT) {
+			if (model == ModelIndices::MI_LODDGELIFT) {
 				pLodLiftPart = entity;
 			}
 		}
@@ -139,13 +135,13 @@ bool ShouldCarStopForBridge(CVehicle *vehicle)
 {
 	if (CBridgeHack::State != 3) {
 		// eastbound
-		if (vehicle->GetX() > -670.0 && vehicle->GetX() < -660.0) {
+		if (vehicle->GetX() > -335.0 + OFFSETX && vehicle->GetX() < -325.0 + OFFSETX) {
 			if (vehicle->GetY() > -670.0 && vehicle->GetY() < -631.5) {
 				return true;
 			}
 		}
 		// westbound
-		if (vehicle->GetX() > -565.0 && vehicle->GetX() < -555.0) {
+		if (vehicle->GetX() > -230.0 + OFFSETX && vehicle->GetX() < -220.0 + OFFSETX) {
 			if (vehicle->GetY() > -631.5 && vehicle->GetY() < -593.0) {
 				return true;
 			}

@@ -164,6 +164,7 @@
     <ClCompile Include="src\CWantedHack.cpp" />
     <ClCompile Include="src\CWeaponEffectsHack.cpp" />
     <ClCompile Include="src\EntryPoint.cpp" />
+    <ClCompile Include="src\ModelIndices.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\cAudioManagerHack.h" />
@@ -195,9 +196,9 @@
     <ClInclude Include="include\CTowerClockHack.h" />
     <ClInclude Include="include\CWantedHack.h" />
     <ClInclude Include="include\CWeaponEffectsHack.h" />
+    <ClInclude Include="include\ModelIndices.h" />
+    <ClInclude Include="include\Offset.h" />
     <ClInclude Include="include\SilentCall.h" />
-    <ClInclude Include="include\Utils.h" />
-    <ClInclude Include="include\Vehicles.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dinput8.def" />

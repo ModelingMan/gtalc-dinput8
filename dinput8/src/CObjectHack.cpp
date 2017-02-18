@@ -1,8 +1,7 @@
 #include "CObjectHack.h"
 #include "vcversion.h"
 #include "SilentCall.h"
-
-#define MI_BODYCAST 1395
+#include "ModelIndices.h"
 
 short CObjectHack::nBodyCastHealth;
 
@@ -39,14 +38,14 @@ void __declspec(naked) CObjectHack::InitHackProxy()
 
 void CObjectHack::InitHack()
 {
-	if (this->modelIndex == MI_BODYCAST) {
+	if (this->modelIndex == ModelIndices::MI_BODYCAST) {
 		nBodyCastHealth = 1000;
 	}
 }
 
 void CObjectHack::ObjectDamageHack(float damage)
 {
-	if (this->modelIndex == MI_BODYCAST) {
+	if (this->modelIndex == ModelIndices::MI_BODYCAST) {
 		if (damage > 50.0) {
 			nBodyCastHealth = static_cast<short>(static_cast<float>(nBodyCastHealth) - damage / 2.0);
 		}

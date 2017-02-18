@@ -256,13 +256,6 @@ public:
 	static void SetRightJustifyWrap(float wrap);
 	static void SetScale(float x, float y);
 	static void SetWrapx(float wrapx);
-
-	struct CharInfo
-	{
-		char ascii;
-		float x;
-		float y;
-	};
 };
 
 //########################################################################
@@ -359,8 +352,9 @@ public:
 	// 0x064
 	int            audioEntity;            // 0x064
 	unsigned char  pspace1[0x0008];
-	CVector        movement;               // 0x070
-	unsigned char  pspace2[0x003C];
+	CVector        moveSpeed;              // 0x070
+	CVector        turnSpeed;              // 0x07C
+	unsigned char  pspace2[0x0030];
 	float          mass;                   // 0x0B8
 	float          turnResistance;         // 0x0BC
 	float          accelerationResistance; // 0x0C0
@@ -396,9 +390,14 @@ public:
 	CEntity        *targetEntity;          // 0x19C
 	unsigned char  firstColour;            // 0x1A0
 	unsigned char  secondColour;           // 0x1A1
-	unsigned char  space4[0x000A];
+	unsigned char  space4[0x0006];
+	class CPed     *driver;                // 0x1A8
 	class CPed     *passengers[8];         // 0x1AC
-	unsigned char  space5[0x02D];
+	unsigned char  space5[0x020];
+	float          steerAngle;             // 0x1EC
+	float          gasPedal;               // 0x1F0
+	float          brakePedal;             // 0x1F4
+	unsigned char  space6;
 	unsigned char  field_1F9;              // 0x1F9
 	unsigned char  field_1FA;              // 0x1FA
 	unsigned char  field_1FB;              // 0x1FB
@@ -411,20 +410,20 @@ public:
 	unsigned char  field_202;              // 0x202
 	unsigned char  field_203;              // 0x203
 	float          health;                 // 0x204
-	unsigned char  space6[0x0008];
+	unsigned char  space7[0x0008];
 	CEntity        *bombOwner;             // 0x210
-	unsigned char  space7[0x01C];
+	unsigned char  space8[0x01C];
 	unsigned int   lock;                   // 0x230
-	unsigned char  space8[0x0068];
+	unsigned char  space9[0x0068];
 	unsigned int   type;                   // 0x29C
 	float          damageManager;          // 0x2A0
-	unsigned char  space9[0x025D];
+	unsigned char  space10[0x025D];
 	unsigned char  field_501;              // 0x501
-	unsigned char  space10[0x005E];
+	unsigned char  space11[0x005E];
 	float          burningDuration;        // 0x560
-	unsigned char  space11[0x0061];
+	unsigned char  space12[0x0061];
 	unsigned char  numberOfWheelsOnGround; // 0x5C5
-	unsigned char  space12[0x0016];
+	unsigned char  space13[0x0016];
 	// 0x5DC
 
 	static bool &bCheat3;
@@ -1389,6 +1388,8 @@ public:
 class CFileMgr
 {
 public:
+	static void Seek(int, int, int);
+	static void Read(int, char *, int);
 	static int CloseFile(int);
 	static bool ReadLine(int, char *, int);
 	static int OpenFile(char const *, char const *);

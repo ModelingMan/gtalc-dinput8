@@ -14,9 +14,9 @@ void CPathFindHack::StoreNodeInfoCar(short modelId, short nodeNum, char nodeType
 
 	currentNode.NodeType = nodeType;
 	currentNode.NextNode = nextNode;
-	currentNode.Pos.x = static_cast<float>(posX)* (1.0f / 16.0f);
-	currentNode.Pos.y = static_cast<float>(posY)* (1.0f / 16.0f);
-	currentNode.Pos.z = static_cast<float>(posZ)* (1.0f / 16.0f);
+	currentNode.Pos.x = static_cast<float>(posX) / 16.0f;
+	currentNode.Pos.y = static_cast<float>(posY) / 16.0f;
+	currentNode.Pos.z = static_cast<float>(posZ) / 16.0f;
 	currentNode.Median = static_cast<char>(8.0f * std::min(median, 15.0f));
 	currentNode.LeftLanes = leftLanes;
 	currentNode.RightLanes = rightLanes;
@@ -42,9 +42,9 @@ void CPathFindHack::StoreNodeInfoPed(short modelId, short nodeNum, char nodeType
 
 	currentNode.NodeType = nodeType;
 	currentNode.NextNode = nextNode;
-	currentNode.Pos.x = static_cast<float>(posX)* (1.0f / 16.0f);
-	currentNode.Pos.y = static_cast<float>(posY)* (1.0f / 16.0f);
-	currentNode.Pos.z = static_cast<float>(posZ)* (1.0f / 16.0f);
+	currentNode.Pos.x = static_cast<float>(posX) / 16.0f;
+	currentNode.Pos.y = static_cast<float>(posY) / 16.0f;
+	currentNode.Pos.z = static_cast<float>(posZ) / 16.0f;
 	currentNode.Median = static_cast<char>(8.0f * std::min(median, 31.0f));
 	currentNode.LeftLanes = 0;
 	currentNode.RightLanes = 0;

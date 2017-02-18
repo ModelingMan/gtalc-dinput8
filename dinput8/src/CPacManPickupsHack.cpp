@@ -1,11 +1,10 @@
 #include "CPacManPickupsHack.h"
 #include "vcversion.h"
 #include "SilentCall.h"
+#include "Offset.h"
+#include "ModelIndices.h"
 #include <math.h>
 #include <new>
-
-#define OFFSETX -335.0f
-#define OFFSETZ 6.0f
 
 int CPacManPickupsHack::PillsEatenInRace;
 bool CPacManPickupsHack::bPMActive;
@@ -142,10 +141,10 @@ void CPacManPickupsHack::Init(void)
 	bPMActive = false;
 	PillsEatenInRace = 0;
 
-	// get optional data for pickups
+	// custom code gets optional data for pickups
 	// create pacman.dat and populate it with two custom models and up to 255 coordinate points
-	scrambleModel = VCGlobals::MI_LIGHTBEAM;
-	raceModel = VCGlobals::MI_LITTLEHA_POLICE;
+	scrambleModel = ModelIndices::MI_BULLION;
+	raceModel = ModelIndices::MI_DONKEYMAG;
 	int filename = CFileMgr::OpenFile("pacman.dat", "r");
 	if (filename) {
 		char buffer[200];
@@ -310,9 +309,9 @@ void CPacManPickupHack::Update(void)
 	}
 	if (state == 1) {
 		vehicle->powerPillsCarried++;
-		vehicle->movement.x *= 0.65f;
-		vehicle->movement.y *= 0.65f;
-		vehicle->movement.z *= 0.65f;
+		vehicle->moveSpeed.x *= 0.65f;
+		vehicle->moveSpeed.y *= 0.65f;
+		vehicle->moveSpeed.z *= 0.65f;
 		float multiplier = (250.0f + vehicle->mass) / vehicle->mass;
 		vehicle->mass *= multiplier;
 		vehicle->turnResistance *= multiplier;

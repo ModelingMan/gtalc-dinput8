@@ -26,9 +26,9 @@ struct RwMatrix
 	unsigned char space[0x40];
 };
 
-extern void RsMouseSetPos(RwV2d *);
-extern bool RwMatrixDestroy(RwMatrix *);
-extern int RwRenderStateSet(int, int);
-extern unsigned long RwTextureRead(const char *, const char *);
+void RsMouseSetPos(RwV2d *);
+bool RwMatrixDestroy(RwMatrix *);
+int RwRenderStateSet(int, int);
+unsigned long RwTextureRead(const char *, const char *);
 
 #endif
