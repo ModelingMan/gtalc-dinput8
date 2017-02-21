@@ -86,6 +86,7 @@
     <ClCompile Include="src\CVehicle.cpp" />
     <ClCompile Include="src\CVehicleModelInfo.cpp" />
     <ClCompile Include="src\CWanted.cpp" />
+    <ClCompile Include="src\CWaterLevel.cpp" />
     <ClCompile Include="src\CWeaponInfo.cpp" />
     <ClCompile Include="src\CWeather.cpp" />
     <ClCompile Include="src\CWorld.cpp" />

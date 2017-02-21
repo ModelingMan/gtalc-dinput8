@@ -1,9 +1,13 @@
 #pragma once
 
-class CPadHack
+#include "vcclasses.h"
+
+class CPadHack : public CPad
 {
 public:
 	static bool initialise();
+
+	void AddToCheatStringHack(char);
 	static void WeaponCheat();
 	static void MoneyCheat();
 	static void HealthCheat();

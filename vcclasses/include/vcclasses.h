@@ -1109,7 +1109,10 @@ public:
 class CPad
 {
 public:
+	static char *CPad::KeyBoardCheatString;
+
 	static unsigned long GetPad(int);
+	void AddToPCCheatString(char);
 };
 
 //########################################################################
@@ -1388,10 +1391,10 @@ public:
 class CFileMgr
 {
 public:
-	static void Seek(int, int, int);
-	static void Read(int, char *, int);
 	static int CloseFile(int);
 	static bool ReadLine(int, char *, int);
+	static void Seek(int, int, int);
+	static void Read(int, char *, int);
 	static int OpenFile(char const *, char const *);
 };
 
@@ -1597,5 +1600,16 @@ public:
 };
 
 static_assert(sizeof(CShinyTexts) == 0x58, "Size of CShinyTexts is not 0x58 bytes.");
+
+//########################################################################
+//# CWaterLevel
+//########################################################################
+
+class CWaterLevel
+{
+public:
+	static void RenderBoatWakes(void);
+	static bool GetWaterLevelNoWaves(float, float, float, float *);
+};
 
 #endif

@@ -35,8 +35,11 @@ void CShinyTextsHack::RegisterOne(CVector vec1, CVector vec2, CVector vec3, CVec
 		aShinyTexts[NumShinyTexts].r = r;
 		aShinyTexts[NumShinyTexts].g = g;
 		aShinyTexts[NumShinyTexts].b = b;
-		if (aShinyTexts[NumShinyTexts].distance > maxDistance / 2) {
-
+		if (aShinyTexts[NumShinyTexts].distance > maxDistance / 2.0f) {
+			float fade = 2.0f - 2.0f * aShinyTexts[NumShinyTexts].distance / maxDistance;
+			aShinyTexts[NumShinyTexts].r = static_cast<unsigned char>(static_cast<float>(r) * fade);
+			aShinyTexts[NumShinyTexts].g = static_cast<unsigned char>(static_cast<float>(g) * fade);
+			aShinyTexts[NumShinyTexts].b = static_cast<unsigned char>(static_cast<float>(b) * fade);
 		}
 		NumShinyTexts++;
 	}

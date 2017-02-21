@@ -31,6 +31,7 @@
 #include "ModelIndices.h"
 #include "vcversion.h"
 #include "SilentCall.h"
+#include "Offset.h"
 
 HMODULE hOrigDLL = NULL;
 
@@ -74,8 +75,11 @@ static void Treadables();
 unsigned long treadablesEndJump = vcversion::AdjustOffset(0x004C0331);
 unsigned long treadablesCall = vcversion::AdjustOffset(0x004C0DD0);
 
-// reposition objects
+// RepositionOneObject
 static void RepositionOneObjectHack(CEntity *);
+
+// RenderBoatWakes
+static void RenderBoatWakesHack();
 
 // center mouse (SilentPatch)
 static bool bGameInFocus = true;
@@ -224,8 +228,8 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		}
 
 		// detonator weapon switch
-		Patch<unsigned char>(0x005D49C7, 0xD);
-		memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x005345ED)), 0x90, 9);
+		Patch<unsigned char>(0x005D49C7, 0xD); // CWeapon::Update
+		memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x005345ED)), 0x90, 9); // CPlayerPed::ProcessWeaponSwitch
 
 		// 0410 (Purple Nines) fix
 		InjectHook(0x004EEED1, &GangsInitialise, PATCH_JUMP); // CGangs::Initialise
@@ -289,6 +293,12 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 
 		// allow grouped security guards
 		Patch<unsigned char>(0x0053BFD0, 0);
+
+		// dynamic boat wake height
+		InjectHook(0x005C0093, &RenderBoatWakesHack);
+
+		// reposition buoy
+		Patch<float>(0x006912D8, OFFSETZ);
 
 		// additional model matches
 		InjectHook(0x004A4C75, &ModelIndices::InitModelIndicesHack);
@@ -469,4 +479,14 @@ void RepositionOneObjectHack(CEntity *entity)
 		return;
 	}
 	CWorld::RepositionOneObject(entity);
+}
+
+void RenderBoatWakesHack()
+{
+	CVector pos;
+	VCGlobals::FindPlayerCoors(&pos);
+	if (CWaterLevel::GetWaterLevelNoWaves(pos.x, pos.y, pos.z, &pos.z)) {
+		Patch<float>(0x005BE31D, pos.z - 0.03f);
+	}
+	CWaterLevel::RenderBoatWakes();
 }

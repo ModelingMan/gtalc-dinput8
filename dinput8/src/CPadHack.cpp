@@ -1,45 +1,12 @@
 #include "CPadHack.h"
-#include "CRunningScriptHack.h"
 #include "Globals.h"
 #include "vcversion.h"
 #include "SilentCall.h"
 #include "ModelIndices.h"
 
-static void AddToCheatString();
 static void UpdatePedCount();
-unsigned long addToCheatEndJump = vcversion::AdjustOffset(0x004ACF2D);
 unsigned long updatePedCountEndJump = vcversion::AdjustOffset(0x0053B6ED);
-unsigned long cipherFunction = vcversion::AdjustOffset(0x004ACF60);
-unsigned long recentKeys = vcversion::AdjustOffset(0x00A10942);
-char *weaponCheatString = "VS\\H`iXNTYbO";
-char *moneyCheatString = "QFTIPdUHF]R_PfV";
-char *healthCheatString = "WNLIQiXZFR";
-char *wantedLevelUpCheatString = "HXHFYkHJJW\\XLr\\S";
-char *wantedLevelDownCheatString = "HXHFYkHJJW\\XVn";
-char *tankCheatString = "NSHUNnXLWTT";
-char *blowUpCarsCheatString = "JSHCTiDIHYNJ";
-char *dressingUpCheatString = "SZNOVnVLSORSPlV";
-char *mayhemCheatString = "GFHBZbQPPRYTHsaO";
-char *everybodyAttacksPlayerCheatString = "HRZFXdO`EZOWU";
-char *weaponsForAllCheatString = "OQHS\\aVUP[NM^";
-char *fastTimeCheatString = "XT`ORcZZFTYNLmVZ";
-char *slowTimeCheatString = "JSPS\\jRVPM";
-char *armourCheatString = "HXPPamX[";
-char *armourFixedCheatString = "HXPPamR[";
-char *sunnyWeatherCheatString = "HRYPSmHJOLPVPk`";
-char *cloudyWeatherCheatString = "GSHMajFZFVVTP";
-char *rainyWeatherCheatString = "GSHMajFZFa\\TP";
-char *foggyWeatherCheatString = "SZVTN`S";
-char *fastWeatherCheatString = "UJOUN`ZKBX";
-char *onlyRenderWheelsCheatString = "VQLFUrIVUP`MJi[G";
-char *chittyChittyBangBangCheatString = "EG`UadKJZ_aQOc";
-char *strongGripCheatString = "GFTFXdOZSP[ZVc";
-char *goreCheatString = "WFLIPnETJWf\\Za[";
-char *vehicleCheatString = "UFJSN^UHD";
-char *vehicleReverseCheatString = "FFYDNmFHS";
-char *skinnyCheatString = "UJTNNmJVS[";
 char weaponsForAllArr[12] = { 6, 17, 23, 21, 25, 26, 28, 30, 31, 15, 12, 0 };
-int vehicleModel = CAR_LANDSTAL;
 
 char specialCharacters[10][8] =
 {
@@ -58,7 +25,8 @@ char specialCharacters[10][8] =
 bool CPadHack::initialise()
 {
 	// allow for additional cheats
-	InjectHook(0x004ACF28, &AddToCheatString, PATCH_JUMP);
+	auto function = &CPadHack::AddToCheatStringHack;
+	InjectHook(0x00602BE7, (unsigned long &)function);
 
 	// remove cheat warning
 	InjectHook(0x004990AD, vcversion::AdjustOffset(0x004990C0), PATCH_JUMP);
@@ -260,322 +228,57 @@ void CPadHack::StrongGripCheat()
 	CVehicle::bCheat3 = !CVehicle::bCheat3;
 }
 
-void CPadHack::VehicleCheat()
+void CPadHack::AddToCheatStringHack(char key)
 {
-	if (CRunningScriptHack::debugMode & DEBUG_MASTERDEBUG) {
-		VCGlobals::VehicleCheat(vehicleModel++);
-		if (vehicleModel == BOAT_RIO ||
-			vehicleModel == BOAT_PREDATOR ||
-			vehicleModel == BOAT_SQUALO ||
-			vehicleModel == BIKE_PIZZABOY ||
-			vehicleModel == BOAT_MARQUIS ||
-			vehicleModel == BOAT_JETMAX) {
-			vehicleModel++;
-		}
-		if (vehicleModel == HELI_CHOPPER ||
-			vehicleModel == BOAT_GHOST) {
-			vehicleModel += 2;
-		}
-		if (vehicleModel == CAR_BLISTAC) {
-			vehicleModel += 3;
-		}
-		if (vehicleModel == BOAT_SKIMMER) {
-			vehicleModel += 4;
-		}
-		if (vehicleModel == PLANE_AIRTRAIN) {
-			vehicleModel += 5;
-		}
-		if (vehicleModel > CAR_VICECHEE) {
-			vehicleModel = CAR_LANDSTAL;
-		}
-	}
-}
-
-void CPadHack::VehicleReverseCheat()
-{
-	if (CRunningScriptHack::debugMode & DEBUG_MASTERDEBUG) {
-		VCGlobals::VehicleCheat(vehicleModel--);
-		if (vehicleModel == BOAT_RIO ||
-			vehicleModel == BOAT_PREDATOR ||
-			vehicleModel == BOAT_SQUALO ||
-			vehicleModel == BIKE_PIZZABOY ||
-			vehicleModel == BOAT_MARQUIS ||
-			vehicleModel == BOAT_JETMAX) {
-			vehicleModel--;
-		}
-		if (vehicleModel == BIKE_ANGEL ||
-			vehicleModel == BOAT_DINGHY) {
-			vehicleModel -= 2;
-		}
-		if (vehicleModel == CAR_DELOFLY) {
-			vehicleModel -= 3;
-		}
-		if (vehicleModel == BIKE_FREEWAY) {
-			vehicleModel -= 4;
-		}
-		if (vehicleModel == BOAT_TROPIC) {
-			vehicleModel -= 5;
-		}
-		if (vehicleModel < CAR_LANDSTAL) {
-			vehicleModel = CAR_VICECHEE;
-		}
-	}
-}
-
-void __declspec(naked) AddToCheatString()
-{
-	__asm
-	{
-		push weaponCheatString    // second argument of cipher function
-		push recentKeys           // first argument of cipher function
-		call cipherFunction       // call cipher function
-		test al, al               // true if both arguments match
-		pop ecx
-		pop ecx
-		jnz money
-		//mov ebx, recentKeys     // added in Vice City to prevent stringing of cheats
-		//mov byte ptr [ebx], 20h
-		call CPadHack::WeaponCheat
-		jmp end
-	money:
-		push moneyCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz health
-		call CPadHack::MoneyCheat
-		jmp end
-	health:
-		push healthCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz wanted
-		call CPadHack::HealthCheat
-		jmp end
-	wanted:
-		push wantedLevelUpCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz notWanted
-		call CPadHack::WantedLevelUpCheat
-		jmp end
-	notWanted:
-		push wantedLevelDownCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz tank
-		call CPadHack::WantedLevelDownCheat
-		jmp end
-	tank:
-		push tankCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz blowUpCars
-		call CPadHack::TankCheat
-		jmp end
-	blowUpCars:
-		push blowUpCarsCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz dressingUp
-		call CPadHack::BlowUpCarsCheat
-		jmp end
-	dressingUp:
-		push dressingUpCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz mayhem
-		jmp end
-	mayhem:
-		push mayhemCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz everybodyAttacksPlayer
-		jmp end
-	everybodyAttacksPlayer:
-		push everybodyAttacksPlayerCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz weaponsForAll
-		jmp end
-	weaponsForAll:
-		push weaponsForAllCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz fastTime
-		call CPadHack::WeaponsForAllCheat
-		jmp end
-	fastTime:
-		push fastTimeCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz slowTime
-		call CPadHack::FastTimeCheat
-		jmp end
-	slowTime:
-		push slowTimeCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz armour
-		call CPadHack::SlowTimeCheat
-		jmp end
-	armour:
-		push armourCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz armourFixed
-		call CPadHack::ArmourCheat
-		jmp end
-	armourFixed:
-		push armourFixedCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz sunnyWeather
-		call CPadHack::ArmourCheat
-		jmp end
-	sunnyWeather:
-		push sunnyWeatherCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz cloudyWeather
-		call CPadHack::SunnyWeatherCheat
-		jmp end
-	cloudyWeather:
-		push cloudyWeatherCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz rainyWeather
-		call CPadHack::CloudyWeatherCheat
-		jmp end
-	rainyWeather:
-		push rainyWeatherCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz foggyWeather
-		call CPadHack::RainyWeatherCheat
-		jmp end
-	foggyWeather:
-		push foggyWeatherCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz fastWeather
-		call CPadHack::FoggyWeatherCheat
-		jmp end
-	fastWeather:
-		push fastWeatherCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz onlyRenderWheels
-		call CPadHack::FastWeatherCheat
-		jmp end
-	onlyRenderWheels:
-		push onlyRenderWheelsCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz chittyChittyBangBang
-		call CPadHack::OnlyRenderWheelsCheat
-		jmp end
-	chittyChittyBangBang:
-		push chittyChittyBangBangCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz strongGrip
-		call CPadHack::ChittyChittyBangBangCheat
-		jmp end
-	strongGrip:
-		push strongGripCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz vehicle
-		call CPadHack::StrongGripCheat
-		jmp end
-	vehicle:
-		push vehicleCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz vehicleReverse
-		call CPadHack::VehicleCheat
-		jmp end
-	vehicleReverse:
-		push vehicleReverseCheatString
-		push recentKeys
-		call cipherFunction
-		test al, al
-		pop ecx
-		pop ecx
-		jnz end
-		call CPadHack::VehicleReverseCheat
-	end:
-		push skinnyCheatString
-		jmp addToCheatEndJump
+	this->AddToPCCheatString(key);
+	if (VCGlobals::strncmp("SNUGSNUGSNUG", KeyBoardCheatString, 12) == 0) {
+		WeaponCheat();
+	} else if (VCGlobals::strncmp("NAMHCIRAEREWIFI", KeyBoardCheatString, 15) == 0) {
+		MoneyCheat();
+	} else if (VCGlobals::strncmp("TIEHDNUSEG", KeyBoardCheatString, 10) == 0) {
+		HealthCheat();
+	} else if (VCGlobals::strncmp("ESAELPECILOPEROM", KeyBoardCheatString, 16) == 0) {
+		WantedLevelUpCheat();
+	} else if (VCGlobals::strncmp("ESAELPECILOPON", KeyBoardCheatString, 14) == 0) {
+		WantedLevelDownCheat();
+	} else if (VCGlobals::strncmp("KNATASUEVIG", KeyBoardCheatString, 11) == 0) {
+		TankCheat();
+	} else if (VCGlobals::strncmp("GNABGNABGNAB", KeyBoardCheatString, 12) == 0) {
+		BlowUpCarsCheat();
+	} else if (VCGlobals::strncmp("PUGNISSERDEKILI", KeyBoardCheatString, 15) == 0) {
+		// ChangePlayerCheat
+	} else if (VCGlobals::strncmp("DAAAMGNIOGLLASTI", KeyBoardCheatString, 16) == 0) {
+		// MayhemCheat
+	} else if (VCGlobals::strncmp("EMSEKILYDOBON", KeyBoardCheatString, 13) == 0) {
+		// EverybodyAttacksPlayerCheat
+	} else if (VCGlobals::strncmp("LLAROFSNOPAEW", KeyBoardCheatString, 13) == 0) {
+		WeaponsForAllCheat();
+	} else if (VCGlobals::strncmp("UOYNEHWSEILFEMIT", KeyBoardCheatString, 16) == 0) {
+		FastTimeCheat();
+	} else if (VCGlobals::strncmp("GNIROOOOOB", KeyBoardCheatString, 10) == 0) {
+		SlowTimeCheat();
+	} else if (VCGlobals::strncmp("ESIOTRUT", KeyBoardCheatString, 8) == 0) { // 1.0
+		ArmourCheat();
+	} else if (VCGlobals::strncmp("ESIOTROT", KeyBoardCheatString, 8) == 0) { // 1.1
+		ArmourCheat();
+	} else if (VCGlobals::strncmp("EMROFRECNACNIKS", KeyBoardCheatString, 15) == 0) {
+		SunnyWeatherCheat();
+	} else if (VCGlobals::strncmp("DNALTOCSEKILI", KeyBoardCheatString, 13) == 0) {
+		CloudyWeatherCheat();
+	} else if (VCGlobals::strncmp("DNALTOCSEVOLI", KeyBoardCheatString, 13) == 0) {
+		RainyWeatherCheat();
+	} else if (VCGlobals::strncmp("PUOSAEP", KeyBoardCheatString, 7) == 0) {
+		FoggyWeatherCheat();
+	} else if (VCGlobals::strncmp("REHTAEWDAM", KeyBoardCheatString, 10) == 0) {
+		FastWeatherCheat();
+	} else if (VCGlobals::strncmp("SLEEHWFOTESECINA", KeyBoardCheatString, 16) == 0) {
+		OnlyRenderWheelsCheat();
+	} else if (VCGlobals::strncmp("BBYTTIHCYTTIHC", KeyBoardCheatString, 14) == 0) {
+		ChittyChittyBangBangCheat();
+	} else if (VCGlobals::strncmp("DAMEKILSRENROC", KeyBoardCheatString, 14) == 0) {
+		StrongGripCheat();
+	} else if (VCGlobals::strncmp("TAEHCSBMILYTSAN", KeyBoardCheatString, 15) == 0) {
+		// NastyLimbsCheat
 	}
 }
 

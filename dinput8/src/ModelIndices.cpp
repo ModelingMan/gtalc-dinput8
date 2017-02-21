@@ -243,342 +243,231 @@ void ModelIndices::MatchModelStringHack(char *name, unsigned short id)
 {
 	if (VCGlobals::strcmp(name, "bagelstnd02") == 0) {
 		MI_BAGELSTAND2 = id;
-	}
-	if (VCGlobals::strcmp(name, "fish01") == 0) {
+	} else if (VCGlobals::strcmp(name, "fish01") == 0) {
 		MI_FISHSTALL01 = id;
-	}
-	if (VCGlobals::strcmp(name, "fishstall02") == 0) {
+	} else if (VCGlobals::strcmp(name, "fishstall02") == 0) {
 		MI_FISHSTALL02 = id;
-	}
-	if (VCGlobals::strcmp(name, "fishstall03") == 0) {
+	} else if (VCGlobals::strcmp(name, "fishstall03") == 0) {
 		MI_FISHSTALL03 = id;
-	}
-	if (VCGlobals::strcmp(name, "fishstall04") == 0) {
+	} else if (VCGlobals::strcmp(name, "fishstall04") == 0) {
 		MI_FISHSTALL04 = id;
-	}
-	if (VCGlobals::strcmp(name, "taxisign") == 0) {
+	} else if (VCGlobals::strcmp(name, "taxisign") == 0) {
 		MI_TAXISIGN = id;
-	}
-	if (VCGlobals::strcmp(name, "rd_Road2A10") == 0) {
+	} else if (VCGlobals::strcmp(name, "rd_Road2A10") == 0) {
 		MI_ROADSFORROADBLOCKSSTART = id;
-	}
-	if (VCGlobals::strcmp(name, "rd_Road1A30") == 0) {
+	} else if (VCGlobals::strcmp(name, "rd_Road1A30") == 0) {
 		MI_ROADSFORROADBLOCKSEND = id;
-	}
-	if (VCGlobals::strcmp(name, "veg_tree1") == 0) {
+	} else if (VCGlobals::strcmp(name, "veg_tree1") == 0) {
 		MI_TREE1 = id;
-	}
-	if (VCGlobals::strcmp(name, "veg_treenew01") == 0) {
+	} else if (VCGlobals::strcmp(name, "veg_treenew01") == 0) {
 		MI_TREE4 = id;
-	}
-	if (VCGlobals::strcmp(name, "veg_treenew05") == 0) {
+	} else if (VCGlobals::strcmp(name, "veg_treenew05") == 0) {
 		MI_TREE5 = id;
-	}
-	if (VCGlobals::strcmp(name, "veg_treenew10") == 0) {
+	} else if (VCGlobals::strcmp(name, "veg_treenew10") == 0) {
 		MI_TREE7 = id;
-	}
-	if (VCGlobals::strcmp(name, "veg_treenew09") == 0) {
+	} else if (VCGlobals::strcmp(name, "veg_treenew09") == 0) {
 		MI_TREE9 = id;
-	}
-	if (VCGlobals::strcmp(name, "veg_treenew08") == 0) {
+	} else if (VCGlobals::strcmp(name, "veg_treenew08") == 0) {
 		MI_TREE10 = id;
-	}
-	if (VCGlobals::strcmp(name, "veg_treenew03") == 0) {
+	} else if (VCGlobals::strcmp(name, "veg_treenew03") == 0) {
 		MI_TREE11 = id;
-	}
-	if (VCGlobals::strcmp(name, "veg_treenew16") == 0) {
+	} else if (VCGlobals::strcmp(name, "veg_treenew16") == 0) {
 		MI_TREE12 = id;
-	}
-	if (VCGlobals::strcmp(name, "veg_treenew17") == 0) {
+	} else if (VCGlobals::strcmp(name, "veg_treenew17") == 0) {
 		MI_TREE13 = id;
-	}
-	if (VCGlobals::strcmp(name, "veg_treenew06") == 0) {
+	} else if (VCGlobals::strcmp(name, "veg_treenew06") == 0) {
 		MI_TREE14 = id;
-	}
-	if (VCGlobals::strcmp(name, "doc_crane_cab") == 0) {
+	} else if (VCGlobals::strcmp(name, "doc_crane_cab") == 0) {
 		MODELID_CRANE_1 = id;
-	}
-	if (VCGlobals::strcmp(name, "cranetopb") == 0) {
+	} else if (VCGlobals::strcmp(name, "cranetopb") == 0) {
 		MODELID_CRANE_2 = id;
-	}
-	if (VCGlobals::strcmp(name, "cranetopa") == 0) {
+	} else if (VCGlobals::strcmp(name, "cranetopa") == 0) {
 		MODELID_CRANE_3 = id;
-	}
-	if (VCGlobals::strcmp(name, "oddjgaragdoor") == 0) {
+	} else if (VCGlobals::strcmp(name, "oddjgaragdoor") == 0) {
 		MI_GARAGEDOOR1 = id;
-	}
-	if (VCGlobals::strcmp(name, "bombdoor") == 0) {
+	} else if (VCGlobals::strcmp(name, "bombdoor") == 0) {
 		MI_GARAGEDOOR2 = id;
-	}
-	if (VCGlobals::strcmp(name, "door_bombshop") == 0) {
+	} else if (VCGlobals::strcmp(name, "door_bombshop") == 0) {
 		MI_GARAGEDOOR3 = id;
-	}
-	if (VCGlobals::strcmp(name, "vheistlocdoor") == 0) {
+	} else if (VCGlobals::strcmp(name, "vheistlocdoor") == 0) {
 		MI_GARAGEDOOR4 = id;
-	}
-	if (VCGlobals::strcmp(name, "door2_garage") == 0) {
+	} else if (VCGlobals::strcmp(name, "door2_garage") == 0) {
 		MI_GARAGEDOOR5 = id;
-	}
-	if (VCGlobals::strcmp(name, "ind_slidedoor") == 0) {
+	} else if (VCGlobals::strcmp(name, "ind_slidedoor") == 0) {
 		MI_GARAGEDOOR6 = id;
-	}
-	if (VCGlobals::strcmp(name, "bankjobdoor") == 0) {
+	} else if (VCGlobals::strcmp(name, "bankjobdoor") == 0) {
 		MI_GARAGEDOOR7 = id;
-	}
-	if (VCGlobals::strcmp(name, "door_jmsgrage") == 0) {
+	} else if (VCGlobals::strcmp(name, "door_jmsgrage") == 0) {
 		MI_GARAGEDOOR9 = id;
-	}
-	if (VCGlobals::strcmp(name, "jamesgrge_kb") == 0) {
+	} else if (VCGlobals::strcmp(name, "jamesgrge_kb") == 0) {
 		MI_GARAGEDOOR10 = id;
-	}
-	if (VCGlobals::strcmp(name, "door_sfehousegrge") == 0) {
+	} else if (VCGlobals::strcmp(name, "door_sfehousegrge") == 0) {
 		MI_GARAGEDOOR11 = id;
-	}
-	if (VCGlobals::strcmp(name, "shedgaragedoor") == 0) {
+	} else if (VCGlobals::strcmp(name, "shedgaragedoor") == 0) {
 		MI_GARAGEDOOR12 = id;
-	}
-	if (VCGlobals::strcmp(name, "door4_garage") == 0) {
+	} else if (VCGlobals::strcmp(name, "door4_garage") == 0) {
 		MI_GARAGEDOOR13 = id;
-	}
-	if (VCGlobals::strcmp(name, "door_col_compnd_01") == 0) {
+	} else if (VCGlobals::strcmp(name, "door_col_compnd_01") == 0) {
 		MI_GARAGEDOOR14 = id;
-	}
-	if (VCGlobals::strcmp(name, "door_col_compnd_02") == 0) {
+	} else if (VCGlobals::strcmp(name, "door_col_compnd_02") == 0) {
 		MI_GARAGEDOOR15 = id;
-	}
-	if (VCGlobals::strcmp(name, "door_col_compnd_03") == 0) {
+	} else if (VCGlobals::strcmp(name, "door_col_compnd_03") == 0) {
 		MI_GARAGEDOOR16 = id;
-	}
-	if (VCGlobals::strcmp(name, "door_col_compnd_04") == 0) {
+	} else if (VCGlobals::strcmp(name, "door_col_compnd_04") == 0) {
 		MI_GARAGEDOOR17 = id;
-	}
-	if (VCGlobals::strcmp(name, "door_col_compnd_05") == 0) {
+	} else if (VCGlobals::strcmp(name, "door_col_compnd_05") == 0) {
 		MI_GARAGEDOOR18 = id;
-	}
-	if (VCGlobals::strcmp(name, "impex_door") == 0) {
+	} else if (VCGlobals::strcmp(name, "impex_door") == 0) {
 		MI_GARAGEDOOR19 = id;
-	}
-	if (VCGlobals::strcmp(name, "SalvGarage") == 0) {
+	} else if (VCGlobals::strcmp(name, "SalvGarage") == 0) {
 		MI_GARAGEDOOR20 = id;
-	}
-	if (VCGlobals::strcmp(name, "door3_garage") == 0) {
+	} else if (VCGlobals::strcmp(name, "door3_garage") == 0) {
 		MI_GARAGEDOOR21 = id;
-	}
-	if (VCGlobals::strcmp(name, "leveldoor2") == 0) {
+	} else if (VCGlobals::strcmp(name, "leveldoor2") == 0) {
 		MI_GARAGEDOOR22 = id;
-	}
-	if (VCGlobals::strcmp(name, "double_garage_dr") == 0) {
+	} else if (VCGlobals::strcmp(name, "double_garage_dr") == 0) {
 		MI_GARAGEDOOR23 = id;
-	}
-	if (VCGlobals::strcmp(name, "amcogaragedoor") == 0) {
+	} else if (VCGlobals::strcmp(name, "amcogaragedoor") == 0) {
 		MI_GARAGEDOOR24 = id;
-	}
-	if (VCGlobals::strcmp(name, "towergaragedoor1") == 0) {
+	} else if (VCGlobals::strcmp(name, "towergaragedoor1") == 0) {
 		MI_GARAGEDOOR25 = id;
-	}
-	if (VCGlobals::strcmp(name, "towergaragedoor2") == 0) {
+	} else if (VCGlobals::strcmp(name, "towergaragedoor2") == 0) {
 		MI_GARAGEDOOR26 = id;
-	}
-	if (VCGlobals::strcmp(name, "towergaragedoor3") == 0) {
+	} else if (VCGlobals::strcmp(name, "towergaragedoor3") == 0) {
 		MI_GARAGEDOOR27 = id;
-	}
-	if (VCGlobals::strcmp(name, "plysve_gragedoor") == 0) {
+	} else if (VCGlobals::strcmp(name, "plysve_gragedoor") == 0) {
 		MI_GARAGEDOOR28 = id;
-	}
-	if (VCGlobals::strcmp(name, "impexpsubgrgdoor") == 0) {
+	} else if (VCGlobals::strcmp(name, "impexpsubgrgdoor") == 0) {
 		MI_GARAGEDOOR29 = id;
-	}
-	if (VCGlobals::strcmp(name, "Sub_sprayshopdoor") == 0) {
+	} else if (VCGlobals::strcmp(name, "Sub_sprayshopdoor") == 0) {
 		MI_GARAGEDOOR30 = id;
-	}
-	if (VCGlobals::strcmp(name, "ind_plyrwoor") == 0) {
+	} else if (VCGlobals::strcmp(name, "ind_plyrwoor") == 0) {
 		MI_GARAGEDOOR31 = id;
-	}
-	if (VCGlobals::strcmp(name, "8ballsuburbandoor") == 0) {
+	} else if (VCGlobals::strcmp(name, "8ballsuburbandoor") == 0) {
 		MI_GARAGEDOOR32 = id;
-	}
-	if (VCGlobals::strcmp(name, "crushercrush") == 0) {
+	} else if (VCGlobals::strcmp(name, "crushercrush") == 0) {
 		MI_CRUSHERBODY = id;
-	}
-	if (VCGlobals::strcmp(name, "crushertop") == 0) {
+	} else if (VCGlobals::strcmp(name, "crushertop") == 0) {
 		MI_CRUSHERLID = id;
-	}
-	if (VCGlobals::strcmp(name, "donkeymag") == 0) {
+	} else if (VCGlobals::strcmp(name, "donkeymag") == 0) {
 		MI_DONKEYMAG = id;
-	}
-	if (VCGlobals::strcmp(name, "bullion") == 0) {
+	} else if (VCGlobals::strcmp(name, "bullion") == 0) {
 		MI_BULLION = id;
-	}
-	if (VCGlobals::strcmp(name, "floatpackge1") == 0) {
+	} else if (VCGlobals::strcmp(name, "floatpackge1") == 0) {
 		MI_FLOATPACKAGE1 = id;
-	}
-	if (VCGlobals::strcmp(name, "chinabanner1") == 0) {
+	} else if (VCGlobals::strcmp(name, "chinabanner1") == 0) {
 		MI_CHINABANNER1 = id;
-	}
-	if (VCGlobals::strcmp(name, "chinabanner2") == 0) {
+	} else if (VCGlobals::strcmp(name, "chinabanner2") == 0) {
 		MI_CHINABANNER2 = id;
-	}
-	if (VCGlobals::strcmp(name, "chinabanner3") == 0) {
+	} else if (VCGlobals::strcmp(name, "chinabanner3") == 0) {
 		MI_CHINABANNER3 = id;
-	}
-	if (VCGlobals::strcmp(name, "chinabanner4") == 0) {
+	} else if (VCGlobals::strcmp(name, "chinabanner4") == 0) {
 		MI_CHINABANNER4 = id;
-	}
-	if (VCGlobals::strcmp(name, "iten_chinatown5") == 0) {
+	} else if (VCGlobals::strcmp(name, "iten_chinatown5") == 0) {
 		MI_CHINABANNER5 = id;
-	}
-	if (VCGlobals::strcmp(name, "iten_chinatown7") == 0) {
+	} else if (VCGlobals::strcmp(name, "iten_chinatown7") == 0) {
 		MI_CHINABANNER6 = id;
-	}
-	if (VCGlobals::strcmp(name, "iten_chinatown3") == 0) {
+	} else if (VCGlobals::strcmp(name, "iten_chinatown3") == 0) {
 		MI_CHINABANNER7 = id;
-	}
-	if (VCGlobals::strcmp(name, "iten_chinatown2") == 0) {
+	} else if (VCGlobals::strcmp(name, "iten_chinatown2") == 0) {
 		MI_CHINABANNER8 = id;
-	}
-	if (VCGlobals::strcmp(name, "iten_chinatown4") == 0) {
+	} else if (VCGlobals::strcmp(name, "iten_chinatown4") == 0) {
 		MI_CHINABANNER9 = id;
-	}
-	if (VCGlobals::strcmp(name, "iten_washline01") == 0) {
+	} else if (VCGlobals::strcmp(name, "iten_washline01") == 0) {
 		MI_CHINABANNER10 = id;
-	}
-	if (VCGlobals::strcmp(name, "iten_washline02") == 0) {
+	} else if (VCGlobals::strcmp(name, "iten_washline02") == 0) {
 		MI_CHINABANNER11 = id;
-	}
-	if (VCGlobals::strcmp(name, "iten_washline03") == 0) {
+	} else if (VCGlobals::strcmp(name, "iten_washline03") == 0) {
 		MI_CHINABANNER12 = id;
-	}
-	if (VCGlobals::strcmp(name, "chinalanterns") == 0) {
+	} else if (VCGlobals::strcmp(name, "chinalanterns") == 0) {
 		MI_CHINALANTERN = id;
-	}
-	if (VCGlobals::strcmp(name, "glassfx1") == 0) {
+	} else if (VCGlobals::strcmp(name, "glassfx1") == 0) {
 		MI_GLASS1 = id;
-	}
-	if (VCGlobals::strcmp(name, "glassfx2") == 0) {
+	} else if (VCGlobals::strcmp(name, "glassfx2") == 0) {
 		MI_GLASS2 = id;
-	}
-	if (VCGlobals::strcmp(name, "glassfx3") == 0) {
+	} else if (VCGlobals::strcmp(name, "glassfx3") == 0) {
 		MI_GLASS3 = id;
-	}
-	if (VCGlobals::strcmp(name, "glassfx4") == 0) {
+	} else if (VCGlobals::strcmp(name, "glassfx4") == 0) {
 		MI_GLASS4 = id;
-	}
-	if (VCGlobals::strcmp(name, "glassfx55") == 0) {
+	} else if (VCGlobals::strcmp(name, "glassfx55") == 0) {
 		MI_GLASS5 = id;
-	}
-	if (VCGlobals::strcmp(name, "glassfxsub1") == 0) {
+	} else if (VCGlobals::strcmp(name, "glassfxsub1") == 0) {
 		MI_GLASS6 = id;
-	}
-	if (VCGlobals::strcmp(name, "glassfxsub2") == 0) {
+	} else if (VCGlobals::strcmp(name, "glassfxsub2") == 0) {
 		MI_GLASS7 = id;
-	}
-	if (VCGlobals::strcmp(name, "bridge_liftsec") == 0) {
+	} else if (VCGlobals::strcmp(name, "bridge_liftsec") == 0) {
 		MI_BRIDGELIFT = id;
-	}
-	if (VCGlobals::strcmp(name, "bridge_liftweight") == 0) {
+	} else if (VCGlobals::strcmp(name, "bridge_liftweight") == 0) {
 		MI_BRIDGEWEIGHT = id;
-	}
-	if (VCGlobals::strcmp(name, "subbridge_lift") == 0) {
+	} else if (VCGlobals::strcmp(name, "subbridge_lift") == 0) {
 		MI_BRIDGEROADSEGMENT = id;
-	}
-	if (VCGlobals::strcmp(name, "flagsitaly") == 0) {
+	} else if (VCGlobals::strcmp(name, "flagsitaly") == 0) {
 		MI_ITALYBANNER1 = id;
-	}
-	if (VCGlobals::strcmp(name, "magnet") == 0) {
+	} else if (VCGlobals::strcmp(name, "magnet") == 0) {
 		MI_MAGNET = id;
-	}
-	if (VCGlobals::strcmp(name, "railtrax_lo4b") == 0) {
+	} else if (VCGlobals::strcmp(name, "railtrax_lo4b") == 0) {
 		MI_RAILTRACKS = id;
-	}
-	if (VCGlobals::strcmp(name, "bodycast") == 0) {
+	} else if (VCGlobals::strcmp(name, "bodycast") == 0) {
 		MI_BODYCAST = id;
-	}
-	if (VCGlobals::strcmp(name, "backdoor") == 0) {
+	} else if (VCGlobals::strcmp(name, "backdoor") == 0) {
 		MI_BACKDOOR = id;
-	}
-	if (VCGlobals::strcmp(name, "coffee") == 0) {
+	} else if (VCGlobals::strcmp(name, "coffee") == 0) {
 		MI_COFFEE = id;
-	}
-	if (VCGlobals::strcmp(name, "sbwy_tunl_start") == 0) {
+	} else if (VCGlobals::strcmp(name, "sbwy_tunl_start") == 0) {
 		MI_SUBWAY1 = id;
-	}
-	if (VCGlobals::strcmp(name, "sbwy_tunl_bit") == 0) {
+	} else if (VCGlobals::strcmp(name, "sbwy_tunl_bit") == 0) {
 		MI_SUBWAY2 = id;
-	}
-	if (VCGlobals::strcmp(name, "sbwy_tunl_bend") == 0) {
+	} else if (VCGlobals::strcmp(name, "sbwy_tunl_bend") == 0) {
 		MI_SUBWAY3 = id;
-	}
-	if (VCGlobals::strcmp(name, "sbwy_tunl_cstm6") == 0) {
+	} else if (VCGlobals::strcmp(name, "sbwy_tunl_cstm6") == 0) {
 		MI_SUBWAY4 = id;
-	}
-	if (VCGlobals::strcmp(name, "sbwy_tunl_cstm7") == 0) {
+	} else if (VCGlobals::strcmp(name, "sbwy_tunl_cstm7") == 0) {
 		MI_SUBWAY5 = id;
-	}
-	if (VCGlobals::strcmp(name, "sbwy_tunl_cstm8") == 0) {
+	} else if (VCGlobals::strcmp(name, "sbwy_tunl_cstm8") == 0) {
 		MI_SUBWAY6 = id;
-	}
-	if (VCGlobals::strcmp(name, "sbwy_tunl_cstm10") == 0) {
+	} else if (VCGlobals::strcmp(name, "sbwy_tunl_cstm10") == 0) {
 		MI_SUBWAY7 = id;
-	}
-	if (VCGlobals::strcmp(name, "sbwy_tunl_cstm9") == 0) {
+	} else if (VCGlobals::strcmp(name, "sbwy_tunl_cstm9") == 0) {
 		MI_SUBWAY8 = id;
-	}
-	if (VCGlobals::strcmp(name, "sbwy_tunl_cstm11") == 0) {
+	} else if (VCGlobals::strcmp(name, "sbwy_tunl_cstm11") == 0) {
 		MI_SUBWAY9 = id;
-	}
-	if (VCGlobals::strcmp(name, "sbwy_tunl_cstm1") == 0) {
+	} else if (VCGlobals::strcmp(name, "sbwy_tunl_cstm1") == 0) {
 		MI_SUBWAY10 = id;
-	}
-	if (VCGlobals::strcmp(name, "sbwy_tunl_cstm2") == 0) {
+	} else if (VCGlobals::strcmp(name, "sbwy_tunl_cstm2") == 0) {
 		MI_SUBWAY11 = id;
-	}
-	if (VCGlobals::strcmp(name, "sbwy_tunl_cstm4") == 0) {
+	} else if (VCGlobals::strcmp(name, "sbwy_tunl_cstm4") == 0) {
 		MI_SUBWAY12 = id;
-	}
-	if (VCGlobals::strcmp(name, "sbwy_tunl_cstm3") == 0) {
+	} else if (VCGlobals::strcmp(name, "sbwy_tunl_cstm3") == 0) {
 		MI_SUBWAY13 = id;
-	}
-	if (VCGlobals::strcmp(name, "sbwy_tunl_cstm5") == 0) {
+	} else if (VCGlobals::strcmp(name, "sbwy_tunl_cstm5") == 0) {
 		MI_SUBWAY14 = id;
-	}
-	if (VCGlobals::strcmp(name, "subplatform_n2") == 0) {
+	} else if (VCGlobals::strcmp(name, "subplatform_n2") == 0) {
 		MI_SUBWAY15 = id;
-	}
-	if (VCGlobals::strcmp(name, "suby_tunl_start") == 0) {
+	} else if (VCGlobals::strcmp(name, "suby_tunl_start") == 0) {
 		MI_SUBWAY16 = id;
-	}
-	if (VCGlobals::strcmp(name, "sbwy_tunl_start2") == 0) {
+	} else if (VCGlobals::strcmp(name, "sbwy_tunl_start2") == 0) {
 		MI_SUBWAY17 = id;
-	}
-	if (VCGlobals::strcmp(name, "indy_tunl_start") == 0) {
+	} else if (VCGlobals::strcmp(name, "indy_tunl_start") == 0) {
 		MI_SUBWAY18 = id;
-	}
-	if (VCGlobals::strcmp(name, "indsubway03") == 0) {
+	} else if (VCGlobals::strcmp(name, "indsubway03") == 0) {
 		MI_SUBPLATFORM_IND = id;
-	}
-	if (VCGlobals::strcmp(name, "comerside_subway") == 0) {
+	} else if (VCGlobals::strcmp(name, "comerside_subway") == 0) {
 		MI_SUBPLATFORM_COMS = id;
-	}
-	if (VCGlobals::strcmp(name, "subplatform") == 0) {
+	} else if (VCGlobals::strcmp(name, "subplatform") == 0) {
 		MI_SUBPLATFORM_COMS2 = id;
-	}
-	if (VCGlobals::strcmp(name, "subplatform_n") == 0) {
+	} else if (VCGlobals::strcmp(name, "subplatform_n") == 0) {
 		MI_SUBPLATFORM_COMN = id;
-	}
-	if (VCGlobals::strcmp(name, "Otherside_subway") == 0) {
+	} else if (VCGlobals::strcmp(name, "Otherside_subway") == 0) {
 		MI_SUBPLATFORM_SUB = id;
-	}
-	if (VCGlobals::strcmp(name, "subplatform_sub") == 0) {
+	} else if (VCGlobals::strcmp(name, "subplatform_sub") == 0) {
 		MI_SUBPLATFORM_SUB2 = id;
-	}
-	if (VCGlobals::strcmp(name, "files") == 0) {
+	} else if (VCGlobals::strcmp(name, "files") == 0) {
 		MI_FILES = id;
 	}
 
-	if (VCGlobals::strcmp(name, "LODdge_liftweight") == 0) {
+	else if (VCGlobals::strcmp(name, "LODdge_liftweight") == 0) {
 		MI_LODDGEWEIGHT = id;
-	}
-	if (VCGlobals::strcmp(name, "LODdge_liftsec") == 0) {
+	} else if (VCGlobals::strcmp(name, "LODdge_liftsec") == 0) {
 		MI_LODDGELIFT = id;
 	}
 

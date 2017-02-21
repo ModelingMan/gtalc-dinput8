@@ -38,6 +38,7 @@ namespace VCGlobals
 	static unsigned long g_strcpy = vcversion::AdjustOffset(0x00642560);
 	static unsigned long g_strncpy = vcversion::AdjustOffset(0x00642580);
 	static unsigned long g_strcmp = vcversion::AdjustOffset(0x00642620);
+	static unsigned long g_strncmp = vcversion::AdjustOffset(0x00642650);
 	static unsigned long g_sprintf = vcversion::AdjustOffset(0x00648C10);
 	static unsigned long g_rand = vcversion::AdjustOffset(0x006499F0);
 	static unsigned long g_sscanf = vcversion::AdjustOffset(0x0064A730);
@@ -90,6 +91,11 @@ namespace VCGlobals
 	__declspec(naked) int strcmp(const char *s1, const char *s2)
 	{
 		__asm jmp g_strcmp;
+	}
+
+	__declspec(naked) int strncmp(const char *s1, const char *s2, size_t n)
+	{
+		__asm jmp g_strncmp;
 	}
 
 	__declspec(naked) int sprintf(char *s, const char *format, ...)

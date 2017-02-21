@@ -20,7 +20,7 @@ public:
 	void UpdateType7Hack(void);
 	static void UpdateType14HackProxy(void);
 	void UpdateType14Hack(void);
-	float ProximityToGarageArea(float x, float y);
+	float CalcDistToGarageRectangleSquared(float x, float y);
 	static void UpdateType5HackProxy(void);
 	static bool UpdateType5Hack(int);
 };

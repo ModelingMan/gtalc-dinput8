@@ -208,10 +208,10 @@ void CGarageHack::UpdateType7Hack(void)
 			return;
 		}
 		CVector pos;
-		CVector *ppos = VCGlobals::FindPlayerCoors(&pos);
-		if (abs(ppos->x - (this->lowerX + this->upperX) / 2) > 25.0 ||
-			abs(ppos->y - (this->lowerY + this->upperY) / 2) > 25.0 ||
-			ppos->z > this->ceilingHeight) {
+		VCGlobals::FindPlayerCoors(&pos);
+		if (abs(pos.x - (this->lowerX + this->upperX) / 2) > 25.0 ||
+			abs(pos.y - (this->lowerY + this->upperY) / 2) > 25.0 ||
+			pos.z > this->ceilingHeight) {
 			this->state = 2; // closing
 			this->targetVehicle = 0;
 		}
@@ -251,7 +251,7 @@ void CGarageHack::UpdateType7Hack(void)
 	// closed
 	else if (this->state == 0) {
 		if (vehicle && vehicle->modelIndex == this->targetModel) {
-			if (this->ProximityToGarageArea(vehicle->GetX(), vehicle->GetY()) < 64.0) {
+			if (this->CalcDistToGarageRectangleSquared(vehicle->GetX(), vehicle->GetY()) < 64.0) {
 				this->state = 3; // opening
 			}
 		}
@@ -299,9 +299,9 @@ void CGarageHack::UpdateType14Hack(void)
 	// opened
 	if (this->state == 1) {
 		CVector pos;
-		CVector *ppos = VCGlobals::FindPlayerCoors(&pos);
-		if ((abs(ppos->x - (this->lowerX + this->upperX) / 2) > 30.0 ||
-			abs(ppos->y - (this->lowerY + this->upperY) / 2) > 30.0) &&
+		VCGlobals::FindPlayerCoors(&pos);
+		if ((abs(pos.x - (this->lowerX + this->upperX) / 2) > 30.0 ||
+			abs(pos.y - (this->lowerY + this->upperY) / 2) > 30.0) &&
 			!this->IsAnyOtherCarTouchingGarage(0)) {
 			this->state = 2; // closing
 			this->closedUnserviced = 1;
@@ -346,7 +346,7 @@ void CGarageHack::UpdateType14Hack(void)
 	// closed
 	else if (this->state == 0) {
 		if (this->targetVehicle && vehicle == this->targetVehicle) {
-			if (this->ProximityToGarageArea(vehicle->GetX(), vehicle->GetY()) < 289.0) {
+			if (this->CalcDistToGarageRectangleSquared(vehicle->GetX(), vehicle->GetY()) < 289.0) {
 				this->state = 3; // opening
 			}
 		}
@@ -372,7 +372,7 @@ void CGarageHack::UpdateType14Hack(void)
 	}
 }
 
-float CGarageHack::ProximityToGarageArea(float x, float y)
+float CGarageHack::CalcDistToGarageRectangleSquared(float x, float y)
 {
 	if (x < this->lowerX) {
 		x -= lowerX;

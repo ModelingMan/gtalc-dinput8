@@ -1,6 +1,8 @@
 #pragma once
 
-class CCameraHack
+#include "vcclasses.h"
+
+class CCameraHack : public CCamera
 {
 public:
 	static bool initialise();
