@@ -64,6 +64,7 @@
     <ClCompile Include="src\CPopulation.cpp" />
     <ClCompile Include="src\CProjectileInfo.cpp" />
     <ClCompile Include="src\CRadar.cpp" />
+    <ClCompile Include="src\CRecordDataForChase.cpp" />
     <ClCompile Include="src\CRenderer.cpp" />
     <ClCompile Include="src\CRestart.cpp" />
     <ClCompile Include="src\CRunningScript.cpp" />

@@ -6,6 +6,8 @@
 #include "CProjectileInfoHack.h"
 #include "CPacManPickupsHack.h"
 #include "CObjectHack.h"
+#include "CSpecialParticleStuffHack.h"
+#include "CGameLogicHack.h"
 #include "Globals.h"
 #include "vcclasses.h"
 #include "vcversion.h"
@@ -22,7 +24,6 @@ unsigned long getRandomCarProceedJump = vcversion::AdjustOffset(0x0062F23D);
 unsigned long getRandomCarEndJump = vcversion::AdjustOffset(0x0062F269);
 
 int CRunningScriptHack::debugMode;
-bool isShortcutDropoffEnabled;
 
 bool CRunningScriptHack::initialise()
 {
@@ -31,9 +32,6 @@ bool CRunningScriptHack::initialise()
 
 	// make 053E accept mission vehicles - workaround for crusher
 	InjectHook(0x0062F234, &GetRandomCarOfTypeInAreaNoSave, PATCH_JUMP);
-	
-	// shortcut dropoff
-	isShortcutDropoffEnabled = !!GetPrivateProfileInt("Misc", "UseShortcutDropoff", 0, "./gta-lc.ini");
 
 	return true;
 }
@@ -48,143 +46,160 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 
 	switch (opCodeNum)
 	{
-	case 0x014D:
+	case 0x14D:
 		return this->_014D_text_pager();
-	case 0x034A:
+	case 0x34A:
 		return this->_034A_industrial_passed();
-	case 0x034B:
+	case 0x34B:
 		return this->_034B_commercial_passed();
-	case 0x034C:
+	case 0x34C:
 		return this->_034C_suburban_passed();
 
 	// additional opcodes
-	case 0x00A2:
+	case 0x0A2:
 		return this->_00A2_is_char_still_alive();
-	case 0x0135:
+	case 0x135:
 		return this->_0135_change_car_lock();
-	case 0x016F:
+	case 0x16F:
 		return this->_016F_draw_shadow();
-	case 0x01EE:
+	case 0x1EE:
 		return this->_01EE_activate_crane();
-	case 0x01EF:
+	case 0x1EF:
 		return this->_01EF_deactivate_crane();
-	case 0x024C:
+	case 0x24C:
 		return this->_024C_set_phone_message();
-	case 0x0250:
+	case 0x250:
 		return this->_0250_draw_light();
-	case 0x02A1:
+	case 0x2A1:
 		return this->_02A1_message_wait();
-	case 0x02A2:
+	case 0x2A2:
 		return this->_02A2_add_particle_effect();
-	case 0x02BD:
+	case 0x2BD:
 		return this->_02BD_is_debug_mode();
-	case 0x02CD:
+	case 0x2CD:
 		return this->_02CD_gosub_file();
-	case 0x02FB:
+	case 0x2FB:
 		return this->_02FB_activate_crusher_crane();
-	case 0x0351:
+	case 0x351:
 		return this->_0351_is_nasty_game();
-	case 0x0356:
+	case 0x356:
 		return this->_0356_is_explosion_in_area();
-	case 0x0368:
+	case 0x368:
 		return this->_0368_activate_military_crane();
-	case 0x037F:
+	case 0x37F:
 		return this->_037F_give_player_detonator();
-	case 0x03A0:
+	case 0x3A0:
 		return this->_03A0_is_crane_lifting_car();
-	case 0x03C2:
+	case 0x3C2:
 		return this->_03C2_is_phone_displaying_message();
-	case 0x03DD:
+	case 0x3DD:
 		return this->_03DD_add_sprite_blip_for_pickup();
-	case 0x03EC:
+	case 0x3EC:
 		return this->_03EC_has_military_crane_collected_all_cars();
-	case 0x03F8:
+	case 0x3F8:
 		return this->_03F8_get_body_cast_health();
-	case 0x0410:
+	case 0x410:
 		return this->_0410_set_gang_ped_model_preference();
-	case 0x041C:
+	case 0x41C:
 		return this->_041C_set_char_say();
-	case 0x0421:
+	case 0x421:
 		return this->_0421_force_rain();
-	case 0x0422:
+	case 0x422:
 		return this->_0422_does_garage_contain_car();
-	case 0x042A:
+	case 0x42A:
 		return this->_042A_is_threat_for_ped_type();
-	case 0x0444:
+	case 0x43B:
+		return this->_043B_update_boat_foam_animation();
+	case 0x444:
 		return this->_0444_set_script_fire_audio();
-	case 0x0447:
+	case 0x447:
 		return this->_0447_is_player_lifting_a_phone();
-	case 0x058E:
+	case 0x58E:
 		return this->_058E_set_shortcut_dropoff_point_for_mission();
 
-	case 0x00AC:
+	case 0x0AC:
 		return this->_00AC_is_car_still_alive();
-	case 0x0130:
+	case 0x130:
 		return this->_0130_has_player_been_arrested();
-	case 0x0178:
+	case 0x178:
 		return this->_0178_is_player_touching_object();
-	case 0x021D:
+	case 0x21D:
 		return this->_021D_set_free_bombs();
-	case 0x0228:
+	case 0x228:
 		return this->_0228_is_car_armed_with_bomb();
-	case 0x0240:
+	case 0x240:
 		return this->_0240_flash_object();
-	case 0x0242:
+	case 0x242:
 		return this->_0242_arm_car_with_bomb();
-	case 0x0255:
+	case 0x255:
 		return this->_0255_restart_critical_mission();
-	case 0x0299:
+	case 0x299:
 		return this->_0299_activate_garage();
-	case 0x029C:
+	case 0x29C:
 		return this->_029C_is_boat();
-	case 0x02A0:
+	case 0x2A0:
 		return this->_02A0_is_char_stopped();
-	case 0x02B9:
+	case 0x2B9:
 		return this->_02B9_deactivate_garage();
-	case 0x02C3:
+	case 0x2C3:
 		return this->_02C3_start_pacman_race();
-	case 0x02C5:
+	case 0x2C5:
 		return this->_02C5_get_number_of_power_pills_eaten();
-	case 0x02C6:
+	case 0x2C6:
 		return this->_02C6_clear_pacman();
-	case 0x02C7:
+	case 0x2C7:
 		return this->_02C7_start_pacman_scramble();
-	case 0x02C8:
+	case 0x2C8:
 		return this->_02C8_get_number_of_power_pills_carried();
-	case 0x02C9:
+	case 0x2C9:
 		return this->_02C9_clear_number_of_power_pills_carried();
-	case 0x02D9:
+	case 0x2D9:
 		return this->_02D9_clear_number_of_power_pills_eaten();
-	case 0x02EE:
+	case 0x2EE:
 		return this->_02EE_is_projectile_in_area();
-	case 0x02EF:
+	case 0x2EF:
 		return this->_02EF_destroy_projectiles_in_area();
-	case 0x02F0:
+	case 0x2F0:
 		return this->_02F0_drop_mine();
-	case 0x02F1:
+	case 0x2F1:
 		return this->_02F1_drop_nautical_mine();
-	case 0x032D:
+	case 0x32D:
 		return this->_032D_set_car_block_car();
-	case 0x03A5:
+	case 0x3A5:
 		return this->_03A5_change_garage_type_with_car_model();
-	case 0x03C9:
+	case 0x3C9:
 		return this->_03C9_is_car_visibly_damaged();
-	case 0x03FB:
+	case 0x3FB:
 		return this->_03FB_set_car_stays_in_current_level();
-	case 0x03FC:
+	case 0x3FC:
 		return this->_03FC_set_char_stays_in_current_level();
-	case 0x041F:
+	case 0x41F:
 		return this->_041F_override_hospital_level();
-	case 0x0420:
+	case 0x420:
 		return this->_0420_override_police_station_level();
-	case 0x0438:
+	case 0x438:
 		return this->_0438_set_char_ignore_level_transitions();
-	case 0x044E:
+	case 0x44E:
 		return this->_044E_set_car_ignore_level_transitions();
-	case 0x044F:
+	case 0x44F:
 		return this->_044F_make_craigs_car_a_bit_stronger();
-	case 0x0452:
+	case 0x452:
 		return this->_0452_enable_player_control_camera();
+
+	case 0x15E:
+		return this->_015E_is_car_in_air();
+	case 0x2BC:
+		return this->_02BC_set_swat_required();
+	case 0x367:
+		return this->_0367_start_kill_frenzy_headshot();
+	case 0x36B:
+		return this->_036B_skip_clear_taxi_shortcut();
+	case 0x3C6:
+		return this->_03C6_is_collision_in_memory();
+	case 0x430:
+		return this->_0430_warp_char_into_car_as_passenger();
+	case 0x432:
+		return this->_0432_get_char_in_car_passenger_seat();
 	}
 
 	CTheScripts::CommandsExecuted--;
@@ -195,18 +210,11 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 
 bool CRunningScriptHack::_014D_text_pager()
 {
-	char pagerText[8];
-
-	VCGlobals::strcpy(pagerText, reinterpret_cast<char *>(&CTheScripts::ScriptSpace[this->m_dwScriptIP]));
+	char text[8];
+	VCGlobals::strcpy(text, reinterpret_cast<char *>(&CTheScripts::ScriptSpace[this->m_dwScriptIP]));
 	this->m_dwScriptIP += 8;
-
 	this->CollectParameters(&this->m_dwScriptIP, 3);
-
-	wchar_t *scmPagerText = TheText.Get(pagerText);
-
-	CPagerHack *pager = reinterpret_cast<CPagerHack *>(&CUserDisplay::Pager); //YUCKY YUCKY!!! but it'll do the job
-	pager->AddMessage(scmPagerText, ScriptParams[0].uint16, ScriptParams[1].uint16, ScriptParams[2].uint16);
-
+	reinterpret_cast<CPagerHack *>(CUserDisplay::Pager)->AddMessage(TheText.Get(text), ScriptParams[0].uint16, ScriptParams[1].uint16, ScriptParams[2].uint16);
 	return 0;
 }
 
@@ -389,7 +397,7 @@ bool CRunningScriptHack::_02FB_activate_crusher_crane()
 
 bool CRunningScriptHack::_0351_is_nasty_game()
 {
-	this->UpdateCompareFlag(!!CGame::nastyGame);
+	this->UpdateCompareFlag(CGame::nastyGame);
 	return 0;
 }
 
@@ -528,6 +536,14 @@ bool CRunningScriptHack::_042A_is_threat_for_ped_type()
 	return 0;
 }
 
+bool CRunningScriptHack::_043B_update_boat_foam_animation()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 1);
+	CObject *object = CPools::ms_pObjectPool->GetAt(ScriptParams[0].int32);
+	CSpecialParticleStuffHack::UpdateBoatFoamAnimation(&object->GetMatrix());
+	return 0;
+}
+
 bool CRunningScriptHack::_0444_set_script_fire_audio()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
@@ -545,7 +561,7 @@ bool CRunningScriptHack::_0447_is_player_lifting_a_phone()
 bool CRunningScriptHack::_058E_set_shortcut_dropoff_point_for_mission()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 4);
-	if (isShortcutDropoffEnabled) {
+	if (CGameLogicHack::isShortcutDropoffEnabled) {
 		CVector pos = { ScriptParams[0].float32, ScriptParams[1].float32, ScriptParams[2].float32 };
 		CGameLogic::AddShortCutDropOffPointForMission(pos, ScriptParams[3].float32);
 	}
@@ -887,6 +903,82 @@ bool CRunningScriptHack::_044F_make_craigs_car_a_bit_stronger()
 bool CRunningScriptHack::_0452_enable_player_control_camera()
 {
 	*(unsigned short *)(CPad::GetPad(0) + 0xF0) &= 0xFFFE;
+	return 0;
+}
+
+bool CRunningScriptHack::_015E_is_car_in_air()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 1);
+	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32);
+	this->UpdateCompareFlag(vehicle->numberOfWheelsOnGround == 0);
+	return 0;
+}
+
+bool CRunningScriptHack::_02BC_set_swat_required()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 1);
+	CPlayerPed *player = VCGlobals::FindPlayerPed();
+	player->wanted->activity &= 0xFB;
+	if (ScriptParams[0].int32) {
+		player->wanted->activity |= 4;
+	}
+	return 0;
+}
+
+bool CRunningScriptHack::_0367_start_kill_frenzy_headshot()
+{
+	char text[8];
+	VCGlobals::strcpy(text, reinterpret_cast<char *>(&CTheScripts::ScriptSpace[this->m_dwScriptIP]));
+	this->m_dwScriptIP += 8;
+	this->CollectParameters(&this->m_dwScriptIP, 8);
+	CDarkel::StartFrenzy(ScriptParams[0].int32, ScriptParams[1].int32, ScriptParams[2].uint16, ScriptParams[3].int32, VCGlobals::TheText.Get(text), ScriptParams[4].int32, ScriptParams[5].int32, ScriptParams[6].int32, !!ScriptParams[7].int32, true);
+	return 0;
+}
+
+bool CRunningScriptHack::_036B_skip_clear_taxi_shortcut()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 1);
+	if (ScriptParams[0].int32) CGameLogicHack::skipClearShortcutStage = 4;
+	return 0;
+}
+
+bool CRunningScriptHack::_03C6_is_collision_in_memory()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 1);
+	this->UpdateCompareFlag(ScriptParams[0].int32 == CGame::currLevel);
+	return 0;
+}
+
+bool CRunningScriptHack::_0430_warp_char_into_car_as_passenger()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 3);
+	CPed *ped = CPools::ms_pPedPool->GetAt(ScriptParams[0].int32);
+	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[1].int32);
+	ped->SetObjective(0x12, vehicle);
+	unsigned char seat = ScriptParams[2].uint8;
+	if (seat < 0) {
+		vehicle->AddPassenger(ped);
+	} else {
+		vehicle->AddPassenger(ped, seat);
+	}
+	ped->vehicle = vehicle;
+	ped->vehicle->RegisterReference((CEntity **)&ped->vehicle);
+	ped->isInAnyVehicle = 1;
+	if (ped->state == 0xB) {
+		ped->ClearFollowPath();
+	}
+	ped->state = 0x32;
+	ped->field_051 &= 0xFE;
+	ped->AddInCarAnims(vehicle, false);
+	return 0;
+}
+
+bool CRunningScriptHack::_0432_get_char_in_car_passenger_seat()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 2);
+	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32);
+	ScriptParams[0].int32 = CPools::ms_pPedPool->GetIndex(vehicle->passengers[ScriptParams[1].int32]);
+	this->StoreParameters(&this->m_dwScriptIP, 1);
 	return 0;
 }
 

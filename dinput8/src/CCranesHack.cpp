@@ -95,9 +95,9 @@ bool CCranesHack::IsThisCarPickedUp(float positionX, float positionY, CVehicle *
 {
 	if (CCranes::NumCranes > 0) {
 		for (int i = 0; i < CCranes::NumCranes; i++) {
-			if (cranes[i].object) {
-				float distance = sqrt(pow(positionX - cranes[i].object->GetX(), 2) + pow(positionY - cranes[i].object->GetY(), 2));
-				if (distance < 100.0 && cranes[i].vehicle == vehicle && (cranes[i].status == 2 || cranes[i].status == 4)) {
+			if (aCranes[i].object) {
+				float distance = sqrt(pow(positionX - aCranes[i].object->GetX(), 2) + pow(positionY - aCranes[i].object->GetY(), 2));
+				if (distance < 100.0 && aCranes[i].vehicle == vehicle && (aCranes[i].status == 2 || aCranes[i].status == 4)) {
 					return true;
 				}
 			}
@@ -112,8 +112,8 @@ void CCranesHack::DeActivateCrane(float positionX, float positionY)
 	float minDistance = 100.0;
 	if (CCranes::NumCranes > 0) {
 		for (int i = 0; i < CCranes::NumCranes; i++) {
-			if (cranes[i].object) {
-				float distance = sqrt(pow(positionX - cranes[i].object->GetX(), 2) + pow(positionY - cranes[i].object->GetY(), 2));
+			if (aCranes[i].object) {
+				float distance = sqrt(pow(positionX - aCranes[i].object->GetX(), 2) + pow(positionY - aCranes[i].object->GetY(), 2));
 				if (distance < minDistance) {
 					index = i;
 					minDistance = distance;
@@ -122,8 +122,8 @@ void CCranesHack::DeActivateCrane(float positionX, float positionY)
 		}
 	}
 	if (index == -1) return;
-	cranes[index].activity = 2;
-	cranes[index].status = 0;
+	aCranes[index].activity = 2;
+	aCranes[index].status = 0;
 }
 
 void CCranesHack::ActivateCrane(float pickupX1, float pickupX2, float pickupY1, float pickupY2, float dropoffX, float dropoffY, float dropoffZ, float dropoffHeading, bool isCrusher, bool isMilitary, float positionX, float positionY)
@@ -133,8 +133,8 @@ void CCranesHack::ActivateCrane(float pickupX1, float pickupX2, float pickupY1, 
 	minDistance = 100.0;
 	if (CCranes::NumCranes > 0) {
 		for (int i = 0; i < CCranes::NumCranes; i++) {
-			if (cranes[i].object) {
-				float distance = sqrt(pow(positionX - cranes[i].object->GetX(), 2) + pow(positionY - cranes[i].object->GetY(), 2));
+			if (aCranes[i].object) {
+				float distance = sqrt(pow(positionX - aCranes[i].object->GetX(), 2) + pow(positionY - aCranes[i].object->GetY(), 2));
 				if (distance < minDistance) {
 					index = i;
 					minDistance = distance;
@@ -143,37 +143,37 @@ void CCranesHack::ActivateCrane(float pickupX1, float pickupX2, float pickupY1, 
 		}
 	}
 	if (index == -1) return;
-	cranes[index].pickupX1 = pickupX1;
-	cranes[index].pickupX2 = pickupX2;
-	cranes[index].pickupY1 = pickupY1;
-	cranes[index].pickupY2 = pickupY2;
-	cranes[index].dropoffX = dropoffX;
-	cranes[index].dropoffY = dropoffY;
-	cranes[index].dropoffZ = dropoffZ;
-	cranes[index].activity = 1;
-	cranes[index].vehicle = 0;
-	cranes[index].countCollected = 0;
-	cranes[index].dropoffHeading = dropoffHeading;
-	cranes[index].isCrusher = isCrusher;
-	cranes[index].isMilitary = isMilitary;
-	cranes[index].timer = 0;
-	cranes[index].status = 0;
+	aCranes[index].pickupX1 = pickupX1;
+	aCranes[index].pickupX2 = pickupX2;
+	aCranes[index].pickupY1 = pickupY1;
+	aCranes[index].pickupY2 = pickupY2;
+	aCranes[index].dropoffX = dropoffX;
+	aCranes[index].dropoffY = dropoffY;
+	aCranes[index].dropoffZ = dropoffZ;
+	aCranes[index].activity = 1;
+	aCranes[index].vehicle = 0;
+	aCranes[index].countCollected = 0;
+	aCranes[index].dropoffHeading = dropoffHeading;
+	aCranes[index].isCrusher = isCrusher;
+	aCranes[index].isMilitary = isMilitary;
+	aCranes[index].timer = 0;
+	aCranes[index].status = 0;
 	pickupCenterX = (pickupX1 + pickupX2) / 2;
 	pickupCenterY = (pickupY1 + pickupY2) / 2;
-	craneObjectX = cranes[index].object->GetX();
-	craneObjectY = cranes[index].object->GetY();
+	craneObjectX = aCranes[index].object->GetX();
+	craneObjectY = aCranes[index].object->GetY();
 	if (isCrusher) {
-		cranes[index].armPickupHeight = -0.95099998f + OFFSETZ;
+		aCranes[index].armPickupHeight = -0.95099998f + OFFSETZ;
 	} else if (isMilitary) {
-		cranes[index].armPickupHeight = 10.7862f + OFFSETZ;
+		aCranes[index].armPickupHeight = 10.7862f + OFFSETZ;
 	} else {
-		cranes[index].armPickupHeight = CWorld::FindGroundZForCoord(pickupCenterX, pickupCenterY);
+		aCranes[index].armPickupHeight = CWorld::FindGroundZForCoord(pickupCenterX, pickupCenterY);
 	}
-	cranes[index].armPickupRotation = CGeneral::GetATanOfXY(pickupCenterX - craneObjectX, pickupCenterY - craneObjectY);
-	cranes[index].armPickupDistance = sqrt(pow(pickupCenterX - craneObjectX, 2) + pow(pickupCenterY - craneObjectY, 2));
-	cranes[index].armDropoffRotation = CGeneral::GetATanOfXY(dropoffX - craneObjectX, dropoffY - craneObjectY);
-	cranes[index].armDropoffDistance = sqrt(pow(dropoffX - craneObjectX, 2) + pow(dropoffY - craneObjectY, 2));
-	cranes[index].armDropoffHeight = dropoffZ;
+	aCranes[index].armPickupRotation = CGeneral::GetATanOfXY(pickupCenterX - craneObjectX, pickupCenterY - craneObjectY);
+	aCranes[index].armPickupDistance = sqrt(pow(pickupCenterX - craneObjectX, 2) + pow(pickupCenterY - craneObjectY, 2));
+	aCranes[index].armDropoffRotation = CGeneral::GetATanOfXY(dropoffX - craneObjectX, dropoffY - craneObjectY);
+	aCranes[index].armDropoffDistance = sqrt(pow(dropoffX - craneObjectX, 2) + pow(dropoffY - craneObjectY, 2));
+	aCranes[index].armDropoffHeight = dropoffZ;
 }
 
 void CCranesHack::AddThisOneCrane(CEntity *entity)
@@ -182,22 +182,22 @@ void CCranesHack::AddThisOneCrane(CEntity *entity)
 	// add crane to array
 	if (CCranes::NumCranes < 8) {
 		int index = CCranes::NumCranes;
-		cranes[index].object = entity;
-		cranes[index].activity = 0;
+		aCranes[index].object = entity;
+		aCranes[index].activity = 0;
 		// initialise rotation
-		cranes[index].armCurrentRotation = static_cast<float>(CCranes::NumCranes);
-		while (cranes[index].armCurrentRotation > 6.283) {
-			cranes[index].armCurrentRotation -= 6.283;
+		aCranes[index].armCurrentRotation = static_cast<float>(CCranes::NumCranes);
+		while (aCranes[index].armCurrentRotation > 6.283) {
+			aCranes[index].armCurrentRotation -= 6.283;
 		}
-		cranes[index].armCurrentDistance = 20.0f;
-		cranes[index].armCurrentHeight = 20.0f + OFFSETZ;
-		cranes[index].timer = 0;
-		cranes[index].status = 0;
-		cranes[index].unk3 = 0;
-		cranes[index].isNotCab = entity->modelIndex == 893 ? 0 : 1;
-		cranes[index].hook = 0;
+		aCranes[index].armCurrentDistance = 20.0f;
+		aCranes[index].armCurrentHeight = 20.0f + OFFSETZ;
+		aCranes[index].timer = 0;
+		aCranes[index].status = 0;
+		aCranes[index].unk3 = 0;
+		aCranes[index].isNotCab = entity->modelIndex != ModelIndices::MODELID_CRANE_1;
+		aCranes[index].hook = 0;
 		// new! magnet for cranes!
-		if (cranes[index].isNotCab || entity->GetY() > 0.0) {
+		if (aCranes[index].isNotCab || entity->GetY() > 0.0) {
 			void *place = CObject::operator new(0x194);
 			CObject *object = ::new (place)CObject(ModelIndices::MI_MAGNET, false);
 			if (object) {
@@ -205,10 +205,10 @@ void CCranesHack::AddThisOneCrane(CEntity *entity)
 				object->field_051 &= 0xFE;
 				object->field_052 |= 2;
 				object->field_11A &= 0xFD;
-				cranes[index].hook = object;
+				aCranes[index].hook = object;
 			}
 		}
-		audioEntities[index] = VCGlobals::DMAudio.CreateEntity(12, &CCranes::cranes[index]);
+		audioEntities[index] = VCGlobals::DMAudio.CreateEntity(12, &CCranes::aCranes[index]);
 		if (audioEntities[index]) {
 			VCGlobals::DMAudio.SetEntityStatus(audioEntities[index], 1);
 		}
@@ -313,6 +313,6 @@ void CCraneHack::UpdateHack()
 		CVehicle *vehicle = this->vehicle;
 		vehicle->field_053 = (vehicle->field_053 & 0xF7) | 8;
 	}
-	int index = ((unsigned long)this - (unsigned long)&CCranes::cranes[0]) / sizeof(CCrane);
+	int index = ((unsigned long)this - (unsigned long)&CCranes::aCranes[0]) / sizeof(CCrane);
 	VCGlobals::DMAudio.PlayOneShot(audioEntities[index], 0, 0.0);
 }

@@ -104,6 +104,12 @@
     <ClCompile Include="src\ModelIndices.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CSpecialParticleStuffHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CGameLogicHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CRunningScriptHack.h">
@@ -200,6 +206,12 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\ModelIndices.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CSpecialParticleStuffHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CGameLogicHack.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

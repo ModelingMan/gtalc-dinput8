@@ -374,6 +374,28 @@ public:
 static_assert(sizeof(CPhysical) == 0x120, "Size of CPhysical is not 0x120 bytes.");
 
 //########################################################################
+//# CDamageManager
+//########################################################################
+
+class CDamageManager
+{
+public:
+	unsigned char space1[4];
+	unsigned char engineStatus;   // 0x04
+	unsigned char wheelStatus[4]; // 0x05
+	unsigned char doorStatus[6];  // 0x09
+	unsigned char space2;
+	unsigned int  lightStatus;    // 0x10
+	unsigned int  panelStatus;    // 0x14
+
+	void SetEngineStatus(unsigned int);
+	void SetWheelStatus(int, unsigned int);
+	unsigned int GetEngineStatus();
+};
+
+static_assert(sizeof(CDamageManager) == 0x18, "Size of CDamageManager is not 0x18 bytes.");
+
+//########################################################################
 //# CVehicle
 //########################################################################
 
@@ -416,8 +438,8 @@ public:
 	unsigned int   lock;                   // 0x230
 	unsigned char  space9[0x0068];
 	unsigned int   type;                   // 0x29C
-	float          damageManager;          // 0x2A0
-	unsigned char  space10[0x025D];
+	CDamageManager damageManager;          // 0x2A0
+	unsigned char  space10[0x0249];
 	unsigned char  field_501;              // 0x501
 	unsigned char  space11[0x005E];
 	float          burningDuration;        // 0x560
@@ -431,6 +453,8 @@ public:
 	static bool &bWheelsOnlyCheat;
 	bool IsSphereTouchingVehicle(float, float, float, float);
 	CPed *SetUpDriver(void);
+	bool AddPassenger(CPed *, unsigned char);
+	bool AddPassenger(CPed *);
 	int FindTyreNearestPoint(float, float);
 	void *operator new(unsigned int);
 };
@@ -494,10 +518,13 @@ public:
 	unsigned char  space13[0x009F];
 	// 0x6D8
 
+	void ClearFollowPath(void);
 	void SetAmmo(int, unsigned int);
 	void GrantAmmo(int, unsigned int);
 	void GiveWeapon(int, unsigned int, bool);
 	bool IsPedInControl(void);
+	void AddInCarAnims(CVehicle *, bool);
+	void SetObjective(unsigned int, void *);
 	void Say(unsigned short);
 };
 
@@ -782,7 +809,7 @@ public:
 class CUserDisplay
 {
 public:
-	static CPager& Pager;
+	static CPager *Pager;
 };
 
 //########################################################################
@@ -823,19 +850,19 @@ class CScrollBar
 {
 public:
 	unsigned long count;            // 0x00
-	char *text;                     // 0x04
-	float xStart;                   // 0x08
-	float yStart;                   // 0x0C
-	float zStart;                   // 0x10
+	char          *text;            // 0x04
+	float         xStart;           // 0x08
+	float         yStart;           // 0x0C
+	float         zStart;           // 0x10
 	unsigned long charCount;        // 0x14
 	unsigned long textLength;       // 0x18
-	float xEndOffset;               // 0x1C
-	float yEndOffset;               // 0x20
-	float zEndOffset;               // 0x24
-	float thickness;                // 0x28
+	float         xEndOffset;       // 0x1C
+	float         yEndOffset;       // 0x20
+	float         zEndOffset;       // 0x24
+	float         thickness;        // 0x28
 	unsigned char letterBuffer[40]; // 0x2C
 	unsigned char messageSet;       // 0x54
-	bool draw;                      // 0x55
+	bool          draw;             // 0x55
 	unsigned char r;                // 0x56
 	unsigned char g;                // 0x57
 	unsigned char b;                // 0x58
@@ -868,7 +895,7 @@ class CCrane
 {
 public:
 	CEntity       *object;            // 0x00
-	CObject       *hook;              // 0x04, pointer to hook object
+	CObject       *hook;              // 0x04
 	float         pickupX1;           // 0x08
 	float         pickupX2;           // 0x0C
 	float         pickupY1;           // 0x10
@@ -902,7 +929,7 @@ public:
 	bool          isCrusher;          // 0x77
 	bool          isMilitary;         // 0x78
 	unsigned char unk3;               // 0x79
-	unsigned char isNotCab;           // 0x7A
+	bool          isNotCab;           // 0x7A
 	unsigned char padding;            // 0x7B
 };
 
@@ -915,7 +942,7 @@ class CCranes
 public:
 	static int &CarsCollectedMilitaryCrane;
 	static int &NumCranes;
-	static CCrane *cranes;
+	static CCrane *aCranes;
 };
 
 //########################################################################
@@ -926,18 +953,6 @@ class CGeneral
 {
 public:
 	static float GetATanOfXY(float, float);
-};
-
-//########################################################################
-//# CDamageManager
-//########################################################################
-
-class CDamageManager
-{
-public:
-	void SetEngineStatus(unsigned int);
-	void SetWheelStatus(int, unsigned int);
-	unsigned int GetEngineStatus();
 };
 
 //########################################################################
@@ -1109,7 +1124,7 @@ public:
 class CPad
 {
 public:
-	static char *CPad::KeyBoardCheatString;
+	static char *KeyBoardCheatString;
 
 	static unsigned long GetPad(int);
 	void AddToPCCheatString(char);
@@ -1396,6 +1411,7 @@ public:
 	static void Seek(int, int, int);
 	static void Read(int, char *, int);
 	static int OpenFile(char const *, char const *);
+	static void SetDir(char const *);
 };
 
 //########################################################################
@@ -1405,7 +1421,7 @@ public:
 class CGame
 {
 public:
-	static unsigned char &nastyGame;
+	static bool &nastyGame;
 	static unsigned int &currArea;
 	static int &currLevel;
 };
@@ -1486,6 +1502,7 @@ class CVehicleModelInfo
 {
 public:
 	static unsigned int GetMaximumNumberOfPassengersFromNumberOfDoors(int);
+	void ChooseVehicleColour(unsigned char &, unsigned char &);
 };
 
 //########################################################################
@@ -1563,6 +1580,7 @@ class CGameLogic
 {
 public:
 	static void AddShortCutDropOffPointForMission(CVector, float);
+	static void ClearShortCut(void);
 };
 
 //########################################################################
@@ -1610,6 +1628,16 @@ class CWaterLevel
 public:
 	static void RenderBoatWakes(void);
 	static bool GetWaterLevelNoWaves(float, float, float, float *);
+};
+
+//########################################################################
+//# CRecordDataForChase
+//########################################################################
+
+class CRecordDataForChase
+{
+public:
+	static unsigned char &Status;
 };
 
 #endif

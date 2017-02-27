@@ -27,6 +27,7 @@
 #include "CPedHack.h"
 #include "CShinyTextsHack.h"
 #include "CCarCtrlHack.h"
+#include "CGameLogicHack.h"
 #include "Globals.h"
 #include "ModelIndices.h"
 #include "vcversion.h"
@@ -335,7 +336,8 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			!CRadarHack::initialise() ||
 			!CPedHack::initialise() ||
 			!CShinyTextsHack::initialise() ||
-			!CCarCtrlHack::initialise())
+			!CCarCtrlHack::initialise() ||
+			!CGameLogicHack::initialise())
 		{
 			VirtualProtect((LPVOID)(0x400000 + sectionheader->VirtualAddress), sectionheader->Misc.VirtualSize, OldProtect, &OldProtect);
 			return FALSE;

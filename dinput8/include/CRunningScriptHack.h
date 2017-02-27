@@ -43,6 +43,7 @@ public:
 	bool _0421_force_rain();
 	bool _0422_does_garage_contain_car();
 	bool _042A_is_threat_for_ped_type();
+	bool _043B_update_boat_foam_animation();
 	bool _0444_set_script_fire_audio();
 	bool _0447_is_player_lifting_a_phone();
 	bool _058E_set_shortcut_dropoff_point_for_mission(); // modified opcode
@@ -81,6 +82,14 @@ public:
 	bool _044E_set_car_ignore_level_transitions();
 	bool _044F_make_craigs_car_a_bit_stronger();
 	bool _0452_enable_player_control_camera();
+
+	bool _015E_is_car_in_air();
+	bool _02BC_set_swat_required();
+	bool _0367_start_kill_frenzy_headshot();
+	bool _036B_skip_clear_taxi_shortcut(); // custom opcode
+	bool _03C6_is_collision_in_memory();
+	bool _0430_warp_char_into_car_as_passenger(); // added opcode
+	bool _0432_get_char_in_car_passenger_seat(); // added opcode
 
 	static int debugMode;
 };

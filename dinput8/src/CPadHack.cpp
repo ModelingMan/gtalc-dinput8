@@ -105,7 +105,7 @@ void CPadHack::HealthCheat()
 	if (CVehicle *vehicle = VCGlobals::FindPlayerVehicle()) {
 		vehicle->health = 1000.0;
 		if (!vehicle->type) {
-			CDamageManager *damageManager = (CDamageManager *)&(vehicle->damageManager);
+			CDamageManager *damageManager = &vehicle->damageManager;
 			damageManager->SetEngineStatus(0);
 			damageManager->SetWheelStatus(0, 0);
 			damageManager->SetWheelStatus(1, 0);

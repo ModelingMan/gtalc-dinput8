@@ -238,5 +238,8 @@
     <ClCompile Include="src\CWaterLevel.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CRecordDataForChase.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

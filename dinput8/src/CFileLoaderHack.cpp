@@ -31,7 +31,7 @@ void CFileLoaderHack::LoadPedPathNode(const char *line, int modelId, int nodeNum
 	if (modelId == -1)
 		VCGlobals::ThePaths.StoreDetachedNodeInfoPed(nodeNum, static_cast<char>(NodeType), NextNode, posX, posY, posZ, Median, IsCrossroad != 0, (Flags & 1) != 0, (Flags & 4) != 0, static_cast<unsigned char>(15.0f * SpawnRate));
 	else
-		((CPathFindHack *)&VCGlobals::ThePaths)->StoreNodeInfoPed(static_cast<short>(modelId), static_cast<short>(nodeNum), static_cast<char>(NodeType), static_cast<char>(NextNode), static_cast<short>(posX), static_cast<short>(posY), static_cast<short>(posZ), Median, IsCrossroad != 0, (Flags & 1) != 0, (Flags & 4) != 0, static_cast<unsigned char>(15.0f * SpawnRate));
+		reinterpret_cast<CPathFindHack *>(&VCGlobals::ThePaths)->StoreNodeInfoPed(static_cast<short>(modelId), static_cast<short>(nodeNum), static_cast<char>(NodeType), static_cast<char>(NextNode), static_cast<short>(posX), static_cast<short>(posY), static_cast<short>(posZ), Median, IsCrossroad != 0, (Flags & 1) != 0, (Flags & 4) != 0, static_cast<unsigned char>(15.0f * SpawnRate));
 }
 
 void __declspec(naked) CFileLoaderHack::LoadObjectTypesHack()

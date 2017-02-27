@@ -35,6 +35,7 @@ namespace VCGlobals
 	static unsigned long g_FindPlayerPed = vcversion::AdjustOffset(0x004BC120);
 	static unsigned long g_FindPlayerVehicle = vcversion::AdjustOffset(0x004BC1E0);
 	static unsigned long g_FindPlayerCoors = vcversion::AdjustOffset(0x004BC240);
+	static unsigned long g_CrossProduct = vcversion::AdjustOffset(0x004E00B0);
 	static unsigned long g_strcpy = vcversion::AdjustOffset(0x00642560);
 	static unsigned long g_strncpy = vcversion::AdjustOffset(0x00642580);
 	static unsigned long g_strcmp = vcversion::AdjustOffset(0x00642620);
@@ -76,6 +77,11 @@ namespace VCGlobals
 	__declspec(naked) CVector *FindPlayerCoors(CVector *)
 	{
 		__asm jmp g_FindPlayerCoors;
+	}
+
+	__declspec(naked) CVector *CrossProduct(CVector *, CVector const &, CVector const &)
+	{
+		__asm jmp g_CrossProduct;
 	}
 
 	__declspec(naked) char *strcpy(char *dest, const char *src)

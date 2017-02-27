@@ -7,6 +7,8 @@ bool &CVehicle::bWheelsOnlyCheat = *reinterpret_cast<bool *>(vcversion::AdjustOf
 
 static unsigned long g_IsSphereTouchingVehicle = vcversion::AdjustOffset(0x005B7F00);
 static unsigned long g_SetUpDriver = vcversion::AdjustOffset(0x005B8870);
+static unsigned long g_AddPassenger1 = vcversion::AdjustOffset(0x005B8D50);
+static unsigned long g_AddPassenger2 = vcversion::AdjustOffset(0x005B8E60);
 static unsigned long g_FindTyreNearestPoint = vcversion::AdjustOffset(0x005B96A0);
 static unsigned long g_operator_new = vcversion::AdjustOffset(0x005BAB20);
 
@@ -18,6 +20,16 @@ __declspec(naked) bool CVehicle::IsSphereTouchingVehicle(float, float, float, fl
 __declspec(naked) CPed *CVehicle::SetUpDriver(void)
 {
 	__asm jmp g_SetUpDriver;
+}
+
+__declspec(naked) bool CVehicle::AddPassenger(CPed *, unsigned char)
+{
+	__asm jmp g_AddPassenger1;
+}
+
+__declspec(naked) bool CVehicle::AddPassenger(CPed *)
+{
+	__asm jmp g_AddPassenger2;
 }
 
 __declspec(naked) int CVehicle::FindTyreNearestPoint(float, float)

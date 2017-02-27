@@ -937,7 +937,7 @@ void cAudioManagerHack::ProcessCinemaScriptObject(unsigned int id)
 		if (CTimer::m_snTimeInMilliseconds > scriptObjectCinemaTime) {
 			this->m_Volume = this->ComputeVolume(90, this->m_MaxRange, this->m_DistanceToCamera);
 			if (this->m_Volume) {
-				int rand = *(unsigned int *)((unsigned long)this + 0x5540);
+				unsigned int rand = *(unsigned int *)((unsigned long)this + 0x5540);
 				rand &= 1;
 				this->m_SampleID = rand + LOOPING_SCRIPT_OBJECT_A;
 				this->m_Frequency = VCGlobals::SampleManager.GetSampleBaseFrequency(this->m_SampleID);
@@ -1066,7 +1066,7 @@ void cAudioManagerHack::ProcessAirportScriptObject(unsigned int)
 			this->m_DistanceToCamera = (distance > 0 ? sqrt(distance) : 0.0f);
 			this->m_Volume = this->ComputeVolume(110, this->m_MaxRange, this->m_DistanceToCamera);
 			if (this->m_Volume) {
-				int rand = *(unsigned int *)((unsigned long)this + 0x5540);
+				unsigned int rand = *(unsigned int *)((unsigned long)this + 0x5540);
 				rand &= 3;
 				this->m_SampleID = rand + LOOPING_SCRIPT_OBJECT_51A;
 				this->m_Unk0 = 0;
