@@ -18,12 +18,12 @@ __declspec(naked) bool CFileMgr::ReadLine(int, char *, int)
 	__asm jmp g_ReadLine;
 }
 
-__declspec(naked) void CFileMgr::Seek(int, int, int)
+__declspec(naked) bool CFileMgr::Seek(int, int, int)
 {
 	__asm jmp g_Seek;
 }
 
-__declspec(naked) void CFileMgr::Read(int, char *, int)
+__declspec(naked) unsigned int CFileMgr::Read(int, char *, int)
 {
 	__asm jmp g_Read;
 }

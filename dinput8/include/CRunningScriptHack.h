@@ -85,9 +85,12 @@ public:
 
 	bool _015E_is_car_in_air();
 	bool _02BC_set_swat_required();
+	bool _0354_start_chase_scene();
+	bool _0355_stop_chase_scene();
 	bool _0367_start_kill_frenzy_headshot();
 	bool _036B_skip_clear_taxi_shortcut(); // custom opcode
 	bool _03C6_is_collision_in_memory();
+	bool _040A_remove_car_from_chase();
 	bool _0430_warp_char_into_car_as_passenger(); // added opcode
 	bool _0432_get_char_in_car_passenger_seat(); // added opcode
 

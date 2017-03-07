@@ -101,6 +101,9 @@
     <ClCompile Include="src\CCarCtrlHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CRecordDataForChaseHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="src\ModelIndices.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -200,6 +203,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\CCarCtrlHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CRecordDataForChaseHack.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\Offset.h">

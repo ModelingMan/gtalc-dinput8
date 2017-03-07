@@ -28,6 +28,7 @@
 #include "CShinyTextsHack.h"
 #include "CCarCtrlHack.h"
 #include "CGameLogicHack.h"
+#include "CRecordDataForChaseHack.h"
 #include "Globals.h"
 #include "ModelIndices.h"
 #include "vcversion.h"
@@ -47,10 +48,6 @@ const char *windowName = "GTA: Liberty City";
 // GangsInitialise
 static void GangsInitialise();
 unsigned long gangInitialiseEndJump = vcversion::AdjustOffset(0x004EEEDF);
-
-// GameLogicUpdate
-static void GameLogicUpdate();
-unsigned long gameLogicUpdateEndJump = vcversion::AdjustOffset(0x0042BC6D);
 
 // AutomobilePreRender
 static void AutomobilePreRender();
@@ -265,9 +262,6 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		// taxi cash
 		Patch<unsigned char>(0x005B8AB6, 25); // CVehicle::SetDriver
 
-		// hospital cost
-		InjectHook(0x0042BC64, &GameLogicUpdate, PATCH_JUMP); // CGameLogic::Update
-
 		// FBI Rancher roof light
 		InjectHook(0x0058BE2F, &AutomobilePreRender, PATCH_JUMP); // CAutomobile::PreRender
 
@@ -337,7 +331,8 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			!CPedHack::initialise() ||
 			!CShinyTextsHack::initialise() ||
 			!CCarCtrlHack::initialise() ||
-			!CGameLogicHack::initialise())
+			!CGameLogicHack::initialise() ||
+			!CRecordDataForChaseHack::initialise())
 		{
 			VirtualProtect((LPVOID)(0x400000 + sectionheader->VirtualAddress), sectionheader->Misc.VirtualSize, OldProtect, &OldProtect);
 			return FALSE;
@@ -373,16 +368,6 @@ void GangsInitialise()
 {
 	for (int i = 0; i < 9; i++) {
 		CGangs::Gang[i].pedModelPreference = -1;
-	}
-}
-
-void __declspec(naked) GameLogicUpdate()
-{
-	__asm
-	{
-		mov eax, dword ptr [ebx+0A0h] // get current cash
-		add eax, 0FFFFFC18h           // subtract 1000
-		jmp gameLogicUpdateEndJump
 	}
 }
 

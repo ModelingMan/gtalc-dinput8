@@ -29,6 +29,7 @@
     <ClCompile Include="src\CCarCtrl.cpp" />
     <ClCompile Include="src\CClock.cpp" />
     <ClCompile Include="src\CCranes.cpp" />
+    <ClCompile Include="src\CCutsceneMgr.cpp" />
     <ClCompile Include="src\CDamageManager.cpp" />
     <ClCompile Include="src\CDarkel.cpp" />
     <ClCompile Include="src\cDMAudio.cpp" />

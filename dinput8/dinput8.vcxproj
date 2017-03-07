@@ -156,6 +156,7 @@
     <ClCompile Include="src\CPickupsHack.cpp" />
     <ClCompile Include="src\CProjectileInfoHack.cpp" />
     <ClCompile Include="src\CRadarHack.cpp" />
+    <ClCompile Include="src\CRecordDataForChaseHack.cpp" />
     <ClCompile Include="src\CRendererHack.cpp" />
     <ClCompile Include="src\CRunningScriptHack.cpp" />
     <ClCompile Include="src\CScrollBarHack.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="include\CPickupsHack.h" />
     <ClInclude Include="include\CProjectileInfoHack.h" />
     <ClInclude Include="include\CRadarHack.h" />
+    <ClInclude Include="include\CRecordDataForChaseHack.h" />
     <ClInclude Include="include\CRendererHack.h" />
     <ClInclude Include="include\CRunningScriptHack.h" />
     <ClInclude Include="include\CScrollBarHack.h" />

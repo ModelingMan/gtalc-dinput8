@@ -10,4 +10,5 @@ public:
 
 	static bool initialise();
 	static void ClearTaxiShotcutHack();
+	static void UpdateHack();
 };

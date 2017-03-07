@@ -649,24 +649,24 @@ class CRunningScript
 {
 public:
 	// Thanks to CyQ, PatrickW and spookie for this info.
-	void *m_pNext;                   // 0x00
-	void *m_pPrev;                   // 0x04
-	char m_strName[8];               // 0x08
-	unsigned int m_dwScriptIP;       // 0x10
-	unsigned int m_dwReturnStack[6]; // 0x14
-	unsigned short m_dwStackPointer; // 0x2C
-	unsigned char pad1[2];           // 0x2E
-	unsigned int m_dwLocalVar[18];   // 0x30
-	bool m_bStartNewScript;          // 0x78
-	bool m_bJumpFlag;                // 0x79
-	bool m_bWorky;                   // 0x7A
-	bool m_bAwake;                   // 0x7B
-	unsigned int m_dwWakeTime;       // 0x7C
-	unsigned short m_wIfParam;       // 0x80
-	bool m_bNotFlag;                 // 0x82
-	bool m_bWastedBustedCheck;       // 0x83
-	bool m_bWastedBustedFlag;        // 0x84
-	bool m_bMissionThread;           // 0x85
+	CRunningScript *m_pNext;              // 0x00
+	CRunningScript *m_pPrev;              // 0x04
+	char           m_strName[8];          // 0x08
+	unsigned int   m_dwScriptIP;          // 0x10
+	unsigned int   m_dwReturnStack[6];    // 0x14
+	unsigned short m_dwStackPointer;      // 0x2C
+	unsigned char  pad1[2];               // 0x2E
+	unsigned int   m_dwLocalVar[18];      // 0x30
+	bool           m_bIsScriptActive;     // 0x78
+	bool           m_bCompareFlag;        // 0x79
+	bool           m_bUsesMissionCleanup; // 0x7A
+	bool           m_bSkipWakeTime;       // 0x7B
+	unsigned int   m_dwWakeTime;          // 0x7C
+	unsigned short m_wIfParam;            // 0x80
+	bool           m_bNotFlag;            // 0x82
+	bool           m_bWastedBustedCheck;  // 0x83
+	bool           m_bWastedBustedFlag;   // 0x84
+	bool           m_bIsMissionScript;    // 0x85
 
 	template <class T>
 	T SCM_Read(bool bIncreaseIP);
@@ -761,6 +761,7 @@ class CTheScripts
 public:
 	static IntroTextLine *IntroTextLines;
 	static unsigned char *ScriptSpace;
+	static CRunningScript **pActiveScripts;
 	static class CMissionCleanup &MissionCleanUp;
 	static unsigned short &NumberOfIntroTextLinesThisFrame;
 	static unsigned short &CommandsExecuted;
@@ -782,8 +783,10 @@ public:
 	static float &ms_fTimeScale;
 	static unsigned int &m_FrameCounter;
 
+	static void Stop(void);
 	static void Resume(void);
 	static void Suspend(void);
+	static void Update(void);
 };
 
 //########################################################################
@@ -1408,8 +1411,8 @@ class CFileMgr
 public:
 	static int CloseFile(int);
 	static bool ReadLine(int, char *, int);
-	static void Seek(int, int, int);
-	static void Read(int, char *, int);
+	static bool Seek(int, int, int);
+	static unsigned int Read(int, char *, int);
 	static int OpenFile(char const *, char const *);
 	static void SetDir(char const *);
 };
@@ -1638,6 +1641,16 @@ class CRecordDataForChase
 {
 public:
 	static unsigned char &Status;
+};
+
+//########################################################################
+//# CCutsceneMgr
+//########################################################################
+
+class CCutsceneMgr
+{
+public:
+	static bool &ms_cutsceneProcessing;
 };
 
 #endif

@@ -8,6 +8,7 @@
 #include "CObjectHack.h"
 #include "CSpecialParticleStuffHack.h"
 #include "CGameLogicHack.h"
+#include "CRecordDataForChaseHack.h"
 #include "Globals.h"
 #include "vcclasses.h"
 #include "vcversion.h"
@@ -190,12 +191,18 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 		return this->_015E_is_car_in_air();
 	case 0x2BC:
 		return this->_02BC_set_swat_required();
+	case 0x354:
+		return this->_0354_start_chase_scene();
+	case 0x355:
+		return this->_0355_stop_chase_scene();
 	case 0x367:
 		return this->_0367_start_kill_frenzy_headshot();
 	case 0x36B:
 		return this->_036B_skip_clear_taxi_shortcut();
 	case 0x3C6:
 		return this->_03C6_is_collision_in_memory();
+	case 0x40A:
+		return this->_040A_remove_car_from_chase();
 	case 0x430:
 		return this->_0430_warp_char_into_car_as_passenger();
 	case 0x432:
@@ -344,7 +351,7 @@ bool CRunningScriptHack::_02A1_message_wait()
 	this->CollectParameters(&this->m_dwScriptIP, 2);
 	this->m_dwWakeTime = ScriptParams[0].uint32 + CTimer::m_snTimeInMilliseconds;
 	if (ScriptParams[1].int32) {
-		this->m_bAwake = 1;
+		this->m_bSkipWakeTime = 1;
 	}
 	return 1; // special
 }
@@ -925,6 +932,21 @@ bool CRunningScriptHack::_02BC_set_swat_required()
 	return 0;
 }
 
+bool CRunningScriptHack::_0354_start_chase_scene()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 1);
+	CTimer::Suspend();
+	CRecordDataForChaseHack::StartChaseScene(ScriptParams[0].float32);
+	CTimer::Resume();
+	return 0;
+}
+
+bool CRunningScriptHack::_0355_stop_chase_scene()
+{
+	CRecordDataForChaseHack::CleanUpChaseScene();
+	return 0;
+}
+
 bool CRunningScriptHack::_0367_start_kill_frenzy_headshot()
 {
 	char text[8];
@@ -949,13 +971,20 @@ bool CRunningScriptHack::_03C6_is_collision_in_memory()
 	return 0;
 }
 
+bool CRunningScriptHack::_040A_remove_car_from_chase()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 1);
+	CRecordDataForChaseHack::RemoveCarFromChase(ScriptParams[0].int32);
+	return 0;
+}
+
 bool CRunningScriptHack::_0430_warp_char_into_car_as_passenger()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 3);
 	CPed *ped = CPools::ms_pPedPool->GetAt(ScriptParams[0].int32);
 	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[1].int32);
 	ped->SetObjective(0x12, vehicle);
-	unsigned char seat = ScriptParams[2].uint8;
+	char seat = ScriptParams[2].int8;
 	if (seat < 0) {
 		vehicle->AddPassenger(ped);
 	} else {
