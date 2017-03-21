@@ -5,10 +5,9 @@
 class CObjectHack : public CObject
 {
 public:
-	static bool initialise();
-
 	static short nBodyCastHealth;
 
+	static bool initialise();
 	static void InitHackProxy();
 	void InitHack();
 	void ObjectDamageHack(float);

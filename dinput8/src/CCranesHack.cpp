@@ -1,12 +1,11 @@
 #include "CCranesHack.h"
+#include <cmath>
+#include <new>
 #include "vcversion.h"
 #include "Globals.h"
 #include "SilentCall.h"
 #include "ModelIndices.h"
 #include "Offset.h"
-
-#include <math.h>
-#include <new>
 
 // FindCarInSectorListHack
 unsigned long findCarProceedJump = vcversion::AdjustOffset(0x0005A81EC);

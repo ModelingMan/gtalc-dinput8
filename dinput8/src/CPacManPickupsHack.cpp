@@ -1,10 +1,10 @@
 #include "CPacManPickupsHack.h"
+#include <cmath>
+#include <new>
 #include "vcversion.h"
 #include "SilentCall.h"
 #include "Offset.h"
 #include "ModelIndices.h"
-#include <math.h>
-#include <new>
 
 int CPacManPickupsHack::PillsEatenInRace;
 bool CPacManPickupsHack::bPMActive;
@@ -142,11 +142,10 @@ void CPacManPickupsHack::Init(void)
 	PillsEatenInRace = 0;
 
 	// custom code gets optional data for pickups
-	// create pacman.dat and populate it with two custom models and up to 255 coordinate points
+	// create lc_pacman.dat and populate it with two custom models and up to 255 coordinate points on each line
 	scrambleModel = ModelIndices::MI_BULLION;
 	raceModel = ModelIndices::MI_DONKEYMAG;
-	int filename = CFileMgr::OpenFile("pacman.dat", "r");
-	if (filename) {
+	if (int filename = CFileMgr::OpenFile("data\\lc_pacman.dat", "r")) {
 		char buffer[200];
 		if (CFileMgr::ReadLine(filename, buffer, 200)) VCGlobals::sscanf(buffer, "%d", &scrambleModel);
 		if (CFileMgr::ReadLine(filename, buffer, 200)) VCGlobals::sscanf(buffer, "%d", &raceModel);

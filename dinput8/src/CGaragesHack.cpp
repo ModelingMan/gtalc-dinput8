@@ -1,10 +1,9 @@
 #include "CGaragesHack.h"
+#include <cmath>
 #include "Globals.h"
 #include "vcversion.h"
 #include "SilentCall.h"
 #include "ModelIndices.h"
-
-#include <math.h>
 
 const int carsToCollect[2][16] =
 {
@@ -89,10 +88,10 @@ bool CGaragesHack::initialise()
 
 bool CGaragesHack::HasImportExportGarageCollectedThisCar(short index, int slot)
 {
-	if (garages[index].type == 8) {
+	if (aGarages[index].type == 8) {
 		return !!(CGaragesHack::CarTypesCollected[0] & (1 << slot));
 	}
-	if (garages[index].type == 9) {
+	if (aGarages[index].type == 9) {
 		return !!(CGaragesHack::CarTypesCollected[1] & (1 << slot));
 	}
 	return false;

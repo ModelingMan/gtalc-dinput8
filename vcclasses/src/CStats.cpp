@@ -12,6 +12,7 @@ float &CStats::StoresKnockedOff = *reinterpret_cast<float *>(vcversion::AdjustOf
 int &CStats::CommercialPassed = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x009B489C));
 float &CStats::TopShootingRangeScore = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x00A0D8A4));
 float &CStats::MovieStunts = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x00A0FC8C));
+int &CStats::NoMoreHurricanes = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x00A0FCAC));
 int &CStats::MissionsGiven = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x00A1023C));
 float &CStats::AutoPaintingBudget = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x00A10298));
 float &CStats::Assassinations = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x00A10918));

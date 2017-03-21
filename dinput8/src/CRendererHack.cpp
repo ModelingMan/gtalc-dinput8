@@ -1,13 +1,14 @@
 #include "CRendererHack.h"
+#include <Windows.h>
+#include <new>
 #include "vcversion.h"
 #include "Globals.h"
 #include "SilentCall.h"
-#include <Windows.h>
 
 unsigned long renderEverythingBarRoadsIntermediate = vcversion::AdjustOffset(0x004C9FA8);
 unsigned long renderEverythingBarRoadsEndJump = vcversion::AdjustOffset(0x004C9F90);
-bool isStateOne = false;
-char buildings[8000] = {};
+bool isStateOne;
+char *buildings;
 
 bool CRendererHack::initialise()
 {
@@ -28,6 +29,10 @@ bool CRendererHack::initialise()
 
 	// get optional data to draw backfaces
 	InjectHook(0x004CA421, &CRendererHack::InitHack, PATCH_JUMP);
+
+	isStateOne = false;
+	buildings = NULL;
+
 	return true;
 }
 
@@ -51,7 +56,7 @@ void __declspec(naked) CRendererHack::RenderEverythingBarRoadsHackProxy(void)
 
 void CRendererHack::RenderEverythingBarRoadsHack(int model)
 {
-	if (buildings[model]) {
+	if (buildings && buildings[model]) {
 		RwRenderStateSet(0x14, 1);
 		isStateOne = true;
 		return;
@@ -64,14 +69,25 @@ void CRendererHack::RenderEverythingBarRoadsHack(int model)
 
 void CRendererHack::InitHack(void)
 {
-	int filename = CFileMgr::OpenFile("drawBackfaces.dat", "r");
-	if (filename) {
-		char buffer[200];
-		int line;
-		while (CFileMgr::ReadLine(filename, buffer, 200)) {
-			VCGlobals::sscanf(buffer, "%d", &line);
-			buildings[line] = 1;
+	// custom code gets optional data to disallow backface culling
+	// create lc_drawbackfaces.dat and populate it with model indices on each line
+	if (buildings) {
+		delete[] buildings;
+		buildings = NULL;
+	}
+	buildings = new (std::nothrow) char[CPools::ms_pBuildingPool->totalCount]; // allocate memory for array
+	if (buildings) {
+		memset(buildings, 0, CPools::ms_pBuildingPool->totalCount); // init array to 0
+		if (int filename = CFileMgr::OpenFile("data\\lc_drawbackfaces.dat", "r")) {
+			char buffer[200];
+			int line;
+			while (CFileMgr::ReadLine(filename, buffer, 200)) {
+				VCGlobals::sscanf(buffer, "%d", &line);
+				if (line < CPools::ms_pBuildingPool->totalCount) {
+					buildings[line] = 1;
+				}
+			}
+			CFileMgr::CloseFile(filename);
 		}
-		CFileMgr::CloseFile(filename);
 	}
 }

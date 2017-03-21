@@ -2,11 +2,11 @@
 #include "vcversion.h"
 
 int *CGarages::CarTypesCollected = reinterpret_cast<int *>(vcversion::AdjustOffset(0x007D52F8));
+CGarage *CGarages::aGarages = reinterpret_cast<CGarage *>(vcversion::AdjustOffset(0x00812668));
 int &CGarages::BankVansCollected = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x00978714));
 int &CGarages::PoliceCarsCollected = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x00A0D8B8));
-unsigned char &CGarages::RespraysAreFree = *reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x00A10AB5));
-unsigned char &CGarages::BombsAreFree = *reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x00A10B32));
-CGarage *CGarages::garages = reinterpret_cast<CGarage *>(vcversion::AdjustOffset(0x00812668));
+bool &CGarages::RespraysAreFree = *reinterpret_cast<bool *>(vcversion::AdjustOffset(0x00A10AB5));
+bool &CGarages::BombsAreFree = *reinterpret_cast<bool *>(vcversion::AdjustOffset(0x00A10B32));
 
 static unsigned long g_TriggerMessage = vcversion::AdjustOffset(0x0042EDE0);
 static unsigned long g_UpdateDoor = vcversion::AdjustOffset(0x0042F030);

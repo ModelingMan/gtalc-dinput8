@@ -20,7 +20,6 @@ public:
 	static CEntity *pLodLiftPart;
 
 	static bool initialise();
-
 	static void Init(void);
 	static void Update(void);
 	static void FindBridgeEntities(void);

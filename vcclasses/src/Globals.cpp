@@ -11,13 +11,17 @@ namespace VCGlobals
 	CPathFind &ThePaths = *reinterpret_cast<CPathFind *>(vcversion::AdjustOffset(0x009B6E5C));
 
 	char *ScrollCharSet = reinterpret_cast<char *>(vcversion::AdjustOffset(0x00696674));
+	char *String_DigitalClock = reinterpret_cast<char *>(vcversion::AdjustOffset(0x0069696C));
 
+	unsigned short &MI_SINGLESTREETLIGHTS1 = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E820));
 	unsigned short &MI_DOUBLESTREETLIGHTS = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E82C));
 	unsigned short &MI_CARMINE = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E8B0));
 	unsigned short &MI_NAUTICALMINE = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E910));
 	unsigned short &MI_LITTLEHA_POLICE = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E9A0));
 	unsigned short &MI_LIGHTBEAM = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E9B4));
+	short *WeatherTypesList = reinterpret_cast<short *>(vcversion::AdjustOffset(0x00699EE4));
 	ScriptParameter *ScriptParams = reinterpret_cast<ScriptParameter *>(vcversion::AdjustOffset(0x007D7438));
+	CProjectileInfo *gaProjectileInfo = reinterpret_cast<CProjectileInfo *>(vcversion::AdjustOffset(0x007DB888));
 	CPhoneInfo &gPhoneInfo = *reinterpret_cast<CPhoneInfo *>(vcversion::AdjustOffset(0x00817CF0));
 	RwTexture *&gpShadowHeliTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x00975218));
 	RwTexture *&gpShadowExplosionTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x00978DB4));
@@ -36,6 +40,7 @@ namespace VCGlobals
 	static unsigned long g_FindPlayerVehicle = vcversion::AdjustOffset(0x004BC1E0);
 	static unsigned long g_FindPlayerCoors = vcversion::AdjustOffset(0x004BC240);
 	static unsigned long g_CrossProduct = vcversion::AdjustOffset(0x004E00B0);
+	static unsigned long g_DefinedState = vcversion::AdjustOffset(0x0057F9C0);
 	static unsigned long g_strcpy = vcversion::AdjustOffset(0x00642560);
 	static unsigned long g_strncpy = vcversion::AdjustOffset(0x00642580);
 	static unsigned long g_strcmp = vcversion::AdjustOffset(0x00642620);
@@ -82,6 +87,11 @@ namespace VCGlobals
 	__declspec(naked) CVector *CrossProduct(CVector *, CVector const &, CVector const &)
 	{
 		__asm jmp g_CrossProduct;
+	}
+
+	__declspec(naked) void DefinedState(void)
+	{
+		__asm jmp g_DefinedState;
 	}
 
 	__declspec(naked) char *strcpy(char *dest, const char *src)

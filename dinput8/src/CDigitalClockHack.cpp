@@ -1,12 +1,9 @@
 #include "CDigitalClockHack.h"
+#include <cmath>
 #include "Globals.h"
 #include "vcversion.h"
 
-#include <math.h>
-
 using namespace VCGlobals;
-
-char sDigitalClockText[6] = "12:34";
 
 void CDigitalClockHack::Init(CVector position, float p2, float p3, unsigned char p4, unsigned char p5, unsigned char p6, float drawDistance, float p8)
 {
@@ -22,31 +19,28 @@ void CDigitalClockHack::Init(CVector position, float p2, float p3, unsigned char
 	this->m_1C = p8;
 }
 
-char *GenerateDigitalClockText()
+char *FindDigitalClockMessage()
 {
-	if (((CTimer::m_snTimeInMilliseconds >> 10) & 7) >= 6)
-	{
-		short temprature = static_cast<short>(13.0f - 6.0f * cosf((CClock::ms_nGameClockHours * 60 + CClock::ms_nGameClockMinutes) / 229.299358f - 1.0f));
-		sDigitalClockText[0] = static_cast<char>(temprature / 10 + '0');
-		if (sDigitalClockText[0] == '0')
-			sDigitalClockText[0] = ' ';
-		sDigitalClockText[1] = temprature % 10 + '0';
-		sDigitalClockText[2] = ' ';
-		sDigitalClockText[3] = '@';
-		sDigitalClockText[4] = 'C';
-	}
-	else
-	{
-		sDigitalClockText[0] = CClock::ms_nGameClockHours / 10 + '0';
-		sDigitalClockText[1] = CClock::ms_nGameClockHours % 10 + '0';
-		sDigitalClockText[3] = CClock::ms_nGameClockMinutes / 10 + '0';
-		sDigitalClockText[4] = CClock::ms_nGameClockMinutes % 10 + '0';
+	if (((CTimer::m_snTimeInMilliseconds >> 10) & 7) >= 6) {
+		short temprature = static_cast<short>(13.0f - 6.0f * cosf((CClock::ms_nGameClockHours * 60 + CClock::ms_nGameClockMinutes) * 0.0043611112f - 1.0f));
+		String_DigitalClock[0] = static_cast<char>(temprature / 10 + '0');
+		if (String_DigitalClock[0] == '0')
+			String_DigitalClock[0] = ' ';
+		String_DigitalClock[1] = temprature % 10 + '0';
+		String_DigitalClock[2] = ' ';
+		String_DigitalClock[3] = '@';
+		String_DigitalClock[4] = 'C';
+	} else {
+		String_DigitalClock[0] = CClock::ms_nGameClockHours / 10 + '0';
+		String_DigitalClock[1] = CClock::ms_nGameClockHours % 10 + '0';
+		String_DigitalClock[3] = CClock::ms_nGameClockMinutes / 10 + '0';
+		String_DigitalClock[4] = CClock::ms_nGameClockMinutes % 10 + '0';
 		if (CTimer::m_snTimeInMilliseconds & 0x200)
-			sDigitalClockText[2] = ':';
+			String_DigitalClock[2] = ':';
 		else
-			sDigitalClockText[2] = ' ';
+			String_DigitalClock[2] = ' ';
 	}
-	return sDigitalClockText;
+	return String_DigitalClock;
 }
 
 void CDigitalClockHack::Render()
@@ -63,7 +57,7 @@ void CDigitalClockHack::Render()
 	//if (CSprite::GetIsOnScreen(this->m_Position, this->m_1C * 5.0f))
 	{
 		CSprite::InitSpriteBuffer();
-		char *text = GenerateDigitalClockText();
+		char *text = FindDigitalClockMessage();
 		
 		v5 = (static_cast<float>(rand() % 256 + 768) * this->m_fScale) / 1024.0f;
 		unsigned char r = static_cast<unsigned char>(static_cast<float>(this->m_20) * v5);
@@ -86,21 +80,16 @@ void CDigitalClockHack::Render()
 		RwRenderStateSet(6, 1);
 		
 		int v20 = 0;
-		for (int i = 0; i < 5; i++, v20 += 8)
-		{
+		for (int i = 0; i < 5; i++, v20 += 8) {
 			v17 = 5 * (text[i] - ' ');
 			int v12 = v20;
-			for (int o = 0; o < 5; o++, v12++)
-			{
-				for (int u = 0; u < 5; u++)
-				{
-					if (ScrollCharSet[v17 + o] & (1 << u))
-					{
+			for (int o = 0; o < 5; o++, v12++) {
+				for (int u = 0; u < 5; u++) {
+					if (ScrollCharSet[v17 + o] & (1 << u)) {
 						v29.x = v12 * this->m_0C * this->m_1C * 0.125f + this->m_Position.x;
 						v29.y = v12 * this->m_10 * this->m_1C * 0.125f + this->m_Position.y;
 						v29.z = u * this->m_1C * 0.125f + this->m_Position.z;
-						if (CSprite::CalcScreenCoors(v29, &v24, &v27, &v28, 1))
-						{
+						if (CSprite::CalcScreenCoors(v29, &v24, &v27, &v28, 1)) {
 							v10 = v28 * this->m_1C * 0.12f;
 							v11 = v27 * this->m_1C * 0.12f;
 							CSprite::RenderBufferedOneXLUSprite(v24.x, v24.y, v24.z, v11, v10, r, g, b, 255, 1.0f / v24.z, 255);
@@ -119,8 +108,7 @@ void CDigitalClockHack::Update()
 	float y = TheCamera.GetMatrix().pos.y - this->m_Position.y;
 	float distance = sqrt(x*x + y*y);
 
-	if (distance > this->m_fDrawDistance)
-	{
+	if (distance > this->m_fDrawDistance) {
 		this->m_bRender = false;
 		return;
 	}

@@ -1,4 +1,4 @@
 #include "vcclasses.h"
 #include "vcversion.h"
 
-CProjectileInfo::ProjectileInfo *CProjectileInfo::projectiles = reinterpret_cast<CProjectileInfo::ProjectileInfo *>(vcversion::AdjustOffset(0x007DB888));
+CObject **CProjectileInfo::ms_apProjectile = reinterpret_cast<CObject **>(vcversion::AdjustOffset(0x0094B708));

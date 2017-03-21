@@ -69,9 +69,9 @@ unsigned long sfxNoMatch = vcversion::AdjustOffset(0x005DDB73);
 unsigned long sfxMatch = vcversion::AdjustOffset(0x005DDBAC);
 
 // support treadables
-static void Treadables();
-unsigned long treadablesEndJump = vcversion::AdjustOffset(0x004C0331);
+static void TreadablesHack(int, const char *);
 unsigned long treadablesCall = vcversion::AdjustOffset(0x004C0DD0);
+unsigned int numberOfTreadables;
 
 // RepositionOneObject
 static void RepositionOneObjectHack(CEntity *);
@@ -112,8 +112,7 @@ bool SetupDirectInputProxy()
 	_tcscat_s(szPath, TEXT("\\dinput8.dll"));
 	hOrigDLL = LoadLibrary(szPath);
 
-	if (hOrigDLL != NULL)
-	{
+	if (hOrigDLL != NULL) {
 		OldDirectInput8Create = GetProcAddress(hOrigDLL, "DirectInput8Create");
 		OldDllCanUnloadNow = GetProcAddress(hOrigDLL, "DllCanUnloadNow");
 		OldDllGetClassObject = GetProcAddress(hOrigDLL, "DllGetClassObject");
@@ -151,13 +150,11 @@ __declspec(naked) HRESULT WINAPI NewDllUnregisterServer()
 
 BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 {
-	switch (dwReason)
-	{
+	switch (dwReason) {
 	case DLL_PROCESS_ATTACH:
 		srand((unsigned)time(NULL));
 
-		if (!SetupDirectInputProxy())
-		{
+		if (!SetupDirectInputProxy()) {
 			MessageBox(NULL, TEXT("Failed to load dinput8.dll"), TEXT("Error!"), MB_OK);
 			return FALSE;
 		}
@@ -175,14 +172,12 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		sectionheader = (PIMAGE_SECTION_HEADER)((BYTE*)ntheader + sizeof(IMAGE_NT_HEADERS));
 
 		numSections = fileheader->NumberOfSections;
-		for (; numSections-- > 0; sectionheader++)
-		{
+		for (; numSections-- > 0; sectionheader++) {
 			if (strcmp((const char *)sectionheader->Name, ".text") == 0)
 				break;
 		}
 
-		if (!VirtualProtect((LPVOID)(0x400000 + sectionheader->VirtualAddress), sectionheader->Misc.VirtualSize, PAGE_EXECUTE_READWRITE, &OldProtect))
-		{
+		if (!VirtualProtect((LPVOID)(0x400000 + sectionheader->VirtualAddress), sectionheader->Misc.VirtualSize, PAGE_EXECUTE_READWRITE, &OldProtect)) {
 			MessageBox(NULL, TEXT("Unable to set VC's code to writable memory"), TEXT("Error!"), MB_OK);
 			return FALSE;
 		}
@@ -272,7 +267,8 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		InjectHook(0x005433BD, &RenderReflections); // CCoronas::RenderReflections
 
 		// support treadables
-		InjectHook(0x004C032C, &Treadables, PATCH_JUMP); // CPools::Initialise
+		numberOfTreadables = GetPrivateProfileInt("Misc", "Treadables", 8000, "./gta-lc.ini");
+		InjectHook(0x004C032C, &TreadablesHack); // CPools::Initialise
 
 		// investigate ped crash fix
 		InjectHook(0x004E94E0, &CivilianAI, PATCH_JUMP);
@@ -300,6 +296,9 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		InjectHook(0x0048C511, &ModelIndices::MatchModelStringHack);
 		InjectHook(0x0048C6E3, &ModelIndices::MatchModelStringHack);
 		InjectHook(0x0048CA7B, &ModelIndices::MatchModelStringHack);
+
+		// lod fix (HM128)
+		Patch<float>(0x0056F516, 100.0);
 
 		// center mouse (SilentPatch)
 		InjectHook(0x004A5E45, &ResetMousePos);
@@ -342,8 +341,7 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		break;
 
 	case DLL_PROCESS_DETACH:
-		if (hOrigDLL != NULL)
-		{
+		if (hOrigDLL != NULL) {
 			OldDirectInput8Create = NULL;
 			OldDllCanUnloadNow = NULL;
 			OldDllGetClassObject = NULL;
@@ -443,23 +441,26 @@ void __declspec(naked) PedCommentsProcess()
 	}
 }
 
-void __declspec(naked) Treadables()
+void __declspec(naked) TreadablesHack(int, const char *)
 {
 	__asm
 	{
-		pop eax
-		push 8000
-		call treadablesCall
-		jmp treadablesEndJump
+		// ecx must be preserved
+		push 0                  // push second argument
+		push numberOfTreadables // push first argument
+		call treadablesCall     // call treadables function
+		// eax must be preserved
+		ret 8
 	}
 }
 
 void RepositionOneObjectHack(CEntity *entity)
 {
-	if (entity->modelIndex == VCGlobals::MI_DOUBLESTREETLIGHTS) {
+	if (entity->modelIndex == VCGlobals::MI_SINGLESTREETLIGHTS1 ||
+		entity->modelIndex == VCGlobals::MI_DOUBLESTREETLIGHTS) {
 		float updateZ = CWorld::FindGroundZFor3DCoord(entity->GetX(), entity->GetY(), entity->GetZ() + 2.0f, 0);
 		unsigned long collisionModel = *reinterpret_cast<unsigned long *>(CModelInfo::ms_modelInfoPtrs[entity->modelIndex] + 0x1C);
-		updateZ += *reinterpret_cast<float *>(collisionModel + 0x24);
+		updateZ -= *reinterpret_cast<float *>(collisionModel + 0x18);
 		entity->GetZ() = updateZ;
 		entity->GetMatrix().UpdateRW();
 		entity->UpdateRwFrame();

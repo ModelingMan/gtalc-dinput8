@@ -2,6 +2,8 @@
 
 #include "vcclasses.h"
 
+#define MAX_PROJECTILES 32
+
 class CProjectileInfoHack : public CProjectileInfo
 {
 public:

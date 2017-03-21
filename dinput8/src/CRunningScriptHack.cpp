@@ -1,4 +1,6 @@
 #include "CRunningScriptHack.h"
+#include <Windows.h>
+#include <cmath>
 #include "CPagerHack.h"
 #include "CScrollBarHack.h"
 #include "CCranesHack.h"
@@ -13,9 +15,6 @@
 #include "vcclasses.h"
 #include "vcversion.h"
 #include "SilentCall.h"
-
-#include <Windows.h>
-#include <math.h>
 
 using namespace VCGlobals;
 
@@ -87,6 +86,8 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 		return this->_0356_is_explosion_in_area();
 	case 0x368:
 		return this->_0368_activate_military_crane();
+	case 0x374:
+		return this->_0374_set_motion_blur();
 	case 0x37F:
 		return this->_037F_give_player_detonator();
 	case 0x3A0:
@@ -434,6 +435,13 @@ bool CRunningScriptHack::_0368_activate_military_crane()
 	return 0;
 }
 
+bool CRunningScriptHack::_0374_set_motion_blur()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 1);
+	VCGlobals::TheCamera.SetMotionBlur(0, 0, 0, 0, ScriptParams[0].int32);
+	return 0;
+}
+
 bool CRunningScriptHack::_037F_give_player_detonator()
 {
 	CStreaming::RequestModel(291, 1);
@@ -532,7 +540,7 @@ bool CRunningScriptHack::_0422_does_garage_contain_car()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
 	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[1].int32);
-	this->UpdateCompareFlag(CGarages::garages[ScriptParams[0].int16].IsEntityEntirelyInside3D(vehicle, 0.0));
+	this->UpdateCompareFlag(CGarages::aGarages[ScriptParams[0].int16].IsEntityEntirelyInside3D(vehicle, 0.0));
 	return 0;
 }
 
@@ -658,7 +666,7 @@ bool CRunningScriptHack::_0255_restart_critical_mission()
 bool CRunningScriptHack::_0299_activate_garage()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
-	CGarage *garage = &CGarages::garages[ScriptParams[0].int16];
+	CGarage *garage = &CGarages::aGarages[ScriptParams[0].int16];
 	if (garage->type == 11 && garage->state == 0) {
 		garage->state = 3;
 	}
@@ -697,7 +705,7 @@ bool CRunningScriptHack::_02A0_is_char_stopped()
 bool CRunningScriptHack::_02B9_deactivate_garage()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
-	CGarages::garages[ScriptParams[0].int16].isInactive = 1;
+	CGarages::aGarages[ScriptParams[0].int16].isInactive = 1;
 	return 0;
 }
 

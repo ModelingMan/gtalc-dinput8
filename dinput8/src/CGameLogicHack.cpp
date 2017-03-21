@@ -1,8 +1,8 @@
 #include "CGameLogicHack.h"
+#include <Windows.h>
 #include "vcversion.h"
 #include "SilentCall.h"
 #include "Vehicles.h"
-#include <Windows.h>
 
 bool CGameLogicHack::isShortcutDropoffEnabled;
 char CGameLogicHack::skipClearShortcutStage;

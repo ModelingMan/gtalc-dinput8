@@ -1,4 +1,6 @@
 #include "CMovingThingsHack.h"
+#include <Windows.h>
+#include <cmath>
 #include "CDigitalClockHack.h"
 #include "CScrollBarHack.h"
 #include "CTowerClockHack.h"
@@ -8,10 +10,6 @@
 #include "SilentCall.h"
 #include "Offset.h"
 
-#include <math.h>
-#include <Windows.h>
-#include <memory.h>
-
 using namespace VCGlobals;
 
 CScrollBarHack aScrollBars[11];
@@ -20,21 +18,15 @@ CDigitalClockHack aDigitalClocks[3];
 
 bool CMovingThingsHack::initialise()
 {
-	unsigned char *MovingThingsInitHackAddr = reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x0054FBFD));
-	memset(MovingThingsInitHackAddr, 0x90, 102);
-	MovingThingsInitHackAddr[0] = 0xE8;
-	*reinterpret_cast<unsigned long *>(&MovingThingsInitHackAddr[1]) = reinterpret_cast<unsigned long>(&Init) - reinterpret_cast<unsigned long>(&MovingThingsInitHackAddr[5]);
+	InjectHook(0x0054FBFD, &Init);
+	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x0054FC02)), 0x90, 97);
 
-	unsigned char *MovingThingsUpdateHackAddr = reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x0054F4E6));
-	memset(MovingThingsUpdateHackAddr, 0x90, 51);
-	MovingThingsUpdateHackAddr[0] = 0xE8;
-	*reinterpret_cast<unsigned long *>(&MovingThingsUpdateHackAddr[1]) = reinterpret_cast<unsigned long>(&Update) - reinterpret_cast<unsigned long>(&MovingThingsUpdateHackAddr[5]);
+	InjectHook(0x0054F4E6, &Update);
+	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x0054F4EB)), 0x90, 46);
 
-	unsigned char *MovingThingsRenderHackAddr = reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x0054F25B));
-	memset(MovingThingsRenderHackAddr, 0x90, 45);
-	MovingThingsRenderHackAddr[0] = 0xE8;
-	*reinterpret_cast<unsigned long *>(&MovingThingsRenderHackAddr[1]) = reinterpret_cast<unsigned long>(&Render) - reinterpret_cast<unsigned long>(&MovingThingsRenderHackAddr[5]);
-	*reinterpret_cast<unsigned long *>(&MovingThingsRenderHackAddr[5]) = 0xEED9EED9;
+	InjectHook(0x0054F25B, &Render);
+	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x0054F260)) = 0xEED9EED9;
+	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x0054F264)), 0x90, 36);
 
 	// VC's CScrollBar::Init function takes in the full position of where the scrollbar ends, whereas III only takes the offset from the start
 	// These nops make the CScrollBar::Init function behave like in III
@@ -172,20 +164,17 @@ void CMovingThingsHack::Init()
 
 void CMovingThingsHack::Update()
 {
-	for (int i = 0; i < 11; i++)
-	{
+	for (int i = 0; i < 11; i++) {
 		if (aScrollBars[i].draw || (i + CTimer::m_FrameCounter) % 8 != 0)
 			aScrollBars[i].Update();
 	}
 
-	for (int i = 0; i < 2; i++)
-	{
+	for (int i = 0; i < 2; i++) {
 		if (aTowerClocks[i].IsToBeRendered() || (i + CTimer::m_FrameCounter) % 8 != 0)
 			aTowerClocks[i].Update();
 	}
 
-	for (int i = 0; i < 3; i++)
-	{
+	for (int i = 0; i < 3; i++) {
 		if (aDigitalClocks[i].IsToBeRendered() || (i + CTimer::m_FrameCounter) % 8 != 0)
 			aDigitalClocks[i].Update();
 	}
@@ -193,20 +182,17 @@ void CMovingThingsHack::Update()
 
 void CMovingThingsHack::Render()
 {
-	for (int i = 0; i < 11; i++)
-	{
+	for (int i = 0; i < 11; i++) {
 		if (aScrollBars[i].draw == true)
 			aScrollBars[i].Render();
 	}
 
-	for (int i = 0; i < 2; i++)
-	{
+	for (int i = 0; i < 2; i++) {
 		if (aTowerClocks[i].IsToBeRendered())
 			aTowerClocks[i].Render();
 	}
 
-	for (int i = 0; i < 3; i++)
-	{
+	for (int i = 0; i < 3; i++) {
 		if (aDigitalClocks[i].IsToBeRendered())
 			aDigitalClocks[i].Render();
 	}

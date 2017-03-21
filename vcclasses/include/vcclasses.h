@@ -189,6 +189,8 @@ static_assert(sizeof(CEntity) == 0x064, "Size of CEntity is not 0x064 bytes.");
 class CCamera : public CPlaceable
 {
 public:
+	void SetMotionBlurAlpha(int);
+	void SetMotionBlur(int, int, int, int, int);
 	void CamShake(float, float, float, float);
 	CMatrix &GetMatrix() { return matrix; }
 };
@@ -1082,11 +1084,11 @@ class CGarages
 {
 public:
 	static int *CarTypesCollected;
+	static CGarage *aGarages;
 	static int &BankVansCollected;
 	static int &PoliceCarsCollected;
-	static unsigned char &RespraysAreFree;
-	static unsigned char &BombsAreFree;
-	static CGarage *garages;
+	static bool &RespraysAreFree;
+	static bool &BombsAreFree;
 
 	static void TriggerMessage(char *, short, unsigned short, short);
 	static void ChangeGarageType(short, unsigned char, unsigned int);
@@ -1250,17 +1252,14 @@ public:
 class CProjectileInfo
 {
 public:
-	struct ProjectileInfo
-	{
-		unsigned int  weaponType;          // 0x00
-		unsigned long thrower;             // 0x04
-		unsigned int  timeToExpire;        // 0x08
-		unsigned char doesProjectileExist; // 0x0C
-		unsigned char padding[3];          // 0x0D
-		CVector       position;            // 0x10
-	};
+	unsigned int  weaponType;          // 0x00
+	unsigned long thrower;             // 0x04
+	unsigned int  timeToExpire;        // 0x08
+	unsigned char doesProjectileExist; // 0x0C
+	unsigned char padding[3];          // 0x0D
+	CVector       position;            // 0x10
 
-	static ProjectileInfo *projectiles;
+	static CObject **ms_apProjectile;
 };
 
 //########################################################################
@@ -1329,6 +1328,7 @@ public:
 	static int &CommercialPassed;
 	static float &TopShootingRangeScore;
 	static float &MovieStunts;
+	static int &NoMoreHurricanes;
 	static int &MissionsGiven;
 	static float &AutoPaintingBudget;
 	static float &Assassinations;
@@ -1414,6 +1414,7 @@ public:
 	static bool Seek(int, int, int);
 	static unsigned int Read(int, char *, int);
 	static int OpenFile(char const *, char const *);
+	static void SetDirMyDocuments(void);
 	static void SetDir(char const *);
 };
 
@@ -1651,6 +1652,28 @@ class CCutsceneMgr
 {
 public:
 	static bool &ms_cutsceneProcessing;
+
+	static void Update(void);
+};
+
+//########################################################################
+//# CMBlur
+//########################################################################
+
+class CMBlur
+{
+public:
+	static bool &BlurOn;
+};
+
+//########################################################################
+//# CTimeCycle
+//########################################################################
+
+class CTimeCycle
+{
+public:
+	static float Interpolate(unsigned char *, unsigned char *);
 };
 
 #endif

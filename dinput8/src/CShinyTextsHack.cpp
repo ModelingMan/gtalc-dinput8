@@ -1,14 +1,17 @@
 #include "CShinyTextsHack.h"
+#include <cmath>
 #include "vcversion.h"
 #include "Globals.h"
 #include "SilentCall.h"
-#include <math.h>
 
 unsigned long shinyTextsJumpEnd = vcversion::AdjustOffset(0x00465BB8);
+static char LightForPedsHack();
 
 bool CShinyTextsHack::initialise()
 {
 	InjectHook(0x00464BD9, &CShinyTextsHack::RegisterOneCallProxy, PATCH_JUMP);
+
+	InjectHook(0x004F190F, &LightForPedsHack);
 	return true;
 }
 
@@ -61,7 +64,7 @@ void CShinyTextsHack::RegisterOneCall(CMatrix &mat)
 {
 	auto ml = (CVector *(__cdecl *)(CVector *, const CMatrix &, const CVector &))vcversion::AdjustOffset(0x004DFF20);
 	CVector vec1 = {}, vec2 = {}, vec3 = {}, vec4 = {}, in1, in2, in3, in4;
-	if (CTrafficLights::LightForPeds() == 2) {
+	if (LightForPedsHack() == 2) {
 		// don't walk
 		in1 = { 2.7, 0.706, -0.127 };
 		in2 = { 2.7, 1.256, -0.127 };
@@ -72,7 +75,7 @@ void CShinyTextsHack::RegisterOneCall(CMatrix &mat)
 		ml(&vec3, mat, in3);
 		ml(&vec4, mat, in4);
 		CShinyTextsHack::RegisterOne(vec1, vec2, vec3, vec4, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1, 255, 0, 0, 60.0);
-	} else if (CTrafficLights::LightForPeds() == 0 || (CTimer::m_snTimeInMilliseconds & 0x100) != 0) {
+	} else if (LightForPedsHack() == 0 || CTimer::m_snTimeInMilliseconds & 0x100) {
 		// walk
 		in1 = { 2.7, 0.706, -0.40166664 };
 		in2 = { 2.7, 1.256, -0.40166664 };
@@ -84,4 +87,15 @@ void CShinyTextsHack::RegisterOneCall(CMatrix &mat)
 		ml(&vec4, mat, in4);
 		CShinyTextsHack::RegisterOne(vec1, vec2, vec3, vec4, 1.0, 0.5, 0.0, 0.5, 1.0, 1.0, 0.0, 1.0, 1, 255, 255, 255, 60.0);
 	}
+}
+
+char LightForPedsHack()
+{
+	unsigned int time = CTimer::m_snTimeInMilliseconds & 0x3FFF;
+	if (time < 0x2EE0) {
+		return 2;
+	} else if (time < 0x3C18) {
+		return 0;
+	}
+	return 1;
 }

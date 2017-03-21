@@ -12,12 +12,15 @@ namespace VCGlobals
 	extern CPathFind &ThePaths;
 
 	extern char *ScrollCharSet;
+	extern char *String_DigitalClock;
 
+	extern unsigned short &MI_SINGLESTREETLIGHTS1;
 	extern unsigned short &MI_DOUBLESTREETLIGHTS;
 	extern unsigned short &MI_CARMINE;
 	extern unsigned short &MI_NAUTICALMINE;
 	extern unsigned short &MI_LITTLEHA_POLICE;
 	extern unsigned short &MI_LIGHTBEAM;
+	extern short *WeatherTypesList;
 
 	union ScriptParameter
 	{
@@ -30,6 +33,7 @@ namespace VCGlobals
 		float float32;
 	};
 	extern ScriptParameter *ScriptParams;
+	extern CProjectileInfo *gaProjectileInfo;
 	extern CPhoneInfo &gPhoneInfo;
 	extern RwTexture *&gpShadowHeliTex;
 	extern RwTexture *&gpShadowExplosionTex;
@@ -62,6 +66,7 @@ namespace VCGlobals
 	CVehicle *FindPlayerVehicle(void);
 	CVector *FindPlayerCoors(CVector *);
 	CVector *CrossProduct(CVector *, CVector const &, CVector const &);
+	void DefinedState(void);
 	char *strcpy(char *dest, const char *src);
 	char *strncpy(char *dest, const char *src, size_t n);
 	int strcmp(const char *s1, const char *s2);

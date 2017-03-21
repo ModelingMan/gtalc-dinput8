@@ -45,6 +45,7 @@
     <ClCompile Include="src\CGeneral.cpp" />
     <ClCompile Include="src\CHud.cpp" />
     <ClCompile Include="src\CMatrix.cpp" />
+    <ClCompile Include="src\CMBlur.cpp" />
     <ClCompile Include="src\CMenuManager.cpp" />
     <ClCompile Include="src\CMessages.cpp" />
     <ClCompile Include="src\CMissionCleanup.cpp" />
@@ -81,6 +82,7 @@
     <ClCompile Include="src\CText.cpp" />
     <ClCompile Include="src\CTheScripts.cpp" />
     <ClCompile Include="src\CTheZones.cpp" />
+    <ClCompile Include="src\CTimeCycle.cpp" />
     <ClCompile Include="src\CTimer.cpp" />
     <ClCompile Include="src\CTrafficLights.cpp" />
     <ClCompile Include="src\CTxdStore.cpp" />

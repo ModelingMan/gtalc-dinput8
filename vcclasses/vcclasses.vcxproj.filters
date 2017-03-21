@@ -244,5 +244,11 @@
     <ClCompile Include="src\CCutsceneMgr.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CMBlur.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CTimeCycle.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

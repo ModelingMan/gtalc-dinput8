@@ -1,11 +1,11 @@
 #include "cAudioManagerHack.h"
+#include <Windows.h>
+#include <cmath>
 #include "CBridgeHack.h"
 #include "Globals.h"
 #include "vcversion.h"
 #include "SilentCall.h"
 #include "ModelIndices.h"
-#include <Windows.h>
-#include <math.h>
 
 #define REPORT_AMBULANCE     234
 #define REPORT_VAN           235
@@ -349,12 +349,7 @@ unsigned long fbiMatchEndJump = vcversion::AdjustOffset(0x005F03FF);
 
 bool cAudioManagerHack::initialise()
 {
-	unsigned long ProcessFrontEndHackAddr = vcversion::AdjustOffset(0x005DBCA7);
-
-	//Memory is protected from write (write protection of .text section removed at startup)
-	*reinterpret_cast<unsigned char *>(ProcessFrontEndHackAddr) = 0xB9;						// mov ecx,
-	*reinterpret_cast<void (**)()>(ProcessFrontEndHackAddr + 1) = ProcessFrontEndHackProxy; //          ProcessFrontEndHackProxy
-	*reinterpret_cast<unsigned short *>(ProcessFrontEndHackAddr + 5) = 0xE1FF;				// jmp ecx
+	InjectHook(0x005DBCA7, &ProcessFrontEndHackProxy, PATCH_JUMP);
 
 	// car alarms
 	if (!GetPrivateProfileInt("Misc", "UseVCCarAlarm", 0, "./gta-lc.ini")) {
@@ -1171,8 +1166,7 @@ void cAudioManagerHack::DisplayRadioStationNameHack(float fX, float fY, wchar_t 
 void cAudioManagerHack::InitialiseHack(void)
 {
 	VehicleSfx *vehicleSfx = reinterpret_cast<VehicleSfx *>(vcversion::AdjustOffset(0x006AD1A0));
-	int filename = CFileMgr::OpenFile("vehicleSfx.dat", "r");
-	if (filename) {
+	if (int filename = CFileMgr::OpenFile("data\\lc_vehiclesfx.dat", "r")) {
 		char buffer[200];
 		for (int i = 0; CFileMgr::ReadLine(filename, buffer, 200) && i < 107; i++) {
 			VCGlobals::sscanf(buffer, "%d %d %d %d %d %d %d",

@@ -4,6 +4,7 @@
 #include "vcclasses.h"
 
 #define MAX_CHASE_CARS 20
+#define MAX_CHASE_FRAMES 1200
 
 template<typename T>
 struct CPackedVector

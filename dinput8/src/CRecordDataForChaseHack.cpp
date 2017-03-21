@@ -1,13 +1,12 @@
 // chase scene based on Silent's code
+#include "CRecordDataForChaseHack.h"
+#include <cmath>
+#include <new>
 #include "vcversion.h"
 #include "Globals.h"
-#include "CRecordDataForChaseHack.h"
 #include "SilentCall.h"
 #include "ModelIndices.h"
 #include "Offset.h"
-
-#include <new.h>
-#include <math.h>
 
 CAutomobile *CRecordDataForChaseHack::pChaseCars[MAX_CHASE_CARS];
 CCarStateEachFrame *CRecordDataForChaseHack::pBaseMemForCar[MAX_CHASE_CARS];
@@ -94,9 +93,9 @@ void CRecordDataForChaseHack::StartChaseScene(float)
 			char fileName[16];
 			VCGlobals::sprintf(fileName, "chase%d.dat", i);
 			if (int chaseFile = CFileMgr::OpenFile(fileName, "rb")) {
-				pBaseMemForCar[i] = new CCarStateEachFrame[1200 * sizeof(CCarStateEachFrame)];
+				pBaseMemForCar[i] = new CCarStateEachFrame[MAX_CHASE_FRAMES * sizeof(CCarStateEachFrame)];
 				CCarStateEachFrame *state = &pBaseMemForCar[i][0];
-				for (int j = 0; j < 1200; j++, state++) {
+				for (int j = 0; j < MAX_CHASE_FRAMES; j++, state++) {
 					CFileMgr::Read(chaseFile, (char *)state, sizeof(CCarStateEachFrame));
 					CFileMgr::Seek(chaseFile, sizeof(CCarStateEachFrame), 1);
 				}
@@ -212,7 +211,7 @@ void CRecordDataForChaseHack::SaveOrRetrieveCarPositions(void)
 		float time = AnimTime * 15.0f;
 		for (int i = 0; i < MAX_CHASE_CARS; i++) {
 			if (pBaseMemForCar[i] && pChaseCars[i]) {
-				if (time < 1199.0) {
+				if (time < static_cast<float>(MAX_CHASE_FRAMES - 1)) {
 					RestoreInfoForCar(pChaseCars[i], &pBaseMemForCar[i][static_cast<int>(time)], false);
 					CMatrix matrix;
 					RestoreInfoForMatrix(matrix, &pBaseMemForCar[i][static_cast<int>(time) + 1]);
@@ -236,7 +235,7 @@ void CRecordDataForChaseHack::SaveOrRetrieveCarPositions(void)
 					pChaseCars[i]->GetMatrix().pos.z += (matrix.pos.z - pChaseCars[i]->GetMatrix().pos.z) * timeDifference;
 
 				} else {
-					RestoreInfoForCar(pChaseCars[i], &pBaseMemForCar[i][1199], true);
+					RestoreInfoForCar(pChaseCars[i], &pBaseMemForCar[i][MAX_CHASE_FRAMES - 1], true);
 					if (!i) {
 						pChaseCars[i]->GetZ() += 0.2;
 					}

@@ -32,6 +32,7 @@ public:
 	bool _0351_is_nasty_game();
 	bool _0356_is_explosion_in_area();
 	bool _0368_activate_military_crane();
+	bool _0374_set_motion_blur();
 	bool _037F_give_player_detonator();
 	bool _03A0_is_crane_lifting_car();
 	bool _03C2_is_phone_displaying_message();
