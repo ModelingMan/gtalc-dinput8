@@ -18,3 +18,10 @@ inline void Patch(unsigned long address, T value)
 {
 	*reinterpret_cast<T *>(vcversion::AdjustOffset(address)) = value;
 }
+
+template<typename T>
+inline void ReadCall(unsigned long address, T &function)
+{
+	address = vcversion::AdjustOffset(address);
+	function = T(*(unsigned long *)(address + 1) + address + 5);
+}

@@ -197,14 +197,16 @@ void CCranesHack::AddThisOneCrane(CEntity *entity)
 		aCranes[index].hook = 0;
 		// new! magnet for cranes!
 		if (aCranes[index].isNotCab || entity->GetY() > 0.0) {
-			void *place = CObject::operator new(0x194);
-			CObject *object = ::new (place)CObject(ModelIndices::MI_MAGNET, false);
-			if (object) {
-				object->field_16C = 2;
-				object->field_051 &= 0xFE;
-				object->field_052 |= 2;
-				object->field_11A &= 0xFD;
-				aCranes[index].hook = object;
+			if (ModelIndices::MI_MAGNET != 0xFFFF) {
+				void *place = CObject::operator new(0x194);
+				CObject *object = ::new (place)CObject(ModelIndices::MI_MAGNET, false);
+				if (object) {
+					object->field_16C = 2;
+					object->field_051 &= 0xFE;
+					object->field_052 |= 2;
+					object->field_11A &= 0xFD;
+					aCranes[index].hook = object;
+				}
 			}
 		}
 		audioEntities[index] = VCGlobals::DMAudio.CreateEntity(12, &CCranes::aCranes[index]);

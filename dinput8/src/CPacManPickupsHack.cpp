@@ -1,6 +1,7 @@
 #include "CPacManPickupsHack.h"
 #include <cmath>
 #include <new>
+#include "Globals.h"
 #include "vcversion.h"
 #include "SilentCall.h"
 #include "Offset.h"
@@ -123,11 +124,18 @@ CVector aRacePoints1[MAX_PACMAN_PICKUP] =
 	{ 0.0f, 0.0f, 0.0f }
 };
 
+static void(__cdecl *CallInit)(void);
+static void(__cdecl *CallUpdate)(void);
+static void(__cdecl *CallRender)(void);
+
 bool CPacManPickupsHack::initialise()
 {
+	ReadCall(0x004A4ED8, CallInit);
 	InjectHook(0x004A4ED8, &CPacManPickupsHack::Init); // CGame::Initialise
 	InjectHook(0x004A4967, &CPacManPickupsHack::Init); // CGame::ReInitGameObjectVariables
+	ReadCall(0x004A45D7, CallUpdate);
 	InjectHook(0x004A45D7, &CPacManPickupsHack::Update); // CGame::Process
+	ReadCall(0x004A6547, CallRender);
 	InjectHook(0x004A6547, &CPacManPickupsHack::Render); // RenderEffects
 	return true;
 }
@@ -156,6 +164,7 @@ void CPacManPickupsHack::Init(void)
 		aRacePoints1[i].x = aRacePoints1[i].y = aRacePoints1[i].z = 0;
 		CFileMgr::CloseFile(filename);
 	}
+	CallInit();
 }
 
 void CPacManPickupsHack::Update(void)
@@ -167,6 +176,7 @@ void CPacManPickupsHack::Update(void)
 			}
 		}
 	}
+	CallUpdate();
 }
 
 void CPacManPickupsHack::GeneratePMPickUps(CVector center, float radius, short count)
@@ -202,20 +212,22 @@ void CPacManPickupsHack::GeneratePMPickUps(CVector center, float radius, short c
 			aPMPickups[i].position.y = colpoint.point.y;
 			aPMPickups[i].position.z = colpoint.point.z + 0.7f;
 
-			void *place = CObject::operator new(0x194);
-			CObject *object = ::new (place)CObject(scrambleModel, true);
-			if (object) {
-				object->field_16C = 2;
-				object->GetMatrix().SetRotate(0.0, 0.0, -1.5707964f);
-				object->GetPos() = aPMPickups[i].position;
-				object->GetMatrix().UpdateRW();
-				object->UpdateRwFrame();
-				object->field_11A &= 0xFD;
-				object->field_052 |= 2;
-				object->field_051 &= 0xFE;
-				object->field_16D &= 0xFE;
-				CWorld::Add(object);
-				aPMPickups[i].object = object;
+			if (scrambleModel != 0xFFFF) {
+				void *place = CObject::operator new(0x194);
+				CObject *object = ::new (place)CObject(scrambleModel, true);
+				if (object) {
+					object->field_16C = 2;
+					object->GetMatrix().SetRotate(0.0, 0.0, -1.5707964f);
+					object->GetPos() = aPMPickups[i].position;
+					object->GetMatrix().UpdateRW();
+					object->UpdateRwFrame();
+					object->field_11A &= 0xFD;
+					object->field_052 |= 2;
+					object->field_051 &= 0xFE;
+					object->field_16D &= 0xFE;
+					CWorld::Add(object);
+					aPMPickups[i].object = object;
+				}
 			}
 
 		}
@@ -236,20 +248,22 @@ void CPacManPickupsHack::GeneratePMPickUpsForRace(void)
 			aPMPickups[i].position.x = aRacePoints1[i].x + OFFSETX;
 			aPMPickups[i].position.y = aRacePoints1[i].y;
 			aPMPickups[i].position.z = aRacePoints1[i].z + OFFSETZ;
-			void *place = CObject::operator new(0x194);
-			CObject *object = ::new (place)CObject(raceModel, true);
-			if (object) {
-				object->field_16C = 2;
-				object->GetMatrix().SetRotate(0.0, 0.0, -1.5707964f);
-				object->GetPos() = aPMPickups[i].position;
-				object->GetMatrix().UpdateRW();
-				object->UpdateRwFrame();
-				object->field_11A &= 0xFD;
-				object->field_052 |= 2;
-				object->field_051 &= 0xFE;
-				object->field_16D &= 0xFE;
-				CWorld::Add(object);
-				aPMPickups[i].object = object;
+			if (raceModel != 0xFFFF) {
+				void *place = CObject::operator new(0x194);
+				CObject *object = ::new (place)CObject(raceModel, true);
+				if (object) {
+					object->field_16C = 2;
+					object->GetMatrix().SetRotate(0.0, 0.0, -1.5707964f);
+					object->GetPos() = aPMPickups[i].position;
+					object->GetMatrix().UpdateRW();
+					object->UpdateRwFrame();
+					object->field_11A &= 0xFD;
+					object->field_052 |= 2;
+					object->field_051 &= 0xFE;
+					object->field_16D &= 0xFE;
+					CWorld::Add(object);
+					aPMPickups[i].object = object;
+				}
 			}
 		}
 	}
@@ -296,6 +310,7 @@ void CPacManPickupsHack::Render(void)
 		//RwRenderStateSet(8, 1);
 		//RwRenderStateSet(12, 0);
 	}
+	CallRender();
 }
 
 void CPacManPickupHack::Update(void)

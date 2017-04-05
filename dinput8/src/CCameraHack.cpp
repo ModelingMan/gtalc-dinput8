@@ -1,4 +1,5 @@
 #include "CCameraHack.h"
+#include <Windows.h>
 #include "vcversion.h"
 #include "SilentCall.h"
 
@@ -9,11 +10,13 @@ unsigned long camControlCar = vcversion::AdjustOffset(0x00472C02);
 bool CCameraHack::initialise()
 {
 	// RC Baron camera controls
-	Patch<float>(0x0068ABF4, 0.0);
-	Patch<float>(0x0068ABEC, 0.0);
-	InjectHook(0x00483F6A, vcversion::AdjustOffset(0x00483F7D), PATCH_JUMP);
-	Patch<unsigned char>(0x00597CBE, 3);
-	InjectHook(0x00472BE8, &CCameraHack::CamControlHack, PATCH_JUMP);
+	if (!GetPrivateProfileInt("Misc", "UseRCBaron", 0, "./gta-lc.ini")) {
+		Patch<float>(0x0068ABF4, 0.0);
+		Patch<float>(0x0068ABEC, 0.0);
+		InjectHook(0x00483F6A, vcversion::AdjustOffset(0x00483F7D), PATCH_JUMP);
+		Patch<unsigned char>(0x00597CBE, 3);
+		InjectHook(0x00472BE8, &CCameraHack::CamControlHack, PATCH_JUMP);
+	}
 
 	// mouse sensitivity fix (SilentPatch/ThirteenAG)
 	float &mouseXSensitivity = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x0094DBD0));

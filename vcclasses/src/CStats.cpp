@@ -17,7 +17,13 @@ int &CStats::MissionsGiven = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x
 float &CStats::AutoPaintingBudget = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x00A10298));
 float &CStats::Assassinations = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x00A10918));
 
+static unsigned long g_BuildStatLine = vcversion::AdjustOffset(0x004CAE8F);
 static unsigned long g_AnotherKillFrenzyPassed = vcversion::AdjustOffset(0x004CDBA7);
+
+__declspec(naked) void CStats::BuildStatLine(char *, void *, int, void *, int)
+{
+	__asm jmp g_BuildStatLine;
+}
 
 __declspec(naked) void CStats::AnotherKillFrenzyPassed(void)
 {

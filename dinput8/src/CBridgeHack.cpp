@@ -19,10 +19,18 @@ unsigned int CBridgeHack::TimeOfBridgeBecomingOperational;
 
 bool ShouldCarStopForBridge(CVehicle *);
 
+static void(__cdecl *CallInit)(void);
+static void(__cdecl *CallUpdate)(void);
+
 bool CBridgeHack::initialise()
 {
-	InjectHook(0x004A4EF6, &CBridgeHack::Init);
-	InjectHook(0x004A4620, &CBridgeHack::Update);
+	ReadCall(0x004A4EF6, CallInit);
+	InjectHook(0x004A4EF6, &CBridgeHack::Init); // CGame::Initialise
+	ReadCall(0x004A4620, CallUpdate);
+	InjectHook(0x004A4620, &CBridgeHack::Update); // CGame::Process
+	InjectHook(0x004BD7A1, &CBridgeHack::ThisIsABridgeObjectMovingUp); // CPlayerInfo::Process
+	InjectHook(0x005418CD, &CBridgeHack::ShouldLightsBeFlashing); // CEntity::ProcessLightsForEntity
+	InjectHook(0x005418E4, &CBridgeHack::ShouldLightsBeFlashing); // CEntity::ProcessLightsForEntity
 
 	// workaround for vehicles to stop at lift bridge
 	InjectHook(0x00463F80, &ShouldCarStopForBridge, PATCH_JUMP);
@@ -37,6 +45,7 @@ void CBridgeHack::Init()
 	if (pWeight) DefaultZLiftWeight = pWeight->GetZ();
 	if (pLiftPart) DefaultZLiftPart = pLiftPart->GetZ();
 	if (pLiftRoad) DefaultZLiftRoad = pLiftRoad->GetZ();
+	CallInit();
 }
 
 void CBridgeHack::Update()
@@ -102,6 +111,12 @@ void CBridgeHack::Update()
 		//} else if (State == 3 && OldState == 2) {
 		//}
 	}
+	CallUpdate();
+}
+
+bool CBridgeHack::ShouldLightsBeFlashing()
+{
+	return State != 3;
 }
 
 void CBridgeHack::FindBridgeEntities(void)
@@ -129,6 +144,16 @@ void CBridgeHack::FindBridgeEntities(void)
 			}
 		}
 	}
+}
+
+bool CBridgeHack::ThisIsABridgeObjectMovingUp(unsigned int model)
+{
+	if (model == ModelIndices::MI_BRIDGEROADSEGMENT || model == ModelIndices::MI_BRIDGELIFT) {
+		if (CBridgeHack::State == 4 || CBridgeHack::State == 5) {
+			return true;
+		}
+	}
+	return false;
 }
 
 bool ShouldCarStopForBridge(CVehicle *vehicle)

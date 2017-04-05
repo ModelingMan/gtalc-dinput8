@@ -21,6 +21,16 @@ public:
 };
 
 //########################################################################
+//# CVector2D
+//########################################################################
+
+class CVector2D
+{
+public:
+	float x, y;
+};
+
+//########################################################################
 //# CRGBA
 //########################################################################
 
@@ -1333,6 +1343,7 @@ public:
 	static float &AutoPaintingBudget;
 	static float &Assassinations;
 
+	static void BuildStatLine(char *, void *, int, void *, int);
 	static void AnotherKillFrenzyPassed(void);
 };
 
@@ -1529,6 +1540,7 @@ public:
 	static unsigned long *ms_modelInfoPtrs;
 
 	static bool IsBikeModel(int);
+	static bool IsCarModel(int);
 	static bool IsBoatModel(int);
 };
 
@@ -1674,6 +1686,16 @@ class CTimeCycle
 {
 public:
 	static float Interpolate(unsigned char *, unsigned char *);
+};
+
+//########################################################################
+//# CColStore
+//########################################################################
+
+class CColStore
+{
+public:
+	static void RequestCollision(CVector2D const &);
 };
 
 #endif

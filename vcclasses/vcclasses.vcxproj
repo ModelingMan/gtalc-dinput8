@@ -28,6 +28,7 @@
     <ClCompile Include="src\CCamera.cpp" />
     <ClCompile Include="src\CCarCtrl.cpp" />
     <ClCompile Include="src\CClock.cpp" />
+    <ClCompile Include="src\CColStore.cpp" />
     <ClCompile Include="src\CCranes.cpp" />
     <ClCompile Include="src\CCutsceneMgr.cpp" />
     <ClCompile Include="src\CDamageManager.cpp" />

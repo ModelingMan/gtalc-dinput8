@@ -392,12 +392,14 @@ bool cAudioManagerHack::initialise()
 	scriptObjectAirportCounter = scriptObjectHomeCounter = scriptObjectCellBeatingCounter = 0;
 
 	// RC Baron process engine - temporary workaround affects RC helicopters
-	Patch<unsigned int>(0x005F3925, 342);
-	Patch<unsigned int>(0x005F392C, 342);
-	Patch<unsigned int>(0x005F395B, 342);
-	Patch<unsigned char>(0x005F394C, 80);
-	Patch<float>(0x005F3973, 90.0);
-	Patch<unsigned char>(0x005F55CA, 0x2B);
+	if (!GetPrivateProfileInt("Misc", "UseRCBaron", 0, "./gta-lc.ini")) {
+		Patch<unsigned int>(0x005F3925, 342);
+		Patch<unsigned int>(0x005F392C, 342);
+		Patch<unsigned int>(0x005F395B, 342);
+		Patch<unsigned char>(0x005F394C, 80);
+		Patch<float>(0x005F3973, 90.0);
+		Patch<unsigned char>(0x005F55CA, 0x2B);
+	}
 
 	// crime report fix (SilentPatch)
 	Patch<unsigned int>(0x005FDDDB, 0xC5);

@@ -27,21 +27,21 @@ struct CCarStateEachFrame
 class CRecordDataForChaseHack : public CRecordDataForChase
 {
 public:
-	static CAutomobile *pChaseCars[MAX_CHASE_CARS];
-	static CCarStateEachFrame *pBaseMemForCar[MAX_CHASE_CARS];
-	static float AnimTime;
+	static CAutomobile *pChaseCars[MAX_CHASE_CARS];                           // CRecordDataForChase::pChaseCars
+	static CCarStateEachFrame *pBaseMemForCar[MAX_CHASE_CARS];                // CRecordDataForChase::pBaseMemForCar
+	static float AnimTime;                                                    // CRecordDataForChase::AnimTime
 
 	static bool initialise();
-	static CAutomobile *TurnChaseCarIntoScriptCar(int);
-	static void RemoveCarFromChase(int);
-	static void CleanUpCarsForChaseScene(void);
-	static void SetUpCarsForChaseScene(void);
-	static void CleanUpChaseScene(void);
-	static void StartChaseScene(float);
-	static void GiveUsACar(int, CVector, float, CAutomobile **, unsigned char, unsigned char);
-	static void ProcessControlCars(void);
-	static void RestoreInfoForCar(CAutomobile *, CCarStateEachFrame *, bool);
-	static void RestoreInfoForMatrix(CMatrix &, CCarStateEachFrame *);
-	static void SaveOrRetrieveCarPositions(void);
-	static void Init(void);
+	static CAutomobile *TurnChaseCarIntoScriptCar(int);                       // CRecordDataForChase::TurnChaseCarIntoScriptCar
+	static void RemoveCarFromChase(int);                                      // CRecordDataForChase::RemoveCarFromChase
+	static void CleanUpCarsForChaseScene(void);                               // CRecordDataForChase::CleanUpCarsForChaseScene
+	static void SetUpCarsForChaseScene(void);                                 // CRecordDataForChase::SetUpCarsForChaseScene
+	static void CleanUpChaseScene(void);                                      // CRecordDataForChase::CleanUpChaseScene
+	static void StartChaseScene(float);                                       // CRecordDataForChase::StartChaseScene
+	static void GiveUsACar(int, CVector, float, CAutomobile **, unsigned char, unsigned char); // CRecordDataForChase::GiveUsACar
+	static void ProcessControlCars(void);                                     // CRecordDataForChase::ProcessControlCars
+	static void RestoreInfoForCar(CAutomobile *, CCarStateEachFrame *, bool); // CRecordDataForChase::RestoreInfoForCar
+	static void RestoreInfoForMatrix(CMatrix &, CCarStateEachFrame *);        // CRecordDataForChase::RestoreInfoForMatrix
+	static void SaveOrRetrieveCarPositions(void);                             // CRecordDataForChase::SaveOrRetrieveCarPositions
+	static void Init(void);                                                   // CRecordDataForChase::Init
 };

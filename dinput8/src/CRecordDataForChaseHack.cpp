@@ -12,9 +12,12 @@ CAutomobile *CRecordDataForChaseHack::pChaseCars[MAX_CHASE_CARS];
 CCarStateEachFrame *CRecordDataForChaseHack::pBaseMemForCar[MAX_CHASE_CARS];
 float CRecordDataForChaseHack::AnimTime;
 
+static void(__cdecl *CallProcessControlCars)(void);
+
 bool CRecordDataForChaseHack::initialise()
 {
 	InjectHook(0x004A4F39, &CRecordDataForChaseHack::Init); // CGame::Initialise
+	ReadCall(0x004D75EE, CallProcessControlCars);
 	InjectHook(0x004D75EE, &CRecordDataForChaseHack::ProcessControlCars); // CWorld::Process
 	InjectHook(0x004D75F3, &CRecordDataForChaseHack::SaveOrRetrieveCarPositions); // CWorld::Process
 	InjectHook(0x004D7B47, &CRecordDataForChaseHack::SaveOrRetrieveCarPositions); // CWorld::Process
@@ -144,6 +147,7 @@ void CRecordDataForChaseHack::ProcessControlCars(void)
 			}
 		}
 	}
+	CallProcessControlCars();
 }
 
 void CRecordDataForChaseHack::RestoreInfoForCar(CAutomobile *vehicle, CCarStateEachFrame *state, bool stationary)

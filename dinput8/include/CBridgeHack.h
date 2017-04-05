@@ -5,22 +5,24 @@
 class CBridgeHack
 {
 public:
-	static CEntity *pWeight;
-	static CEntity *pLiftRoad;
-	static CEntity *pLiftPart;
-	static float DefaultZLiftWeight;
-	static float DefaultZLiftPart;
-	static float DefaultZLiftRoad;
-	static int State;
-	static int OldState;
-	static float OldLift;
-	static unsigned int TimeOfBridgeBecomingOperational;
+	static CEntity *pWeight;                               // CBridge::pWeight
+	static CEntity *pLiftRoad;                             // CBridge::pLiftRoad
+	static CEntity *pLiftPart;                             // CBridge::pLiftPart
+	static float DefaultZLiftWeight;                       // CBridge::DefaultZLiftWeight
+	static float DefaultZLiftPart;                         // CBridge::DefaultZLiftPart
+	static float DefaultZLiftRoad;                         // CBridge::DefaultZLiftRoad
+	static int State;                                      // CBridge::State
+	static int OldState;                                   // CBridge::OldState
+	static float OldLift;                                  // CBridge::OldLift
+	static unsigned int TimeOfBridgeBecomingOperational;   // CBridge::TimeOfBridgeBecomingOperational
 	// additional objects
 	static CEntity *pLodWeight;
 	static CEntity *pLodLiftPart;
 
 	static bool initialise();
-	static void Init(void);
-	static void Update(void);
-	static void FindBridgeEntities(void);
+	static void Init(void);                                // CBridge::Init
+	static void Update(void);                              // CBridge::Update
+	static bool ShouldLightsBeFlashing(void);              // CBridge::ShouldLightsBeFlashing
+	static void FindBridgeEntities(void);                  // CBridge::FindBridgeEntities
+	static bool ThisIsABridgeObjectMovingUp(unsigned int); // CBridge::ThisIsABridgeObjectMovingUp
 };

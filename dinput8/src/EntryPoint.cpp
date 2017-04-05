@@ -29,6 +29,7 @@
 #include "CCarCtrlHack.h"
 #include "CGameLogicHack.h"
 #include "CRecordDataForChaseHack.h"
+#include "CWaterLevelHack.h"
 #include "Globals.h"
 #include "ModelIndices.h"
 #include "vcversion.h"
@@ -75,9 +76,6 @@ unsigned int numberOfTreadables;
 
 // RepositionOneObject
 static void RepositionOneObjectHack(CEntity *);
-
-// RenderBoatWakes
-static void RenderBoatWakesHack();
 
 // center mouse (SilentPatch)
 static bool bGameInFocus = true;
@@ -171,6 +169,7 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		fileheader = (PIMAGE_FILE_HEADER)&ntheader->FileHeader;
 		sectionheader = (PIMAGE_SECTION_HEADER)((BYTE*)ntheader + sizeof(IMAGE_NT_HEADERS));
 
+		// write protection of .text section removed at startup
 		numSections = fileheader->NumberOfSections;
 		for (; numSections-- > 0; sectionheader++) {
 			if (strcmp((const char *)sectionheader->Name, ".text") == 0)
@@ -227,11 +226,6 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		// 0410 (Purple Nines) fix
 		InjectHook(0x004EEED1, &GangsInitialise, PATCH_JUMP); // CGangs::Initialise
 
-		// remove horizon ships
-		if (!GetPrivateProfileInt("Misc", "AllowHorizonShips", 0, "./gta-lc.ini")) {
-			Patch<unsigned short>(0x005BC5BC, 0xE990); // CWaterLevel::RenderShipsOnHorizon
-		}
-
 		// cylindrical marker colors
 		Patch<unsigned int>(0x00458E82, 0x000080); // CTheScripts::DrawScriptSpheres
 		Patch<unsigned int>(0x00689CA8, 0xFF8000);
@@ -271,22 +265,19 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		InjectHook(0x004C032C, &TreadablesHack); // CPools::Initialise
 
 		// investigate ped crash fix
-		InjectHook(0x004E94E0, &CivilianAI, PATCH_JUMP);
+		InjectHook(0x004E94E0, &CivilianAI, PATCH_JUMP); // CCivilianPed::CivilianAI
 
 		// script paths allow replay
 		memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x00624EDB)), 0x90, 9);
 
 		// prioritize specific ped sfx
-		InjectHook(0x005DDB6C, &PedCommentsProcess, PATCH_JUMP);
+		InjectHook(0x005DDB6C, &PedCommentsProcess, PATCH_JUMP); // cPedComments::Process
 
 		// reposition streetlights
-		InjectHook(0x004D4889, &RepositionOneObjectHack);
+		InjectHook(0x004D4889, &RepositionOneObjectHack); // CWorld::RepositionCertainDynamicObjects
 
 		// allow grouped security guards
 		Patch<unsigned char>(0x0053BFD0, 0);
-
-		// dynamic boat wake height
-		InjectHook(0x005C0093, &RenderBoatWakesHack);
 
 		// reposition buoy
 		Patch<float>(0x006912D8, OFFSETZ);
@@ -299,6 +290,9 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 
 		// lod fix (HM128)
 		Patch<float>(0x0056F516, 100.0);
+
+		// leaf scaling
+		Patch<float>(0x00698CD8, 0.3);
 
 		// center mouse (SilentPatch)
 		InjectHook(0x004A5E45, &ResetMousePos);
@@ -331,8 +325,8 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			!CShinyTextsHack::initialise() ||
 			!CCarCtrlHack::initialise() ||
 			!CGameLogicHack::initialise() ||
-			!CRecordDataForChaseHack::initialise())
-		{
+			!CRecordDataForChaseHack::initialise() ||
+			!CWaterLevelHack::initialise()) {
 			VirtualProtect((LPVOID)(0x400000 + sectionheader->VirtualAddress), sectionheader->Misc.VirtualSize, OldProtect, &OldProtect);
 			return FALSE;
 		}
@@ -467,14 +461,4 @@ void RepositionOneObjectHack(CEntity *entity)
 		return;
 	}
 	CWorld::RepositionOneObject(entity);
-}
-
-void RenderBoatWakesHack()
-{
-	CVector pos;
-	VCGlobals::FindPlayerCoors(&pos);
-	if (CWaterLevel::GetWaterLevelNoWaves(pos.x, pos.y, pos.z, &pos.z)) {
-		Patch<float>(0x005BE31D, pos.z - 0.03f);
-	}
-	CWaterLevel::RenderBoatWakes();
 }

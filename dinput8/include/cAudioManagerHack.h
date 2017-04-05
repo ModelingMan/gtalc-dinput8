@@ -14,15 +14,15 @@ public:
 	static void SetupSuspectLastSeenReportHackProxy(void);
 	static int SetupSuspectLastSeenReportHack(int model);
 	void ProcessCraneAndBridge(void);
-	void ProcessBridgeMotor(void);
-	void ProcessBridgeWarning(void);
-	void ProcessBridgeOneShots(void);
-	void ProcessCinemaScriptObject(unsigned int);
-	void ProcessLaunderetteScriptObject(unsigned int);
-	void ProcessSawMillScriptObject(unsigned int);
-	void ProcessAirportScriptObject(unsigned int);
-	void ProcessHomeScriptObject(unsigned int);
-	void ProcessPoliceCellBeatingScriptObject(unsigned int);
+	void ProcessBridgeMotor(void);                           // cAudioManager::ProcessBridgeMotor
+	void ProcessBridgeWarning(void);                         // cAudioManager::ProcessBridgeWarning
+	void ProcessBridgeOneShots(void);                        // cAudioManager::ProcessBridgeOneShots
+	void ProcessCinemaScriptObject(unsigned int);            // cAudioManager::ProcessCinemaScriptObject
+	void ProcessLaunderetteScriptObject(unsigned int);       // cAudioManager::ProcessLaunderetteScriptObject
+	void ProcessSawMillScriptObject(unsigned int);           // cAudioManager::ProcessSawMillScriptObject
+	void ProcessAirportScriptObject(unsigned int);           // cAudioManager::ProcessAirportScriptObject
+	void ProcessHomeScriptObject(unsigned int);              // cAudioManager::ProcessHomeScriptObject
+	void ProcessPoliceCellBeatingScriptObject(unsigned int); // cAudioManager::ProcessPoliceCellBeatingScriptObject
 	static void DisplayRadioStationNameHack(float, float, wchar_t *);
 	static void InitialiseHack(void);
 	static void ProcessVehicleSirenOrAlarmHack(void);

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "vcclasses.h"
-#include "Globals.h"
 
 #define MAX_PACMAN_PICKUP 256
 
@@ -13,28 +12,28 @@ public:
 	unsigned char state;
 	unsigned char padding[3];
 
-	void Update(void);
+	void Update(void);                                      // CPacManPickup::Update
 };
 
 class CPacManPickupsHack
 {
 public:
-	static int PillsEatenInRace;
-	static CPacManPickupHack aPMPickups[MAX_PACMAN_PICKUP];
-	static bool bPMActive;
+	static int PillsEatenInRace;                            // CPacManPickups::PillsEatenInRace
+	static CPacManPickupHack aPMPickups[MAX_PACMAN_PICKUP]; // CPacManPickups::aPMPickUps
+	static bool bPMActive;                                  // CPacManPickups::bPMActive
 
 	static bool initialise();
-	static void ResetPowerPillsCarriedByPlayer(void);
-	static int QueryPowerPillsCarriedByPlayer(void);
-	static void StartPacManScramble(CVector, float, short);
-	static void CleanUpPacManStuff(void);
-	static void ResetPowerPillsEatenInRace(void);
-	static int QueryPowerPillsEatenInRace(void);
-	static void StartPacManRace(int raceType = 0);
-	static void Render(void);
-	static void GenerateOnePMPickUp(CVector pos);
-	static void GeneratePMPickUpsForRace(void);
-	static void GeneratePMPickUps(CVector, float, short);
-	static void Update(void);
-	static void Init(void);
+	static void ResetPowerPillsCarriedByPlayer(void);       // CPacManPickups::ResetPowerPillsCarriedByPlayer
+	static int QueryPowerPillsCarriedByPlayer(void);        // CPacManPickups::QueryPowerPillsCarriedByPlayer
+	static void StartPacManScramble(CVector, float, short); // CPacManPickups::StartPacManScramble
+	static void CleanUpPacManStuff(void);                   // CPacManPickups::CleanUpPacManStuff
+	static void ResetPowerPillsEatenInRace(void);           // CPacManPickups::ResetPowerPillsEatenInRace
+	static int QueryPowerPillsEatenInRace(void);            // CPacManPickups::QueryPowerPillsEatenInRace
+	static void StartPacManRace(int raceType = 0);          // CPacManPickups::StartPacManRace
+	static void Render(void);                               // CPacManPickups::Render
+	static void GenerateOnePMPickUp(CVector pos);           // CPacManPickups::GenerateOnePMPickUp
+	static void GeneratePMPickUpsForRace(void);             // CPacManPickups::GeneratePMPickUpsForRace
+	static void GeneratePMPickUps(CVector, float, short);   // CPacManPickups::GeneratePMPickUps
+	static void Update(void);                               // CPacManPickups::Update
+	static void Init(void);                                 // CPacManPickups::Init
 };

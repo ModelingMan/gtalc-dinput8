@@ -15,6 +15,7 @@ unsigned long buildStatLine = vcversion::AdjustOffset(0x004CD1A8);
 
 bool CStatsHack::initialise()
 {
+	/*
 	// add missions passed line
 	Patch<unsigned char>(0x004CB19D, 3);
 	Patch<unsigned char>(0x004CB1C4, 4);
@@ -28,6 +29,7 @@ bool CStatsHack::initialise()
 	InjectHook(0x004CC0AE, &CStatsHack::HighestLevelFireMissionHack, PATCH_JUMP);
 	InjectHook(0x004CC0D9, &CStatsHack::StoresKnockedOffHack, PATCH_JUMP);
 	InjectHook(0x004CC1A7, &CStatsHack::AssassinationsHack, PATCH_JUMP);
+	*/
 	return true;
 }
 
