@@ -1,5 +1,5 @@
 #include "CTowerClockHack.h"
-#include <math.h>
+#include <cmath>
 #include "vcversion.h"
 #include "Globals.h"
 
@@ -72,7 +72,7 @@ void CTowerClockHack::Update()
 {
 	float x = TheCamera.GetMatrix().pos.x - this->m_Position.x;
 	float y = TheCamera.GetMatrix().pos.y - this->m_Position.y;
-	float distance = sqrt(x*x + y*y);
+	float distance = sqrt(x * x + y * y);
 
 	if (distance > this->m_fDrawDistance) {
 		this->m_bRender = false;

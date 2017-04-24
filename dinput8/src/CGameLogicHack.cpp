@@ -2,7 +2,7 @@
 #include <Windows.h>
 #include "vcversion.h"
 #include "SilentCall.h"
-#include "Vehicles.h"
+#include "ModelIndices.h"
 
 bool CGameLogicHack::isShortcutDropoffEnabled;
 char CGameLogicHack::skipClearShortcutStage;

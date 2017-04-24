@@ -17,12 +17,23 @@ namespace VCGlobals
 	unsigned short &MI_DOUBLESTREETLIGHTS = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E82C));
 	unsigned short &MI_CARMINE = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E8B0));
 	unsigned short &MI_NAUTICALMINE = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E910));
+	unsigned short &MI_PICKUP_ADRENALINE = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E924));
+	unsigned short &MI_PICKUP_BODYARMOUR = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E928));
+	unsigned short &MI_PICKUP_INFO = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E92C));
+	unsigned short &MI_PICKUP_HEALTH = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E930));
+	unsigned short &MI_PICKUP_BONUS = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E934));
+	unsigned short &MI_PICKUP_BRIBE = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E938));
+	unsigned short &MI_PICKUP_KILLFRENZY = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E93C));
+	unsigned short &MI_PICKUP_CAMERA = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E940));
 	unsigned short &MI_LITTLEHA_POLICE = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E9A0));
 	unsigned short &MI_LIGHTBEAM = *reinterpret_cast<unsigned short *>(vcversion::AdjustOffset(0x0068E9B4));
 	short *WeatherTypesList = reinterpret_cast<short *>(vcversion::AdjustOffset(0x00699EE4));
+	RwTexture *&gpWhiteTexture = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x0077EF58));
 	ScriptParameter *ScriptParams = reinterpret_cast<ScriptParameter *>(vcversion::AdjustOffset(0x007D7438));
 	CProjectileInfo *gaProjectileInfo = reinterpret_cast<CProjectileInfo *>(vcversion::AdjustOffset(0x007DB888));
+	wchar_t *gUString2 = reinterpret_cast<wchar_t *>(vcversion::AdjustOffset(0x007D9010));
 	CPhoneInfo &gPhoneInfo = *reinterpret_cast<CPhoneInfo *>(vcversion::AdjustOffset(0x00817CF0));
+	wchar_t *gUString = reinterpret_cast<wchar_t *>(vcversion::AdjustOffset(0x00821068));
 	RwTexture *&gpShadowHeliTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x00975218));
 	RwTexture *&gpShadowExplosionTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x00978DB4));
 	RwTexture *&gpShadowCarTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x0097F2EC));
@@ -43,6 +54,7 @@ namespace VCGlobals
 	static unsigned long g_DefinedState = vcversion::AdjustOffset(0x0057F9C0);
 	static unsigned long g_strcpy = vcversion::AdjustOffset(0x00642560);
 	static unsigned long g_strncpy = vcversion::AdjustOffset(0x00642580);
+	static unsigned long g_strcat = vcversion::AdjustOffset(0x006425B0);
 	static unsigned long g_strcmp = vcversion::AdjustOffset(0x00642620);
 	static unsigned long g_strncmp = vcversion::AdjustOffset(0x00642650);
 	static unsigned long g_sprintf = vcversion::AdjustOffset(0x00648C10);
@@ -102,6 +114,11 @@ namespace VCGlobals
 	__declspec(naked) char *strncpy(char *dest, const char *src, size_t n)
 	{
 		__asm jmp g_strncpy;
+	}
+
+	__declspec(naked) char *strcat(char *dest, const char *src)
+	{
+		__asm jmp g_strcat;
 	}
 
 	__declspec(naked) int strcmp(const char *s1, const char *s2)

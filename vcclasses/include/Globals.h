@@ -18,9 +18,18 @@ namespace VCGlobals
 	extern unsigned short &MI_DOUBLESTREETLIGHTS;
 	extern unsigned short &MI_CARMINE;
 	extern unsigned short &MI_NAUTICALMINE;
+	extern unsigned short &MI_PICKUP_ADRENALINE;
+	extern unsigned short &MI_PICKUP_BODYARMOUR;
+	extern unsigned short &MI_PICKUP_INFO;
+	extern unsigned short &MI_PICKUP_HEALTH;
+	extern unsigned short &MI_PICKUP_BONUS;
+	extern unsigned short &MI_PICKUP_BRIBE;
+	extern unsigned short &MI_PICKUP_KILLFRENZY;
+	extern unsigned short &MI_PICKUP_CAMERA;
 	extern unsigned short &MI_LITTLEHA_POLICE;
 	extern unsigned short &MI_LIGHTBEAM;
 	extern short *WeatherTypesList;
+	extern RwTexture *&gpWhiteTexture;
 
 	union ScriptParameter
 	{
@@ -34,7 +43,9 @@ namespace VCGlobals
 	};
 	extern ScriptParameter *ScriptParams;
 	extern CProjectileInfo *gaProjectileInfo;
+	extern wchar_t *gUString2;
 	extern CPhoneInfo &gPhoneInfo;
+	extern wchar_t *gUString;
 	extern RwTexture *&gpShadowHeliTex;
 	extern RwTexture *&gpShadowExplosionTex;
 	extern RwTexture *&gpShadowCarTex;
@@ -69,6 +80,7 @@ namespace VCGlobals
 	void DefinedState(void);
 	char *strcpy(char *dest, const char *src);
 	char *strncpy(char *dest, const char *src, size_t n);
+	char *strcat(char *dest, const char *src);
 	int strcmp(const char *s1, const char *s2);
 	int strncmp(const char *s1, const char *s2, size_t n);
 	int sprintf(char *s, const char *format, ...);

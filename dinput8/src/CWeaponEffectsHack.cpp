@@ -22,11 +22,11 @@ void __declspec(naked) CWeaponEffectsHack::InitHackProxy()
 	}
 }
 
-unsigned long CWeaponEffectsHack::InitHack()
+RwTexture *CWeaponEffectsHack::InitHack()
 {
-	unsigned long addr = RwTextureRead("crosshair", "crosshairm");
+	RwTexture *addr = RwTextureRead("crosshair", "crosshairm");
 	// use alternative target texture if it exists
-	if (!GetPrivateProfileInt("Misc", "UseVCAutoAimTexture", 0, "./gta-lc.ini") && addr) {
+	if (!GetPrivateProfileInt("Misc", "UseVCAutoAimTexture", 1, "./gta-lc.ini") && addr) {
 		VCGlobals::strcpy(reinterpret_cast<char *>(vcversion::AdjustOffset(0x0069D818)), "crosshair");
 		VCGlobals::strcpy(reinterpret_cast<char *>(vcversion::AdjustOffset(0x0069D80C)), "crosshairm");
 		memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x005D4ECC)), 0x90, 11);

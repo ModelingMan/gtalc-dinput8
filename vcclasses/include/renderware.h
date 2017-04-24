@@ -18,7 +18,16 @@ struct RwRGBA
 
 struct RwTexture
 {
-	unsigned char space[0x5C];
+	unsigned long raster;           // 0x00
+	unsigned long dict;             // 0x04
+	unsigned long next;             // 0x08
+	unsigned long prev;             // 0x0C
+	char          name[32];         // 0x10
+	char          mask[32];         // 0x30
+	unsigned int  filterAddressing; // 0x50
+	int           refCount;         // 0x54
+	unsigned char maxAnisotropy;    // 0x58
+	char          pad[3];           // 0x59
 };
 
 struct RwMatrix
@@ -45,7 +54,13 @@ struct RxObjSpace3DVertex
 void RsMouseSetPos(RwV2d *);
 bool RwMatrixDestroy(RwMatrix *);
 int RwRenderStateSet(int, int);
-unsigned long RwTextureRead(const char *, const char *);
+unsigned long RpGeometryForAllMaterials(unsigned long, unsigned long(*)(unsigned long, void *), void *);
+RwTexture *RwTextureRead(const char *, const char *);
+unsigned long RpMaterialSetTexture(unsigned long, RwTexture *);
+unsigned long RpMatFXAtomicEnableEffects(unsigned long);
+unsigned long RpMatFXMaterialSetEffects(unsigned long, unsigned long);
+unsigned long RpMatFXMaterialSetupEnvMap(unsigned long, RwTexture *, unsigned long, int, float);
+unsigned long RpMatFXMaterialGetEffects(unsigned long);
 RxObjSpace3DVertex *RwIm3DTransform(RxObjSpace3DVertex *, unsigned int, void *, unsigned int);
 int RwIm3DEnd(void);
 int RwIm3DRenderIndexedPrimitive(int, unsigned short *, int);

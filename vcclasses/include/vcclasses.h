@@ -1327,18 +1327,68 @@ public:
 class CStats
 {
 public:
-	static float &ShootingRangeRank;
+	static int &TyresPopped;
+	static int *PedsKilledOfThisType;
+	static int &BoatsExploded;
+	static float &ShootingRank;
+	static float &TotalProgressInGame;
+	static int &BestStuntJump;
+	static int &LongestStoppie;
+	static int &NumberOfUniqueJumpsFound;
+	static int *FastestTimes;
 	static int &TotalNumberMissions;
 	static float &GarbagePickups;
+	static int &NumberKillFrenziesPassed;
+	static int &TotalNumberKillFrenzies;
 	static float &LoanSharks;
+	static int &HelisDestroyed;
 	static int &IndustrialPassed;
+	static int &LongestWheelie;
 	static int &HighestLevelFireMission;
+	static int &TimesDied;
+	static int &RoundsFiredByPlayer;
+	static int &TimesArrested;
+	static float &IceCreamSold;
+	static int &PeopleKilledByOthers;
+	static int &PropertyDestroyed;
+	static int &TotalNumberOfUniqueJumps;
+	static int &SeagullsKilled;
+	static float &LongestWheelieDist;
+	static float &PizzasDelivered;
+	static int &PeopleKilledByPlayer;
+	static int &KgsOfExplosivesUsed;
+	static int &CriminalsCaught;
+	static int &MaximumJumpFlips;
 	static int &SuburbanPassed;
+	static int &MaximumJumpSpins;
+	static int &HighestLevelAmbulanceMission;
+	static int &DaysPassed;
+	static float &MaximumJumpDistance;
 	static float &StoresKnockedOff;
 	static int &CommercialPassed;
+	static int &TimesDrowned;
+	static float &Longest2WheelDist;
+	static int &LivesSavedWithAmbulance;
+	static int &WantedStarsAttained;
+	static int &WantedStarsEvaded;
+	static float &LongestStoppieDist;
+	static int &FiresExtinguished;
+	static int &BulletsThatHit;
+	static float &ProgressMade;
+	static int *HighestScores;
+	static int &HeadsPopped;
+	static float &MaximumJumpHeight;
+	static int &PassengersDroppedOffWithTaxi;
+	static int &SafeHouseVisits;
+	static int &BloodRingTime;
+	static int &CarsExploded;
 	static float &TopShootingRangeScore;
+	static float &DistanceTravelledOnFoot;
+	static int &MoneyMadeWithTaxi;
 	static float &MovieStunts;
 	static int &NoMoreHurricanes;
+	static int &Longest2Wheel;
+	static float &DistanceTravelledByCar;
 	static int &MissionsGiven;
 	static float &AutoPaintingBudget;
 	static float &Assassinations;
@@ -1516,6 +1566,8 @@ public:
 class CVehicleModelInfo
 {
 public:
+	static RwTexture *&CVehicleModelInfo::ms_pEnvironmentMaps;
+
 	static unsigned int GetMaximumNumberOfPassengersFromNumberOfDoors(int);
 	void ChooseVehicleColour(unsigned char &, unsigned char &);
 };

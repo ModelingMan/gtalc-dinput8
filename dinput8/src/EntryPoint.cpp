@@ -77,6 +77,22 @@ unsigned int numberOfTreadables;
 // RepositionOneObject
 static void RepositionOneObjectHack(CEntity *);
 
+// dodo wheels
+static void DodoWheels1();
+unsigned long dodoWheels1EndJump = vcversion::AdjustOffset(0x0059F000);
+static void DodoWheels2();
+unsigned long dodoWheels2EndJump = vcversion::AdjustOffset(0x0061FBEF);
+
+// dodo shadow
+static void DodoShadow();
+float dodoShadowX = 0.4f;
+float dodoShadowY = 0.9f;
+unsigned long dodoShadowJumpEnd = vcversion::AdjustOffset(0x0056E346);
+
+// dodo anims
+static void DodoAnims();
+unsigned long dodoAnimsEndJump = vcversion::AdjustOffset(0x00590260);
+
 // center mouse (SilentPatch)
 static bool bGameInFocus = true;
 static LRESULT(CALLBACK **OldWndProc)(HWND, UINT, WPARAM, LPARAM);
@@ -294,6 +310,16 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		// leaf scaling
 		Patch<float>(0x00698CD8, 0.3);
 
+		if (!GetPrivateProfileInt("Misc", "UseRCBaron", 0, "./gta-lc.ini")) {
+			// dodo wheels
+			InjectHook(0x0059EFF8, &DodoWheels1, PATCH_JUMP);
+			InjectHook(0x0061FBE9, &DodoWheels2, PATCH_JUMP);
+			// dodo shadow
+			InjectHook(0x0056E31C, &DodoShadow, PATCH_JUMP);
+			// dodo anims
+			InjectHook(0x00590258, &DodoAnims, PATCH_JUMP);
+		}
+
 		// center mouse (SilentPatch)
 		InjectHook(0x004A5E45, &ResetMousePos);
 		OldWndProc = *(LRESULT(CALLBACK***)(HWND, UINT, WPARAM, LPARAM))vcversion::AdjustOffset(0x00601727);
@@ -461,4 +487,50 @@ void RepositionOneObjectHack(CEntity *entity)
 		return;
 	}
 	CWorld::RepositionOneObject(entity);
+}
+
+void __declspec(naked) DodoWheels1()
+{
+	__asm
+	{
+		mov bp, [eax+5Ch] // get model index
+		cmp bp, CAR_DODO  // test for dodo
+		jmp dodoWheels1EndJump
+	}
+}
+
+void __declspec(naked) DodoWheels2()
+{
+	__asm
+	{
+		mov edi, ebp
+		cmp ax, CAR_DODO // test for dodo
+		jmp dodoWheels2EndJump
+	}
+}
+
+void __declspec(naked) DodoShadow()
+{
+	__asm
+	{
+		fld dword ptr [esp+8]
+		fmul dodoShadowY
+		mov ebp, VCGlobals::gpShadowCarTex
+		mov ebp, [ebp]
+		fstp dword ptr [esp+8]
+		fld dword ptr [esp+0Ch]
+		fmul dodoShadowX
+		fstp dword ptr [esp+0Ch]
+		jmp dodoShadowJumpEnd
+	}
+}
+
+void __declspec(naked) DodoAnims()
+{
+	__asm
+	{
+		mov ax, [ebp+5Ch] // get model index
+		cmp ax, CAR_DODO  // test for dodo
+		jmp dodoAnimsEndJump
+	}
 }

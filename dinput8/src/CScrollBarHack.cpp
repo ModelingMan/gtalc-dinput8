@@ -1,9 +1,8 @@
 #include "CScrollBarHack.h"
+#include <cmath>
+#include <cstring>
 #include "Globals.h"
 #include "vcclasses.h"
-
-#include <math.h>
-#include <string.h>
 
 static char ScrollBarTime[22] = "THE TIME IS 12:34    ";
 static char *ScrollBarMsgs[55] =
@@ -19,8 +18,7 @@ void CScrollBarHack::Update()
 	float y = VCGlobals::TheCamera.GetMatrix().pos.y - yStart;
 	float distance = sqrt(x*x + y*y);
 
-	if (distance > 100.0f)
-	{
+	if (distance > 100.0f) {
 		draw = false;
 		return;
 	}
@@ -30,12 +28,10 @@ void CScrollBarHack::Update()
 	count++;
 
 	int countDiv = count & 7;
-	if (countDiv == 0)
-	{
+	if (countDiv == 0) {
 		charCount++;
 
-		if (charCount >= textLength)
-		{
+		if (charCount >= textLength) {
 			switch (messageSet)
 			{
 			case 0:
@@ -297,8 +293,7 @@ void CScrollBarHack::Update()
 	for (int i = 0; i < 39; i++)
 		letterBuffer[i] = letterBuffer[i + 1];
 
-	if (countDiv < 5)
-	{
+	if (countDiv < 5) {
 		char charIdx = text[charCount] - ' ';
 		letterBuffer[39] = VCGlobals::ScrollCharSet[countDiv + charIdx * 5];
 	}
