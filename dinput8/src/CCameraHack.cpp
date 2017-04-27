@@ -4,8 +4,8 @@
 #include "SilentCall.h"
 
 // CamControlHack
-unsigned long camControlOther = vcversion::AdjustOffset(0x00472BF9);
-unsigned long camControlCar = vcversion::AdjustOffset(0x00472C02);
+static unsigned long camControlOther = vcversion::AdjustOffset(0x00472BF9);
+static unsigned long camControlCar = vcversion::AdjustOffset(0x00472C02);
 
 bool CCameraHack::initialise()
 {
@@ -21,11 +21,11 @@ bool CCameraHack::initialise()
 	// mouse sensitivity fix (SilentPatch/ThirteenAG)
 	float &mouseXSensitivity = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x0094DBD0));
 	Patch<float>(0x0046F4AD, 0.0025);
-	Patch<unsigned long>(0x004796F2, (unsigned long)&mouseXSensitivity);
-	Patch<unsigned long>(0x0047A48D, (unsigned long)&mouseXSensitivity);
-	Patch<unsigned long>(0x0047AFF5, (unsigned long)&mouseXSensitivity);
-	Patch<unsigned long>(0x0047C0BF, (unsigned long)&mouseXSensitivity);
-	Patch<unsigned long>(0x00481FB3, (unsigned long)&mouseXSensitivity);
+	Patch<void *>(0x004796F2, &mouseXSensitivity);
+	Patch<void *>(0x0047A48D, &mouseXSensitivity);
+	Patch<void *>(0x0047AFF5, &mouseXSensitivity);
+	Patch<void *>(0x0047C0BF, &mouseXSensitivity);
+	Patch<void *>(0x00481FB3, &mouseXSensitivity);
 
 	return true;
 }

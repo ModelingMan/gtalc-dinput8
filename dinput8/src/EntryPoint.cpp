@@ -30,6 +30,7 @@
 #include "CGameLogicHack.h"
 #include "CRecordDataForChaseHack.h"
 #include "CWaterLevelHack.h"
+#include "CVehicleHack.h"
 #include "Globals.h"
 #include "ModelIndices.h"
 #include "vcversion.h"
@@ -44,54 +45,48 @@ FARPROC OldDllGetClassObject = NULL;
 FARPROC OldDllRegisterServer = NULL;
 FARPROC OldDllUnregisterServer = NULL;
 
-const char *windowName = "GTA: Liberty City";
+static const char *windowName = "GTA: Liberty City";
 
 // GangsInitialise
 static void GangsInitialise();
-unsigned long gangInitialiseEndJump = vcversion::AdjustOffset(0x004EEEDF);
-
-// AutomobilePreRender
-static void AutomobilePreRender();
-unsigned long preRenderMatchAmbulan = vcversion::AdjustOffset(0x0058BE77);
-unsigned long preRenderMatchFbiranch = vcversion::AdjustOffset(0x0058C8F0);
-unsigned long preRenderNoMatch = vcversion::AdjustOffset(0x0058BE34);
+static unsigned long gangInitialiseEndJump = vcversion::AdjustOffset(0x004EEEDF);
 
 // RenderReflections
-float RenderReflections();
+static float RenderReflections();
 
 // CivilianAI
-void CivilianAI();
-unsigned long civilianAIValidPed = vcversion::AdjustOffset(0x004E94E6);
-unsigned long civilianAIInvalidPed = vcversion::AdjustOffset(0x004E9555);
+static void CivilianAI();
+static unsigned long civilianAIValidPed = vcversion::AdjustOffset(0x004E94E6);
+static unsigned long civilianAIInvalidPed = vcversion::AdjustOffset(0x004E9555);
 
 // PedCommentsProcess
 static void PedCommentsProcess();
-unsigned long sfxNoMatch = vcversion::AdjustOffset(0x005DDB73);
-unsigned long sfxMatch = vcversion::AdjustOffset(0x005DDBAC);
+static unsigned long sfxNoMatch = vcversion::AdjustOffset(0x005DDB73);
+static unsigned long sfxMatch = vcversion::AdjustOffset(0x005DDBAC);
 
 // support treadables
 static void TreadablesHack(int, const char *);
-unsigned long treadablesCall = vcversion::AdjustOffset(0x004C0DD0);
-unsigned int numberOfTreadables;
+static unsigned long treadablesCall = vcversion::AdjustOffset(0x004C0DD0);
+static unsigned int numberOfTreadables;
 
 // RepositionOneObject
 static void RepositionOneObjectHack(CEntity *);
 
 // dodo wheels
 static void DodoWheels1();
-unsigned long dodoWheels1EndJump = vcversion::AdjustOffset(0x0059F000);
+static unsigned long dodoWheels1EndJump = vcversion::AdjustOffset(0x0059F000);
 static void DodoWheels2();
-unsigned long dodoWheels2EndJump = vcversion::AdjustOffset(0x0061FBEF);
+static unsigned long dodoWheels2EndJump = vcversion::AdjustOffset(0x0061FBEF);
 
 // dodo shadow
 static void DodoShadow();
-float dodoShadowX = 0.4f;
-float dodoShadowY = 0.9f;
-unsigned long dodoShadowJumpEnd = vcversion::AdjustOffset(0x0056E346);
+static float dodoShadowX = 0.4f;
+static float dodoShadowY = 0.9f;
+static unsigned long dodoShadowJumpEnd = vcversion::AdjustOffset(0x0056E346);
 
 // dodo anims
 static void DodoAnims();
-unsigned long dodoAnimsEndJump = vcversion::AdjustOffset(0x00590260);
+static unsigned long dodoAnimsEndJump = vcversion::AdjustOffset(0x00590260);
 
 // center mouse (SilentPatch)
 static bool bGameInFocus = true;
@@ -264,12 +259,6 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		// undo ocean change
 		Patch<float>(0x0069CD70, 70.0);
 
-		// taxi cash
-		Patch<unsigned char>(0x005B8AB6, 25); // CVehicle::SetDriver
-
-		// FBI Rancher roof light
-		InjectHook(0x0058BE2F, &AutomobilePreRender, PATCH_JUMP); // CAutomobile::PreRender
-
 		// fire light glow (SilentPatch)
 		Patch<unsigned char>(0x0048EB27, 0x10); // CFire::ProcessFire
 
@@ -352,7 +341,8 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			!CCarCtrlHack::initialise() ||
 			!CGameLogicHack::initialise() ||
 			!CRecordDataForChaseHack::initialise() ||
-			!CWaterLevelHack::initialise()) {
+			!CWaterLevelHack::initialise() ||
+			!CVehicleHack::initialise()) {
 			VirtualProtect((LPVOID)(0x400000 + sectionheader->VirtualAddress), sectionheader->Misc.VirtualSize, OldProtect, &OldProtect);
 			return FALSE;
 		}
@@ -386,23 +376,6 @@ void GangsInitialise()
 {
 	for (int i = 0; i < 9; i++) {
 		CGangs::Gang[i].pedModelPreference = -1;
-	}
-}
-
-void __declspec(naked) AutomobilePreRender()
-{
-	__asm
-	{
-		sub ecx, 9 // ambulan
-		jz matchAmbulan
-		dec ecx    // fbiranch
-		jz matchFbiranch
-		inc ecx    // resume before change
-		jmp preRenderNoMatch
-	matchAmbulan:
-		jmp preRenderMatchAmbulan
-	matchFbiranch:
-		jmp preRenderMatchFbiranch
 	}
 }
 

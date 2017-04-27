@@ -20,8 +20,8 @@ using namespace VCGlobals;
 
 // GetRandomCarOfTypeInAreaNoSave
 static void GetRandomCarOfTypeInAreaNoSave();
-unsigned long getRandomCarProceedJump = vcversion::AdjustOffset(0x0062F23D);
-unsigned long getRandomCarEndJump = vcversion::AdjustOffset(0x0062F269);
+static unsigned long getRandomCarProceedJump = vcversion::AdjustOffset(0x0062F23D);
+static unsigned long getRandomCarEndJump = vcversion::AdjustOffset(0x0062F269);
 
 int CRunningScriptHack::debugMode;
 

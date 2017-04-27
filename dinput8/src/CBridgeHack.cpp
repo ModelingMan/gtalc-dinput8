@@ -17,7 +17,7 @@ int CBridgeHack::OldState;
 float CBridgeHack::OldLift;
 unsigned int CBridgeHack::TimeOfBridgeBecomingOperational;
 
-bool ShouldCarStopForBridge(CVehicle *);
+static bool ShouldCarStopForBridge(CVehicle *);
 
 static void(__cdecl *CallInit)(void);
 static void(__cdecl *CallUpdate)(void);

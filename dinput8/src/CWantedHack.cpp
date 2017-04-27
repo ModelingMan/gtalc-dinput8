@@ -5,7 +5,7 @@
 
 bool CWantedHack::initialise()
 {
-	if (!GetPrivateProfileInt("Misc", "UseVCWantedSystem", 0, "./gta-lc.ini")) {
+	if (!GetPrivateProfileInt("Misc", "UseVCWantedSystem", 1, "./gta-lc.ini")) {
 		// level updater
 		Patch<unsigned int>(0x004D2126, 3200); // level 6
 		Patch<unsigned int>(0x004D2156, 1600); // level 5

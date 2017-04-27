@@ -4,7 +4,7 @@
 #include "Globals.h"
 #include "SilentCall.h"
 
-unsigned long shinyTextsJumpEnd = vcversion::AdjustOffset(0x00465BB8);
+static unsigned long shinyTextsJumpEnd = vcversion::AdjustOffset(0x00465BB8);
 static char LightForPedsHack();
 
 bool CShinyTextsHack::initialise()

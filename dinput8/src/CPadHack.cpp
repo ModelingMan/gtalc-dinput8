@@ -5,10 +5,10 @@
 #include "ModelIndices.h"
 
 static void UpdatePedCount();
-unsigned long updatePedCountEndJump = vcversion::AdjustOffset(0x0053B6ED);
-char weaponsForAllArr[12] = { 6, 17, 23, 21, 25, 26, 28, 30, 31, 15, 12, 0 };
+static unsigned long updatePedCountEndJump = vcversion::AdjustOffset(0x0053B6ED);
+static char weaponsForAllArr[12] = { 6, 17, 23, 21, 25, 26, 28, 30, 31, 15, 12, 0 };
 
-char specialCharacters[10][8] =
+static char specialCharacters[10][8] =
 {
 	"eight2",
 	"misty",
@@ -35,16 +35,16 @@ bool CPadHack::initialise()
 	InjectHook(0x0053B6B9, &UpdatePedCount, PATCH_JUMP);
 
 	// modify special character cheats
-	Patch<unsigned long>(0x004ACA66, (unsigned long)&specialCharacters[0]); // igbuddy
-	Patch<unsigned long>(0x004ACA96, (unsigned long)&specialCharacters[1]); // igcandy
-	Patch<unsigned long>(0x004ACAC6, (unsigned long)&specialCharacters[2]); // igken
-	Patch<unsigned long>(0x004ACAF6, (unsigned long)&specialCharacters[3]); // ighlary
-	Patch<unsigned long>(0x004ACB26, (unsigned long)&specialCharacters[4]); // igjezz
-	Patch<unsigned long>(0x004ACB56, (unsigned long)&specialCharacters[5]); // igphil
-	Patch<unsigned long>(0x004ACB86, (unsigned long)&specialCharacters[6]); // igsonny
-	Patch<unsigned long>(0x004ACD76, (unsigned long)&specialCharacters[7]); // igmerc
-	Patch<unsigned long>(0x004ACDA6, (unsigned long)&specialCharacters[8]); // igdick
-	Patch<unsigned long>(0x004ACEB6, (unsigned long)&specialCharacters[9]); // igdiaz
+	Patch<void *>(0x004ACA66, &specialCharacters[0]); // igbuddy
+	Patch<void *>(0x004ACA96, &specialCharacters[1]); // igcandy
+	Patch<void *>(0x004ACAC6, &specialCharacters[2]); // igken
+	Patch<void *>(0x004ACAF6, &specialCharacters[3]); // ighlary
+	Patch<void *>(0x004ACB26, &specialCharacters[4]); // igjezz
+	Patch<void *>(0x004ACB56, &specialCharacters[5]); // igphil
+	Patch<void *>(0x004ACB86, &specialCharacters[6]); // igsonny
+	Patch<void *>(0x004ACD76, &specialCharacters[7]); // igmerc
+	Patch<void *>(0x004ACDA6, &specialCharacters[8]); // igdick
+	Patch<void *>(0x004ACEB6, &specialCharacters[9]); // igdiaz
 
 	// cheat weapon ammo fix (SilentPatch)
 	Patch<unsigned char>(0x004AED15, 1);

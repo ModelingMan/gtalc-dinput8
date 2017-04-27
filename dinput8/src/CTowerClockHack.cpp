@@ -5,7 +5,7 @@
 
 using namespace VCGlobals;
 
-RxObjSpace3DVertex verts[4];
+static RxObjSpace3DVertex verts[4];
 
 void CTowerClockHack::Init(CVector position, float p2, float p3, unsigned char p4, unsigned char p5, unsigned char p6, float drawDistance, float p8)
 {

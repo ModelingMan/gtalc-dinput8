@@ -4,8 +4,8 @@
 #include "SilentCall.h"
 
 // UpdateHack
-unsigned long projectileInfoUpdateProceedJump = vcversion::AdjustOffset(0x005C6ECC);
-unsigned long projectileInfoUpdateEndJump = vcversion::AdjustOffset(0x005C6F45);
+static unsigned long projectileInfoUpdateProceedJump = vcversion::AdjustOffset(0x005C6ECC);
+static unsigned long projectileInfoUpdateEndJump = vcversion::AdjustOffset(0x005C6F45);
 
 bool CProjectileInfoHack::initialise()
 {

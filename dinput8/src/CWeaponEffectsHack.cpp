@@ -4,7 +4,7 @@
 #include "SilentCall.h"
 #include <Windows.h>
 
-unsigned long initJumpEnd = vcversion::AdjustOffset(0x005D512D);
+static unsigned long initJumpEnd = vcversion::AdjustOffset(0x005D512D);
 
 bool CWeaponEffectsHack::initialise()
 {

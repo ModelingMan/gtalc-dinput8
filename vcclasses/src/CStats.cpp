@@ -1,6 +1,7 @@
 #include "vcclasses.h"
 #include "vcversion.h"
 
+float *CStats::FavoriteRadioStationList = reinterpret_cast<float *>(vcversion::AdjustOffset(0x00862460));
 int &CStats::TyresPopped = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x0094DB58));
 int *CStats::PedsKilledOfThisType = reinterpret_cast<int *>(vcversion::AdjustOffset(0x0094DB64));
 int &CStats::BoatsExploded = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x00974B04));

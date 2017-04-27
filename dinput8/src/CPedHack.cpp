@@ -4,7 +4,7 @@
 #include "Globals.h"
 
 // ServiceTalkingHackProxy
-unsigned long serviceTalkingEndJump = vcversion::AdjustOffset(0x00522890);
+static unsigned long serviceTalkingEndJump = vcversion::AdjustOffset(0x00522890);
 
 bool CPedHack::initialise()
 {

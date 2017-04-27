@@ -8,14 +8,14 @@
 #include "Offset.h"
 
 // FindCarInSectorListHack
-unsigned long findCarProceedJump = vcversion::AdjustOffset(0x0005A81EC);
-unsigned long findCarEndJump = vcversion::AdjustOffset(0x005A82F4);
+static unsigned long findCarProceedJump = vcversion::AdjustOffset(0x0005A81EC);
+static unsigned long findCarEndJump = vcversion::AdjustOffset(0x005A82F4);
 
 // crane audio
 static void DestroyAudioEntityProxy();
 static void DestroyAudioEntity();
-unsigned long updateHackEndJump = vcversion::AdjustOffset(0x005A8859);
-int audioEntities[8];
+static unsigned long updateHackEndJump = vcversion::AdjustOffset(0x005A8859);
+static int audioEntities[8];
 
 bool CCranesHack::initialise()
 {

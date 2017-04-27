@@ -2,6 +2,7 @@
 #include "vcversion.h"
 
 static unsigned long g_RsMouseSetPos = vcversion::AdjustOffset(0x006030C0);
+static unsigned long g_RpClumpForAllAtomics = vcversion::AdjustOffset(0x00640D00);
 static unsigned long g_RwMatrixDestroy = vcversion::AdjustOffset(0x006445F0);
 static unsigned long g_RwRenderStateSet = vcversion::AdjustOffset(0x00649BA0);
 static unsigned long g_RpGeometryForAllMaterials = vcversion::AdjustOffset(0x0064CC90);
@@ -19,6 +20,11 @@ static unsigned long g_RwIm3DRenderLine = vcversion::AdjustOffset(0x0065B0F0);
 __declspec(naked) void RsMouseSetPos(RwV2d *)
 {
 	__asm jmp g_RsMouseSetPos;
+}
+
+__declspec(naked) unsigned long RpClumpForAllAtomics(unsigned long, unsigned long(*)(unsigned long, void *), void *)
+{
+	__asm jmp g_RpClumpForAllAtomics;
 }
 
 __declspec(naked) bool RwMatrixDestroy(RwMatrix *)

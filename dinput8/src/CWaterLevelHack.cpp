@@ -7,7 +7,7 @@
 bool CWaterLevelHack::initialise()
 {
 	// remove horizon ships
-	if (!GetPrivateProfileInt("Misc", "AllowHorizonShips", 0, "./gta-lc.ini")) {
+	if (!GetPrivateProfileInt("Misc", "AllowHorizonShips", 1, "./gta-lc.ini")) {
 		Patch<unsigned short>(0x005BC5BC, 0xE990); // CWaterLevel::RenderShipsOnHorizon
 	}
 

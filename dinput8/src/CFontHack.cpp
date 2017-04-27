@@ -8,11 +8,11 @@
 
 using namespace VCGlobals;
 
-CSprite2d *PagerFont = reinterpret_cast<CSprite2d *>(vcversion::AdjustOffset(0x00A10748));
+static CSprite2d *PagerFont = reinterpret_cast<CSprite2d *>(vcversion::AdjustOffset(0x00A10748));
 
-unsigned long SubtitlesShadowFixEndJump = vcversion::AdjustOffset(0x00551701);
+static unsigned long SubtitlesShadowFixEndJump = vcversion::AdjustOffset(0x00551701);
 
-void SubtitlesShadowFix();
+static void SubtitlesShadowFix();
 
 bool CFontHack::initialise()
 {
@@ -34,10 +34,8 @@ void CFontHack::PrintPagerString(float posX, float posY, float scaleX, float sca
 {
 	int len = wcslen(text);
 
-	for (int i = 0; i < len; i++)
-	{
-		if (text[i] >= ' ' && text[i] <= 'z')
-		{
+	for (int i = 0; i < len; i++) {
+		if (text[i] >= ' ' && text[i] <= 'z') {
 			int row = (text[i] - 32) / 16;
 			int col = (text[i] - 32) % 16;
 
@@ -47,8 +45,7 @@ void CFontHack::PrintPagerString(float posX, float posY, float scaleX, float sca
 			float cropX2 = cropX1 + 0.06f;
 			float cropY2 = cropY1 + 0.0625f;
 
-			if (static_cast<float>(RsGlobal.currentWidth) / static_cast<float>(RsGlobal.currentHeight) < 1.5f)
-			{
+			if (static_cast<float>(RsGlobal.currentWidth) / static_cast<float>(RsGlobal.currentHeight) < 1.5f) {
 				float charWidth = RsGlobal.currentWidth * (16.0f / 640.0f);
 				float charHeight = RsGlobal.currentHeight * (16.0f / 448.0f);
 
@@ -56,9 +53,7 @@ void CFontHack::PrintPagerString(float posX, float posY, float scaleX, float sca
 				drawRect.right = drawRect.left + (charWidth * scaleX * 2);
 				drawRect.top = posY;
 				drawRect.bottom = drawRect.top + (charHeight * scaleY);
-			}
-			else
-			{
+			} else {
 				float charWidth = RsGlobal.currentWidth * (32.0f / 1920.0f);
 				float charHeight = RsGlobal.currentHeight * (32.0f / 1080.0f);
 

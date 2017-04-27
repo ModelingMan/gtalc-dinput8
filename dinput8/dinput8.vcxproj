@@ -164,6 +164,7 @@
     <ClCompile Include="src\CSpecialParticleStuffHack.cpp" />
     <ClCompile Include="src\CStatsHack.cpp" />
     <ClCompile Include="src\CTowerClockHack.cpp" />
+    <ClCompile Include="src\CVehicleHack.cpp" />
     <ClCompile Include="src\CWantedHack.cpp" />
     <ClCompile Include="src\CWaterLevelHack.cpp" />
     <ClCompile Include="src\CWeaponEffectsHack.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="include\CSpecialParticleStuffHack.h" />
     <ClInclude Include="include\CStatsHack.h" />
     <ClInclude Include="include\CTowerClockHack.h" />
+    <ClInclude Include="include\CVehicleHack.h" />
     <ClInclude Include="include\CWantedHack.h" />
     <ClInclude Include="include\CWaterLevelHack.h" />
     <ClInclude Include="include\CWeaponEffectsHack.h" />

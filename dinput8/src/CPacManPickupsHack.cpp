@@ -10,8 +10,8 @@
 int CPacManPickupsHack::PillsEatenInRace;
 bool CPacManPickupsHack::bPMActive;
 CPacManPickupHack CPacManPickupsHack::aPMPickups[MAX_PACMAN_PICKUP];
-unsigned short scrambleModel;
-unsigned short raceModel;
+static unsigned short scrambleModel;
+static unsigned short raceModel;
 
 CVector aRacePoints1[MAX_PACMAN_PICKUP] =
 {

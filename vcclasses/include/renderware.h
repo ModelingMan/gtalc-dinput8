@@ -52,6 +52,7 @@ struct RxObjSpace3DVertex
 };
 
 void RsMouseSetPos(RwV2d *);
+unsigned long RpClumpForAllAtomics(unsigned long, unsigned long(*)(unsigned long, void *), void *);
 bool RwMatrixDestroy(RwMatrix *);
 int RwRenderStateSet(int, int);
 unsigned long RpGeometryForAllMaterials(unsigned long, unsigned long(*)(unsigned long, void *), void *);

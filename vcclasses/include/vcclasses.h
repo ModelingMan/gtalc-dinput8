@@ -226,8 +226,10 @@ class cDMAudio
 public:
 	static int &garageEntity;
 
+	float *GetListenTimeArray(void);
 	void PlayRadioAnnouncement(unsigned char);
 	void PlayFrontEndSound(int id, int unk);
+	bool IsMP3RadioChannelAvailable(void);
 	void PlayOneShot(int, unsigned short, float);
 	void SetEntityStatus(int, unsigned char);
 	void DestroyEntity(int);
@@ -424,7 +426,9 @@ public:
 	CEntity        *targetEntity;          // 0x19C
 	unsigned char  firstColour;            // 0x1A0
 	unsigned char  secondColour;           // 0x1A1
-	unsigned char  space4[0x0006];
+	unsigned char  componentA;             // 0x1A2
+	unsigned char  componentB;             // 0x1A3
+	unsigned char  space4[0x0004];
 	class CPed     *driver;                // 0x1A8
 	class CPed     *passengers[8];         // 0x1AC
 	unsigned char  space5[0x020];
@@ -1327,6 +1331,7 @@ public:
 class CStats
 {
 public:
+	static float *FavoriteRadioStationList;
 	static int &TyresPopped;
 	static int *PedsKilledOfThisType;
 	static int &BoatsExploded;

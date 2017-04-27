@@ -8,7 +8,7 @@ bool CGameLogicHack::isShortcutDropoffEnabled;
 char CGameLogicHack::skipClearShortcutStage;
 
 // GameLogicUpdate
-unsigned long gameLogicUpdateEndJump = vcversion::AdjustOffset(0x0042BC6D);
+static unsigned long gameLogicUpdateEndJump = vcversion::AdjustOffset(0x0042BC6D);
 
 bool CGameLogicHack::initialise()
 {

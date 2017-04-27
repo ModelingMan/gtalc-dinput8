@@ -3,25 +3,19 @@
 #include "vcversion.h"
 #include "SilentCall.h"
 
+using namespace VCGlobals;
+
 // RenderPickUpText
-unsigned long pickupText0Jump = vcversion::AdjustOffset(0x0043E649);
-unsigned long pickupTextGetTextJump = vcversion::AdjustOffset(0x0043E6FD);
-char text[53][8] =
+static unsigned long pickupText0Jump = vcversion::AdjustOffset(0x0043E649);
+static unsigned long pickupTextGetTextJump = vcversion::AdjustOffset(0x0043E6FD);
+static char text[53][8] =
 {
 #include "PickupText.inc"
 };
 
 // DoPickUpEffects
-unsigned long adrenalineModel = vcversion::AdjustOffset(0x0068E924);
-unsigned long cameraModel = vcversion::AdjustOffset(0x0068E940);
-unsigned long bodyarmourModel = vcversion::AdjustOffset(0x0068E928);
-unsigned long bribeModel = vcversion::AdjustOffset(0x0068E938);
-unsigned long infoModel = vcversion::AdjustOffset(0x0068E92C);
-unsigned long killfrenzyModel = vcversion::AdjustOffset(0x0068E93C);
-unsigned long healthModel = vcversion::AdjustOffset(0x0068E930);
-unsigned long bonusModel = vcversion::AdjustOffset(0x0068E934);
-unsigned long pickupEffectEndJump = vcversion::AdjustOffset(0x0043F294);
-unsigned long pickupEffectNoMatchJump = vcversion::AdjustOffset(0x0043F246);
+static unsigned long pickupEffectEndJump = vcversion::AdjustOffset(0x0043F294);
+static unsigned long pickupEffectNoMatchJump = vcversion::AdjustOffset(0x0043F246);
 
 bool CPickupsHack::initialise()
 {
@@ -43,7 +37,7 @@ bool CPickupsHack::initialise()
 	Patch<unsigned char>(0x0043F842, 0x10);
 
 	// package rewards
-	InjectHook(0x00441293, &CPickupsHack::UpdateHack, PATCH_CALL);
+	InjectHook(0x00441293, &CPickupsHack::UpdateHack);
 	Patch<unsigned short>(0x00441298, 0x9090);
 	Patch<unsigned int>(0x004412DC, 1000000);
 
@@ -73,11 +67,11 @@ void __declspec(naked) CPickupsHack::DoPickUpEffectsHack()
 	{
 		movsx ecx, word ptr [ebp+5Ch] // get pickup model index
 
-		mov edx, adrenalineModel      // get adrenaline model address, must use edx
+		mov edx, MI_PICKUP_ADRENALINE // get adrenaline model address, must use edx
 		movzx edx, word ptr [edx]     // read address to get model index
 		cmp edx, ecx                  // compare with pickup model index
 		jz adrenalineCameraEffect
-		mov eax, cameraModel          // get camera model address
+		mov eax, MI_PICKUP_CAMERA     // get camera model address
 		movzx eax, word ptr [eax]     // read address to get model index
 		cmp eax, ecx                  // compare with pickup model index
 		jnz bodyarmourBribeModels
@@ -86,11 +80,11 @@ void __declspec(naked) CPickupsHack::DoPickUpEffectsHack()
 		jmp endMatch
 
 	bodyarmourBribeModels:
-		mov eax, bodyarmourModel      // get bodyarmour model address, must use eax
+		mov eax, MI_PICKUP_BODYARMOUR // get bodyarmour model address, must use eax
 		movzx eax, word ptr [eax]     // read address to get model index
 		cmp eax, ecx                  // compare with pickup model index
 		jz bodyarmourBribeEffect
-		mov ebx, bribeModel           // get bribe model address
+		mov ebx, MI_PICKUP_BRIBE      // get bribe model address
 		movzx ebx, word ptr [ebx]     // read address to get model index
 		cmp ebx, ecx                  // compare with pickup model index
 		jnz infoKillfrenzyModels
@@ -99,11 +93,11 @@ void __declspec(naked) CPickupsHack::DoPickUpEffectsHack()
 		jmp endMatch
 
 	infoKillfrenzyModels:
-		mov esi, infoModel            // get info model address
+		mov esi, MI_PICKUP_INFO       // get info model address
 		movzx esi, word ptr [esi]     // read address to get model index
 		cmp esi, ecx                  // compare with pickup model index
 		jz infoKillfrenzyEffect
-		mov ebx, killfrenzyModel      // get killfrenzy model address
+		mov ebx, MI_PICKUP_KILLFRENZY // get killfrenzy model address
 		movzx ebx, word ptr [ebx]     // read address to get model index
 		cmp ebx, ecx                  // compare with pickup model index
 		jnz healthBonusModels
@@ -112,11 +106,11 @@ void __declspec(naked) CPickupsHack::DoPickUpEffectsHack()
 		jmp endMatch
 
 	healthBonusModels:
-		mov esi, healthModel          // get health model address, must use esi
+		mov esi, MI_PICKUP_HEALTH     // get health model address, must use esi
 		movzx esi, word ptr [esi]     // read address to get model index
 		cmp esi, ecx                  // compare with pickup model index
 		jz healthBonusEffect
-		mov ebx, bonusModel           // get bonus model address
+		mov ebx, MI_PICKUP_BONUS      // get bonus model address
 		movzx ebx, word ptr [ebx]     // read address to get model index
 		cmp ebx, ecx                  // compare with pickup model index
 		jnz floatpackge1ModelEffect

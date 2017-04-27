@@ -5,10 +5,10 @@
 #include "Globals.h"
 #include "SilentCall.h"
 
-unsigned long renderEverythingBarRoadsIntermediate = vcversion::AdjustOffset(0x004C9FA8);
-unsigned long renderEverythingBarRoadsEndJump = vcversion::AdjustOffset(0x004C9F90);
-bool isStateOne;
-char *buildings;
+static unsigned long renderEverythingBarRoadsIntermediate = vcversion::AdjustOffset(0x004C9FA8);
+static unsigned long renderEverythingBarRoadsEndJump = vcversion::AdjustOffset(0x004C9F90);
+static bool isStateOne;
+static char *buildings;
 
 bool CRendererHack::initialise()
 {

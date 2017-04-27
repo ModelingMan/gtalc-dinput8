@@ -5,7 +5,7 @@
 #include "SilentCall.h"
 #include "ModelIndices.h"
 
-const int carsToCollect[2][16] =
+static const int carsToCollect[2][16] =
 {
 	{
 		CAR_SECURICA,
@@ -46,13 +46,13 @@ const int carsToCollect[2][16] =
 };
 
 // UpdateType7HackProxy
-unsigned long updateType7EndJump = vcversion::AdjustOffset(0x00433FF0);
-unsigned long updateType7ProceedJump = vcversion::AdjustOffset(0x0043221E);
+static unsigned long updateType7EndJump = vcversion::AdjustOffset(0x00433FF0);
+static unsigned long updateType7ProceedJump = vcversion::AdjustOffset(0x0043221E);
 // UpdateType14HackProxy
-unsigned long updateType14EndJump = vcversion::AdjustOffset(0x00434010);
-unsigned long updateType14ProceedJump = vcversion::AdjustOffset(0x00432C8E);
+static unsigned long updateType14EndJump = vcversion::AdjustOffset(0x00434010);
+static unsigned long updateType14ProceedJump = vcversion::AdjustOffset(0x00432C8E);
 // UpdateType5HackProxy
-unsigned long updateType5EndJump = vcversion::AdjustOffset(0x00430CF9);
+static unsigned long updateType5EndJump = vcversion::AdjustOffset(0x00430CF9);
 
 bool CGaragesHack::initialise()
 {

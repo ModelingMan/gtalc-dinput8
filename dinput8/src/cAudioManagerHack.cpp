@@ -103,7 +103,7 @@ static unsigned char scriptObjectCellBeatingCounter;
 #define BRIDGE_ONE_SHOT 132
 #define BRIDGE_MOTOR 319
 
-struct PoliceRadioZone
+const struct PoliceRadioZone
 {
 	char zone[8];
 	int sfx;
@@ -148,7 +148,7 @@ struct PoliceRadioZone
 	{ 0,         0,                     0 }
 };
 
-struct VehicleSfx
+const struct VehicleSfx
 {
 	int npcEngine;
 	int playerEngine;
@@ -233,7 +233,7 @@ struct VehicleSfx
 	{ 274, 10, 5, 11200, 52,  9300, 1 }, // lovefist
 	{ 268,  0, 0, 26513, 52,  9935, 1 }, // ghost
 	{ 268,  0, 0, 26513, 52,  9500, 1 }, // dinghy
-	{ 276, 12, 4, 10700, 52,  9600, 0 }, // comet
+	{ 269,  5, 1,  9500, 52,  9800, 1 }, // comet
 	{ 273,  9, 1,  9200, 52,  9700, 0 }, // sabretur
 	{ 273,  9, 3, 13857, 52,  9935, 0 }, // diablos
 	{ 274, 10, 0, 26513, 52,  9900, 1 }, // phoenix
@@ -268,7 +268,7 @@ struct VehicleSfx
 	{ 269,  5, 6, 11025, 52, 13600, 1 } // vicechee
 };
 
-struct PedSfxDelay
+const struct PedSfxDelay
 {
 	int fixedDelay;
 	int randomDelay;
@@ -334,18 +334,18 @@ struct PedSfxDelay
 	{ 0, 0, 0, 0 }
 };
 
-short audioZones[TOTAL_AUDIO_ZONES] = {};
-bool isPlayerSfxTommy;
+static short audioZones[TOTAL_AUDIO_ZONES] = {};
+static bool isPlayerSfxTommy;
 
 // ProcessFrontEndHackProxy
-unsigned long JumpTableForFrontEnd = vcversion::AdjustOffset(0x006B28B8);
-unsigned long OffsetIfWeHackedFrontEnd = vcversion::AdjustOffset(0x005DBE5E);
+static unsigned long JumpTableForFrontEnd = vcversion::AdjustOffset(0x006B28B8);
+static unsigned long OffsetIfWeHackedFrontEnd = vcversion::AdjustOffset(0x005DBE5E);
 // SetupSuspectLastSeenReportHackProxy
-unsigned long setupSuspectLastSeenReportMatch = vcversion::AdjustOffset(0x005FD6B8);
-unsigned long setupSuspectLastSeenReportNoMatch = vcversion::AdjustOffset(0x005FD6B0);
+static unsigned long setupSuspectLastSeenReportMatch = vcversion::AdjustOffset(0x005FD6B8);
+static unsigned long setupSuspectLastSeenReportNoMatch = vcversion::AdjustOffset(0x005FD6B0);
 // ProcessVehicleSirenOrAlarmHack
-unsigned long fbiNoMatchEndJump = vcversion::AdjustOffset(0x005F03F0);
-unsigned long fbiMatchEndJump = vcversion::AdjustOffset(0x005F03FF);
+static unsigned long fbiNoMatchEndJump = vcversion::AdjustOffset(0x005F03F0);
+static unsigned long fbiMatchEndJump = vcversion::AdjustOffset(0x005F03FF);
 
 bool cAudioManagerHack::initialise()
 {
@@ -628,14 +628,14 @@ void cAudioManagerHack::ProcessLoopingScriptObjectHack(unsigned char id)
 
 void cAudioManagerHack::InitialiseAudioZoneArrayHack()
 {
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004DC392)) = (unsigned long)&audioZones; // CTheZones::FindAudioZone
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FCF49)) = (unsigned long)&audioZones; // cAudioManager::PlaySuspectLastSeen
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x005FDC0F)) = (unsigned long)&audioZones; // cAudioManager::SetupCrimeReport
+	Patch<void *>(0x004DC392, &audioZones); // CTheZones::FindAudioZone
+	Patch<void *>(0x005FCF49, &audioZones); // cAudioManager::PlaySuspectLastSeen
+	Patch<void *>(0x005FDC0F, &audioZones); // cAudioManager::SetupCrimeReport
 
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x004DC475)) = TOTAL_AUDIO_ZONES;
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004DC48A)) = (unsigned long)&audioZones;
-	*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x004DC4C4)) = TOTAL_AUDIO_ZONES;
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x004DC4D9)) = (unsigned long)&audioZones;
+	Patch<unsigned char>(0x004DC475, TOTAL_AUDIO_ZONES);
+	Patch<void *>(0x004DC48A, &audioZones);
+	Patch<unsigned char>(0x004DC4C4, TOTAL_AUDIO_ZONES);
+	Patch<void *>(0x004DC4D9, &audioZones);
 	CTheZones::InitialiseAudioZoneArray();
 }
 

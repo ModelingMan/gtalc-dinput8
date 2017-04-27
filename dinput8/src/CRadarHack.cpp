@@ -2,8 +2,8 @@
 #include "vcversion.h"
 #include "SilentCall.h"
 
-unsigned long entityBlipJumpEnd = vcversion::AdjustOffset(0x004C3B7E);
-unsigned long blipColour = vcversion::AdjustOffset(0x007D7D38);
+static unsigned long entityBlipJumpEnd = vcversion::AdjustOffset(0x004C3B7E);
+static unsigned long blipColour = vcversion::AdjustOffset(0x007D7D38);
 
 bool CRadarHack::initialise()
 {
