@@ -5,9 +5,11 @@
 class CStatsHack : public CStats
 {
 public:
+	static int &LongestFlightInDodo; // uses CStats::GarbagePickups
+	static int &MissionsPassed; // uses CStats::MovieStunts
+
 	static bool initialise();
-	static void MissionsPassedHack();
-	static void HighestLevelFireMissionHack();
-	static void StoresKnockedOffHack();
-	static void AssassinationsHack();
+	static void RegisterLongestFlightInDodo(int);
+	static void AddTextLine(const char *);
+	static int ConstructStatLine(int);
 };

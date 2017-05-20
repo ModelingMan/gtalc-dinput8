@@ -39,6 +39,7 @@ public:
 	bool _03DD_add_sprite_blip_for_pickup();
 	bool _03EC_has_military_crane_collected_all_cars();
 	bool _03F8_get_body_cast_health();
+	bool _0406_register_longest_dodo_flight();
 	bool _0410_set_gang_ped_model_preference();
 	bool _041C_set_char_say();
 	bool _0421_force_rain();

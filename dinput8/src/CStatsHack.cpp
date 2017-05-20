@@ -1,122 +1,60 @@
 #include "CStatsHack.h"
+#include <Windows.h>
 #include "vcversion.h"
+#include "Globals.h"
 #include "SilentCall.h"
 
-char *gxtKey = "FEST_MP";
-unsigned long missionsGivenStatJump = vcversion::AdjustOffset(0x004CB15D);
-unsigned long playingTimeStatJump = vcversion::AdjustOffset(0x004CB16E);
-unsigned long highestLevelFireMissionStatDisplay = vcversion::AdjustOffset(0x004CC0B5);
-unsigned long highestLevelFireMissionStatNext = vcversion::AdjustOffset(0x004CC0D9);
-unsigned long storesKnockedOffStatDisplay = vcversion::AdjustOffset(0x004CC0E0);
-unsigned long storesKnockedOffStatNext = vcversion::AdjustOffset(0x004CC137);
-unsigned long assassinationsStatDisplay = vcversion::AdjustOffset(0x004CC1B1);
-unsigned long assassinationsStatNext = vcversion::AdjustOffset(0x004CC203);
-unsigned long buildStatLine = vcversion::AdjustOffset(0x004CD1A8);
+#define METRES_TO_MILES 0.0006213712f // originally 0.0005988024
+#define METRES_TO_FEET 3.28084f // originally 3.3333333
+
+static bool additionalStats;
+int &CStatsHack::LongestFlightInDodo = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x00974C00)); // uses CStats::GarbagePickups
+int &CStatsHack::MissionsPassed = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x00A0FC8C)); // uses CStats::MovieStunts
+
+enum eStatType
+{
+	STAT_TYPE_INT,
+	STAT_TYPE_FLOAT,
+	STAT_TYPE_PERCENT,
+	STAT_TYPE_CASH,
+	STAT_TYPE_DEGREE
+};
 
 bool CStatsHack::initialise()
 {
-	/*
-	// add missions passed line
-	Patch<unsigned char>(0x004CB19D, 3);
-	Patch<unsigned char>(0x004CB1C4, 4);
-	Patch<unsigned char>(0x004CB1E7, 5);
-	Patch<unsigned char>(0x004CB20A, 6);
-	InjectHook(0x004CB14B, &CStatsHack::MissionsPassedHack, PATCH_JUMP);
-	// replace missions passed stat with loan sharks stat
-	Patch<unsigned long>(0x00456C0F, (unsigned long)&CStats::LoanSharks);
-	InjectHook(0x004CBF22, vcversion::AdjustOffset(0x004CBF83), PATCH_JUMP);
+	additionalStats = !!GetPrivateProfileInt("Misc", "AdditionalStats", 0, "./gta-lc.ini");
+	InjectHook(0x0048FA1C, &CStatsHack::ConstructStatLine);
+	InjectHook(0x0048FB34, &CStatsHack::ConstructStatLine);
+	InjectHook(0x0048FBC5, &CStatsHack::ConstructStatLine);
+	InjectHook(0x0048FD61, &CStatsHack::ConstructStatLine);
+	InjectHook(0x0049B9B2, &CStatsHack::ConstructStatLine);
+	InjectHook(0x0049BEB6, &CStatsHack::ConstructStatLine);
 
-	InjectHook(0x004CC0AE, &CStatsHack::HighestLevelFireMissionHack, PATCH_JUMP);
-	InjectHook(0x004CC0D9, &CStatsHack::StoresKnockedOffHack, PATCH_JUMP);
-	InjectHook(0x004CC1A7, &CStatsHack::AssassinationsHack, PATCH_JUMP);
-	*/
+	// replace missions passed stat
+	Patch<void *>(0x00456C0F, &CStatsHack::MissionsPassed);
+	Patch<void *>(0x004CE592, &CStatsHack::MissionsPassed);
+	Patch<void *>(0x006382FE, &CStatsHack::MissionsPassed);
 	return true;
 }
 
-void __declspec(naked) CStatsHack::MissionsPassedHack()
+void CStatsHack::RegisterLongestFlightInDodo(int value)
 {
-	__asm
-	{
-		cmp esi, 1                   // compare current line with 1
-		jnz missionsPassed
-		mov eax, MissionsGiven
-		jmp missionsGivenStatJump
-	missionsPassed:
-		cmp esi, 2                   // compare current line with 2
-		jnz playingTime
-		mov ebx, TotalNumberMissions // store address of total number of missions stat
-		mov eax, LoanSharks          // store address of missions passed stat
-		push 0                       // stat display primary type
-		push ebx                     // push address of total number of missions stat
-		push 0                       // stat display secondary type
-		push eax                     // push address of missions passed stat
-		mov eax, gxtKey              // store address of gxt key
-		push eax                     // push address of gxt key
-		jmp buildStatLine
-	playingTime:
-		jmp playingTimeStatJump
-	}
+	if (value > LongestFlightInDodo)
+		LongestFlightInDodo = value;
 }
 
-void __declspec(naked) CStatsHack::HighestLevelFireMissionHack()
+void CStatsHack::AddTextLine(const char *string)
 {
-	__asm
-	{
-		mov eax, HighestLevelFireMission // store address of fire truck mission level stat
-		cmp [eax], 0                     // compare value of stat with 0
-		jle decr
-		lea eax, dword ptr [ebp+7]
-		cmp eax, esi
-		jnz next
-		jmp highestLevelFireMissionStatDisplay
-	decr:
-		dec ebp                          // skip over line in menu
-	next:
-		jmp highestLevelFireMissionStatNext
-	}
+	VCGlobals::gUString[0] = 0;
+	VCGlobals::UnicodeStrCpy(VCGlobals::gUString2, VCGlobals::TheText.Get(string));
 }
 
-void __declspec(naked) CStatsHack::StoresKnockedOffHack()
+int CStatsHack::ConstructStatLine(int line)
 {
-	__asm
-	{
-		fldz                      // push 0.0 onto stack
-		mov eax, StoresKnockedOff // store address of stores knocked off stat
-		fld [eax]                 // get value of stat and push onto stack
-		fcompp                    // compare value of stat with 0.0 and pop stack twice
-		fnstsw ax
-		test ah, 45h
-		jnz decr
-		lea eax, dword ptr [ebp+8]
-		cmp eax, esi
-		jnz next
-		jmp storesKnockedOffStatDisplay
-	decr:
-		dec ebp                   // skip over line in menu
-	next:
-		jmp storesKnockedOffStatNext
+	int offset = 0;
+	if (line == offset++) {
+		BuildStatLine("PL_STAT", 0, 0, 0, 0); // Player stats
+		return 0;
 	}
-}
-
-void __declspec(naked) CStatsHack::AssassinationsHack()
-{
-	__asm
-	{
-		fldz                    // push 0.0 onto stack
-		mov eax, Assassinations // store address of assassination contracts completed stat
-		fld [eax]               // get value of stat and push onto stack
-		fcompp                  // compare value of stat with 0.0 and pop stack twice
-		fnstsw ax
-		test ah, 45h
-		jnz next
-		cmp ebp, esi
-		jnz incr
-		mov eax, Assassinations
-		fld [eax]
-		jmp assassinationsStatDisplay
-	incr:
-		inc ebp                 // proceed to next line in menu
-	next:
-		jmp assassinationsStatNext
-	}
+	return offset;
 }

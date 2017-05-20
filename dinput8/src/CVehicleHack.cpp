@@ -49,11 +49,8 @@ void __declspec(naked) CVehicleHack::IsOpenTopCarHackProxy()
 
 bool CVehicleHack::IsOpenTopCarHack()
 {
-	if (this->modelIndex == CAR_BANSHEE && this->componentA && this->componentB ||
+	return this->modelIndex == CAR_BANSHEE && this->componentA && this->componentB ||
 		this->modelIndex == CAR_COMET && this->componentA && this->componentB ||
 		this->modelIndex == CAR_STALLION && this->componentA && this->componentB ||
-		this->modelIndex == CAR_STINGER && this->componentA && this->componentB) {
-		return true;
-	}
-	return false;
+		this->modelIndex == CAR_STINGER && this->componentA && this->componentB;
 }

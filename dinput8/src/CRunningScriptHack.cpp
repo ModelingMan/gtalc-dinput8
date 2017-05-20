@@ -11,6 +11,7 @@
 #include "CSpecialParticleStuffHack.h"
 #include "CGameLogicHack.h"
 #include "CRecordDataForChaseHack.h"
+#include "CStatsHack.h"
 #include "Globals.h"
 #include "vcclasses.h"
 #include "vcversion.h"
@@ -100,6 +101,8 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 		return this->_03EC_has_military_crane_collected_all_cars();
 	case 0x3F8:
 		return this->_03F8_get_body_cast_health();
+	case 0x406:
+		return this->_0406_register_longest_dodo_flight();
 	case 0x410:
 		return this->_0410_set_gang_ped_model_preference();
 	case 0x41C:
@@ -487,6 +490,13 @@ bool CRunningScriptHack::_03F8_get_body_cast_health()
 {
 	ScriptParams[0].int32 = CObjectHack::nBodyCastHealth;
 	this->StoreParameters(&this->m_dwScriptIP, 1);
+	return 0;
+}
+
+bool CRunningScriptHack::_0406_register_longest_dodo_flight()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 1);
+	CStatsHack::RegisterLongestFlightInDodo(ScriptParams[0].int32);
 	return 0;
 }
 

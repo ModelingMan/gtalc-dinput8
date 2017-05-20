@@ -51,6 +51,7 @@ namespace VCGlobals
 	static unsigned long g_FindPlayerVehicle = vcversion::AdjustOffset(0x004BC1E0);
 	static unsigned long g_FindPlayerCoors = vcversion::AdjustOffset(0x004BC240);
 	static unsigned long g_CrossProduct = vcversion::AdjustOffset(0x004E00B0);
+	static unsigned long g_UnicodeStrCpy = vcversion::AdjustOffset(0x005524D0);
 	static unsigned long g_DefinedState = vcversion::AdjustOffset(0x0057F9C0);
 	static unsigned long g_strcpy = vcversion::AdjustOffset(0x00642560);
 	static unsigned long g_strncpy = vcversion::AdjustOffset(0x00642580);
@@ -99,6 +100,11 @@ namespace VCGlobals
 	__declspec(naked) CVector *CrossProduct(CVector *, CVector const &, CVector const &)
 	{
 		__asm jmp g_CrossProduct;
+	}
+
+	__declspec(naked) void UnicodeStrCpy(wchar_t *, wchar_t const *)
+	{
+		__asm jmp g_UnicodeStrCpy;
 	}
 
 	__declspec(naked) void DefinedState(void)

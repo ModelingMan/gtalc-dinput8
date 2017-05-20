@@ -1343,6 +1343,7 @@ public:
 	static int *FastestTimes;
 	static int &TotalNumberMissions;
 	static float &GarbagePickups;
+	static float &DistanceTravelledByGolfCart;
 	static int &NumberKillFrenziesPassed;
 	static int &TotalNumberKillFrenzies;
 	static float &LoanSharks;
@@ -1367,6 +1368,7 @@ public:
 	static int &SuburbanPassed;
 	static int &MaximumJumpSpins;
 	static int &HighestLevelAmbulanceMission;
+	static float &HighestChaseValue;
 	static int &DaysPassed;
 	static float &MaximumJumpDistance;
 	static float &StoresKnockedOff;
@@ -1377,6 +1379,8 @@ public:
 	static int &WantedStarsAttained;
 	static int &WantedStarsEvaded;
 	static float &LongestStoppieDist;
+	static float &DistanceTravelledByHelicopter;
+	static float &DistanceTravelledByPlane;
 	static int &FiresExtinguished;
 	static int &BulletsThatHit;
 	static float &ProgressMade;
@@ -1385,12 +1389,15 @@ public:
 	static float &MaximumJumpHeight;
 	static int &PassengersDroppedOffWithTaxi;
 	static int &SafeHouseVisits;
+	static float &DistanceTravelledByBike;
 	static int &BloodRingTime;
+	static float &DistanceTravelledByBoat;
 	static int &CarsExploded;
 	static float &TopShootingRangeScore;
 	static float &DistanceTravelledOnFoot;
 	static int &MoneyMadeWithTaxi;
 	static float &MovieStunts;
+	static int &Sprayings;
 	static int &NoMoreHurricanes;
 	static int &Longest2Wheel;
 	static float &DistanceTravelledByCar;
@@ -1400,6 +1407,7 @@ public:
 
 	static void BuildStatLine(char *, void *, int, void *, int);
 	static void AnotherKillFrenzyPassed(void);
+	static wchar_t *FindChaseString(float);
 };
 
 //########################################################################
