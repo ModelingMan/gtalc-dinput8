@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -24,14 +24,14 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120_xp</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v120_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (Without WPO)|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -84,7 +84,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
@@ -92,16 +92,19 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;DINPUT8_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)..\vcversion\include;$(ProjectDir)..\vcclasses\include</AdditionalIncludeDirectories>
+      <ExceptionHandling>false</ExceptionHandling>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
       <FloatingPointModel>Fast</FloatingPointModel>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+      <StringPooling>true</StringPooling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>vcversion.lib;vcclasses.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)$(Configuration)\vcversion.lib;$(SolutionDir)$(Configuration)\vcclasses.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\$(ConfigurationName)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>dinput8.def</ModuleDefinitionFile>
     </Link>
@@ -122,10 +125,11 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <EnableEnhancedInstructionSet>NoExtensions</EnableEnhancedInstructionSet>
+      <StringPooling>true</StringPooling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>$(SolutionDir)$(Configuration)\vcversion.lib;$(SolutionDir)$(Configuration)\vcclasses.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -134,23 +138,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\cAudioManagerHack.cpp" />
     <ClCompile Include="src\CBridgeHack.cpp" />
     <ClCompile Include="src\CCameraHack.cpp" />
     <ClCompile Include="src\CCarCtrlHack.cpp" />
+    <ClCompile Include="src\CCranesHack.cpp" />
+    <ClCompile Include="src\CDigitalClockHack.cpp" />
     <ClCompile Include="src\CExplosionHack.cpp" />
     <ClCompile Include="src\CFileLoaderHack.cpp" />
+    <ClCompile Include="src\CFontHack.cpp" />
     <ClCompile Include="src\CGameLogicHack.cpp" />
     <ClCompile Include="src\CGaragesHack.cpp" />
+    <ClCompile Include="src\CMovingThingsHack.cpp" />
     <ClCompile Include="src\CObjectHack.cpp" />
     <ClCompile Include="src\CPacManPickupsHack.cpp" />
     <ClCompile Include="src\CPadHack.cpp" />
-    <ClCompile Include="src\CCranesHack.cpp" />
-    <ClCompile Include="src\CDigitalClockHack.cpp" />
-    <ClCompile Include="src\CFontHack.cpp" />
-    <ClCompile Include="src\CMovingThingsHack.cpp" />
     <ClCompile Include="src\CPagerHack.cpp" />
-    <ClCompile Include="src\cAudioManagerHack.cpp" />
-    <ClCompile Include="src\CHudHack.cpp" />
     <ClCompile Include="src\CPathFindHack.cpp" />
     <ClCompile Include="src\CPedHack.cpp" />
     <ClCompile Include="src\CPickupsHack.cpp" />
@@ -176,18 +179,17 @@
     <ClInclude Include="include\CBridgeHack.h" />
     <ClInclude Include="include\CCameraHack.h" />
     <ClInclude Include="include\CCarCtrlHack.h" />
+    <ClInclude Include="include\CCranesHack.h" />
+    <ClInclude Include="include\CDigitalClockHack.h" />
     <ClInclude Include="include\CExplosionHack.h" />
     <ClInclude Include="include\CFileLoaderHack.h" />
+    <ClInclude Include="include\CFontHack.h" />
     <ClInclude Include="include\CGameLogicHack.h" />
     <ClInclude Include="include\CGaragesHack.h" />
+    <ClInclude Include="include\CMovingThingsHack.h" />
     <ClInclude Include="include\CObjectHack.h" />
     <ClInclude Include="include\CPacManPickupsHack.h" />
     <ClInclude Include="include\CPadHack.h" />
-    <ClInclude Include="include\CCranesHack.h" />
-    <ClInclude Include="include\CDigitalClockHack.h" />
-    <ClInclude Include="include\CFontHack.h" />
-    <ClInclude Include="include\CHudHack.h" />
-    <ClInclude Include="include\CMovingThingsHack.h" />
     <ClInclude Include="include\CPagerHack.h" />
     <ClInclude Include="include\CPathFindHack.h" />
     <ClInclude Include="include\CPedHack.h" />
