@@ -377,9 +377,15 @@ bool cAudioManagerHack::initialise()
 	Patch<unsigned long>(0x005FCF67, (unsigned long)&policeRadioZones);
 	Patch<unsigned long>(0x005FCF75, (unsigned long)&policeRadioZones + 8);
 
-	// do not use game's audio zone array
-	InjectHook(0x004DDAEB, &cAudioManagerHack::InitialiseAudioZoneArrayHack);
-	
+	// use custom audio zone array
+	Patch<void *>(0x004DC392, &audioZones); // CTheZones::FindAudioZone
+	Patch<void *>(0x005FCF49, &audioZones); // cAudioManager::PlaySuspectLastSeen
+	Patch<void *>(0x005FDC0F, &audioZones); // cAudioManager::SetupCrimeReport
+	Patch<unsigned char>(0x004DC475, TOTAL_AUDIO_ZONES);
+	Patch<void *>(0x004DC48A, &audioZones);
+	Patch<unsigned char>(0x004DC4C4, TOTAL_AUDIO_ZONES);
+	Patch<void *>(0x004DC4D9, &audioZones);
+
 	// crane audio
 	auto function = &cAudioManagerHack::ProcessCraneAndBridge;
 	InjectHook(0x005F596C, (unsigned long &)function);
@@ -624,19 +630,6 @@ void cAudioManagerHack::ProcessLoopingScriptObjectHack(unsigned char id)
 			this->AddSampleToRequestedQueue();
 		}
 	}
-}
-
-void cAudioManagerHack::InitialiseAudioZoneArrayHack()
-{
-	Patch<void *>(0x004DC392, &audioZones); // CTheZones::FindAudioZone
-	Patch<void *>(0x005FCF49, &audioZones); // cAudioManager::PlaySuspectLastSeen
-	Patch<void *>(0x005FDC0F, &audioZones); // cAudioManager::SetupCrimeReport
-
-	Patch<unsigned char>(0x004DC475, TOTAL_AUDIO_ZONES);
-	Patch<void *>(0x004DC48A, &audioZones);
-	Patch<unsigned char>(0x004DC4C4, TOTAL_AUDIO_ZONES);
-	Patch<void *>(0x004DC4D9, &audioZones);
-	CTheZones::InitialiseAudioZoneArray();
 }
 
 void __declspec(naked) cAudioManagerHack::SetupSuspectLastSeenReportHackProxy()

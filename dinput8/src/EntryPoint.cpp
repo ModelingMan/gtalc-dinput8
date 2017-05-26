@@ -4,7 +4,6 @@
 
 #include "cAudioManagerHack.h"
 #include "CFontHack.h"
-//#include "CHudHack.h"
 #include "CMovingThingsHack.h"
 #include "CPagerHack.h"
 #include "CRunningScriptHack.h"
@@ -29,6 +28,7 @@
 #include "CCarCtrlHack.h"
 #include "CGameLogicHack.h"
 #include "CRecordDataForChaseHack.h"
+#include "CMenuManagerHack.h"
 #include "CWaterLevelHack.h"
 #include "CVehicleHack.h"
 #include "Globals.h"
@@ -341,6 +341,7 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			!CCarCtrlHack::initialise() ||
 			!CGameLogicHack::initialise() ||
 			!CRecordDataForChaseHack::initialise() ||
+			!CMenuManagerHack::initialise() ||
 			!CWaterLevelHack::initialise() ||
 			!CVehicleHack::initialise()) {
 			VirtualProtect((LPVOID)(0x400000 + sectionheader->VirtualAddress), sectionheader->Misc.VirtualSize, OldProtect, &OldProtect);

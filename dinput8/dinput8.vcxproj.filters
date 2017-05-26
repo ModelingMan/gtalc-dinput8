@@ -110,6 +110,9 @@
     <ClCompile Include="src\CGameLogicHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CMenuManagerHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="src\CWaterLevelHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -218,6 +221,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\CGameLogicHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CMenuManagerHack.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\CWaterLevelHack.h">

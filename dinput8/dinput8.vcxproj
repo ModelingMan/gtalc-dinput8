@@ -77,7 +77,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>vcversion.lib;vcclasses.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)$(Configuration)\vcversion.lib;$(SolutionDir)$(Configuration)\vcclasses.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\$(ConfigurationName)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>dinput8.def</ModuleDefinitionFile>
     </Link>
@@ -149,6 +149,7 @@
     <ClCompile Include="src\CFontHack.cpp" />
     <ClCompile Include="src\CGameLogicHack.cpp" />
     <ClCompile Include="src\CGaragesHack.cpp" />
+    <ClCompile Include="src\CMenuManagerHack.cpp" />
     <ClCompile Include="src\CMovingThingsHack.cpp" />
     <ClCompile Include="src\CObjectHack.cpp" />
     <ClCompile Include="src\CPacManPickupsHack.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="include\CFontHack.h" />
     <ClInclude Include="include\CGameLogicHack.h" />
     <ClInclude Include="include\CGaragesHack.h" />
+    <ClInclude Include="include\CMenuManagerHack.h" />
     <ClInclude Include="include\CMovingThingsHack.h" />
     <ClInclude Include="include\CObjectHack.h" />
     <ClInclude Include="include\CPacManPickupsHack.h" />

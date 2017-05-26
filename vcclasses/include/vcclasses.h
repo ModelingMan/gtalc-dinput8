@@ -683,6 +683,7 @@ public:
 	bool           m_bWastedBustedCheck;  // 0x83
 	bool           m_bWastedBustedFlag;   // 0x84
 	bool           m_bIsMissionScript;    // 0x85
+	unsigned char  pad2[2];               // 0x86
 
 	template <class T>
 	T SCM_Read(bool bIncreaseIP);
@@ -1592,7 +1593,7 @@ public:
 class CMenuManager
 {
 public:
-	static unsigned int &m_PrefsLanguage;
+	static unsigned char &m_PrefsLanguage;
 };
 
 //########################################################################

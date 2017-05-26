@@ -10,7 +10,6 @@ public:
 	bool ProcessFrontEndHack(unsigned char);
 	static void ProcessFrontEndHackProxy();
 	void ProcessLoopingScriptObjectHack(unsigned char);
-	static void InitialiseAudioZoneArrayHack(void);
 	static void SetupSuspectLastSeenReportHackProxy(void);
 	static int SetupSuspectLastSeenReportHack(int model);
 	void ProcessCraneAndBridge(void);

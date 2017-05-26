@@ -10,6 +10,9 @@ bool CWeaponEffectsHack::initialise()
 {
 	// auto-aim crosshair
 	InjectHook(0x005D511C, &CWeaponEffectsHack::InitHackProxy, PATCH_JUMP);
+
+	// transparent crosshair
+	Patch<unsigned char>(0x005D4EEE, 9);
 	return true;
 }
 
@@ -34,7 +37,6 @@ RwTexture *CWeaponEffectsHack::InitHack()
 		Patch<unsigned char>(0x005D4EEE, 2);
 	} else {
 		addr = RwTextureRead("target256", "target256m");
-		Patch<unsigned char>(0x005D4EEE, 9);
 	}
 	return addr;
 }
