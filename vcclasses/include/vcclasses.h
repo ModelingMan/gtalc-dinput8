@@ -1751,6 +1751,8 @@ public:
 class CTimeCycle
 {
 public:
+	static void StopExtraColour(bool);
+	static void StartExtraColour(int, bool);
 	static float Interpolate(unsigned char *, unsigned char *);
 };
 
