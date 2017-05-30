@@ -43,7 +43,7 @@ static const MenuPage displayPage =
 bool CMenuManagerHack::initialise()
 {
 	// add trails option to menu
-	Patch<MenuPage>(0x006D8B70 + 0x388, displayPage);
+	Patch<MenuPage>(0x006D8B70 + sizeof(MenuPage) * 4, displayPage);
 
 	// trails in settings
 	Patch<void *>(0x004902D2, &CMBlur::BlurOn);

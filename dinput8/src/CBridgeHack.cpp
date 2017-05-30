@@ -148,12 +148,8 @@ void CBridgeHack::FindBridgeEntities(void)
 
 bool CBridgeHack::ThisIsABridgeObjectMovingUp(unsigned int model)
 {
-	if (model == ModelIndices::MI_BRIDGEROADSEGMENT || model == ModelIndices::MI_BRIDGELIFT) {
-		if (CBridgeHack::State == 4 || CBridgeHack::State == 5) {
-			return true;
-		}
-	}
-	return false;
+	return (model == ModelIndices::MI_BRIDGEROADSEGMENT || model == ModelIndices::MI_BRIDGELIFT) &&
+		(CBridgeHack::State == 4 || CBridgeHack::State == 5);
 }
 
 bool ShouldCarStopForBridge(CVehicle *vehicle)
