@@ -158,6 +158,7 @@
     <ClCompile Include="src\CPathFindHack.cpp" />
     <ClCompile Include="src\CPedHack.cpp" />
     <ClCompile Include="src\CPickupsHack.cpp" />
+    <ClCompile Include="src\CPlayerInfoHack.cpp" />
     <ClCompile Include="src\CProjectileInfoHack.cpp" />
     <ClCompile Include="src\CRadarHack.cpp" />
     <ClCompile Include="src\CRecordDataForChaseHack.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="include\CPathFindHack.h" />
     <ClInclude Include="include\CPedHack.h" />
     <ClInclude Include="include\CPickupsHack.h" />
+    <ClInclude Include="include\CPlayerInfoHack.h" />
     <ClInclude Include="include\CProjectileInfoHack.h" />
     <ClInclude Include="include\CRadarHack.h" />
     <ClInclude Include="include\CRecordDataForChaseHack.h" />

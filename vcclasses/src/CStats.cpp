@@ -28,6 +28,7 @@ float &CStats::IceCreamSold = *reinterpret_cast<float *>(vcversion::AdjustOffset
 int &CStats::PeopleKilledByOthers = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x009753AC));
 int &CStats::PropertyDestroyed = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x00975404));
 int &CStats::TotalNumberOfUniqueJumps = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x00978530));
+int &CStats::FlightTime = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x0097854C));
 int &CStats::SeagullsKilled = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x0097869C));
 float &CStats::LongestWheelieDist = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x009786C0));
 float &CStats::PizzasDelivered = *reinterpret_cast<float *>(vcversion::AdjustOffset(0x00978780));

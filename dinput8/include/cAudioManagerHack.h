@@ -52,4 +52,8 @@ public:
 	unsigned int GetViceBlackTalkSfx(CPed *, unsigned short);
 	unsigned int GetGenericMaleTalkSfx(CPed *, unsigned short);
 	unsigned int GetGenericFemaleTalkSfx(CPed *, unsigned short);
+	static void QuietHelicopter1();
+	static void QuietHelicopter2();
+	static void QuietHelicopter3();
+	static void QuietHelicopter4();
 };

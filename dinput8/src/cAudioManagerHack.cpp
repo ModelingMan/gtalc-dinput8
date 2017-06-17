@@ -161,7 +161,7 @@ const struct VehicleSfx
 {
 	{ 277, 13, 0, 26513, 52,  9935, 1 }, // landstal
 	{ 278, 14, 4, 11487, 52,  9935, 0 }, // idaho
-	{ 274, 10, 6, 10400, 52, 10123, 1 }, // banshee
+	{ 274, 10, 6, 11025, 52, 10928, 1 }, // stinger
 	{ 272,  8, 7, 29711, 52,  9935, 2 }, // linerun
 	{ 278, 14, 4, 12893, 52,  8941, 0 }, // peren
 	{ 271,  7, 1, 10706, 52, 11922, 1 }, // sentinel
@@ -171,16 +171,16 @@ const struct VehicleSfx
 	{ 278, 14, 1,  9538, 52, 12220, 1 }, // stretch
 	{ 278, 14, 4, 10842, 52,  9935, 0 }, // manana
 	{ 269,  5, 1, 12017, 52,  9935, 1 }, // infernus
-	{ 277, 13, 0, 22293, 52,  9935, 1 }, // yardie
+	{ 277, 13, 0, 22295, 52, 12200, 1 }, // blista
 	{ 270,  6, 3, 18000, 52, 13400, 1 }, // pony
 	{ 270,  6, 2, 18286, 52,  9935, 2 }, // mule
-	{ 274, 10, 6, 10000, 52,  9500, 0 }, // hotring
+	{ 269,  5, 6, 11025, 52, 13600, 1 }, // cheetah
 	{ 270,  6, 0, 22295, 29,  8795, 2 }, // ambulan
 	{ 268,  4, 3, 17900, 27, 10511, 2 }, // fbiranch
 	{ 278, 14, 4, 12170, 52,  8000, 1 }, // moonbeam
 	{ 278, 14, 3, 12345, 52,  9935, 0 }, // esperant
 	{ 277, 13, 1, 10796, 52,  8543, 1 }, // taxi
-	{ 271,  7, 1,  9003, 52,  9935, 1 }, // mafia
+	{ 271,  7, 6,  9271, 52,  9935, 1 }, // kuruma
 	{ 277, 13, 5, 10924, 52,  9935, 1 }, // bobcat
 	{ 278, 14, 5, 11025, 31, 11025, 0 }, // mrwhoop
 	{ 273,  9, 0, 26513, 52,  9935, 1 }, // bfinject
@@ -188,7 +188,7 @@ const struct VehicleSfx
 	{ 271,  7, 1, 10706, 27, 13596, 1 }, // police
 	{ 270,  6, 2, 17260, 27, 13000, 2 }, // enforcer
 	{ 270,  6, 5,  8670, 52,  9935, 0 }, // securica
-	{ 271,  7, 1, 10500, 52,  9100, 1 }, // washing
+	{ 274, 10, 6, 10400, 52, 10123, 1 }, // banshee
 	{ 268,  0, 0, 26513, 27, 13596, 1 }, // predator
 	{ 272,  8, 3, 11652, 52, 10554, 3 }, // bus
 	{ 272,  8, 7, 29711, 52,  8000, 2 }, // rhino
@@ -201,10 +201,10 @@ const struct VehicleSfx
 	{ 278, 14, 4, 10233, 52,  8935, 0 }, // stallion
 	{ 270,  6, 5,  8670, 52,  8935, 0 }, // rumpo
 	{ 423, 17, 5, 20000, 52, 17000, 1 }, // rcbandit
-	{ 278, 14, 0, 26513, 52, 10000, 0 }, // corpse
+	{ 270,  6, 0, 21043, 52,  9935, 0 }, // bellyup
 	{ 272,  8, 7, 29000, 52,  9400, 2 }, // packer
-	{ 270,  6, 0, 21043, 52,  9000, 0 }, // panlant
-	{ 271,  7, 6,  9271, 52,  9935, 1 }, // kuruma
+	{ 271,  7, 1,  9003, 52,  9935, 1 }, // mafia
+	{ 277, 13, 0, 22293, 52,  9935, 1 }, // yardie
 	{ 268,  0, 3, 15554, 52,  9100, 1 }, // squalo
 	{ 268,  0, 3, 13857, 52,  9000, 2 }, // seaspar
 	{ 285, 21, 0, 30000, 52,  9100, 1 }, // pizzaboy
@@ -239,7 +239,7 @@ const struct VehicleSfx
 	{ 274, 10, 0, 26513, 52,  9900, 1 }, // phoenix
 	{ 278, 14, 4, 10540, 52,  9935, 2 }, // walton
 	{ 275, 11, 5, 11000, 52,  9700, 1 }, // regina
-	{ 274, 10, 6, 11025, 52, 10928, 1 }, // stinger
+	{ 278, 14, 0, 26513, 52, 10000, 0 }, // corpse
 	{ 274, 10, 1,  9700, 52,  9700, 1 }, // delodrv
 	{ 275, 11, 3, 18000, 52,  9600, 0 }, // burrito
 	{ 273,  9, 6, 10500, 52,  9500, 0 }, // sandking
@@ -253,16 +253,16 @@ const struct VehicleSfx
 	{ 271,  7, 0, 26513, 52,  9200, 1 }, // virgo
 	{ 275, 11, 1,  9600, 52,  9300, 1 }, // greenwoo
 	{ 271,  0, 0, 26513, 52,  9400, 1 }, // jetmax
-	{ 269,  5, 6, 11025, 52, 13600, 1 }, // cheetah
+	{ 274, 10, 6, 10000, 52,  9500, 0 }, // hotring
 	{ 273,  9, 5, 10924, 52,  9935, 0 }, // columb
-	{ 277, 13, 0, 22295, 52, 12200, 1 }, // blista
+	{ 271,  7, 1, 10500, 52,  9100, 1 }, // washing
 	{ 268,  0, 0, 26513, 52,  9800, 1 }, // polmav
-	{ 270,  6, 0, 21043, 52,  9935, 0 }, // bellyup
+	{ 270,  6, 0, 21043, 52,  9000, 0 }, // panlant
 	{ 270,  6, 0, 21043, 52,  9935, 0 }, // mrwongs
 	{ 268,  4, 0, 26513, 52,  9700, 1 }, // mesa
 	{ 425, 18, 0, 26513, 52,  9600, 1 }, // rcgoblin
 	{ 273, 9, 79, 26513, 52,  9700, 1 }, // genlee
-	{ 274, 10, 3, 15554, 52,  9935, 1 }, // yakuza
+	{ 271,  7, 3, 15554, 52,  9935, 1 }, // yakuza
 	{ 268,  4, 0, 26513, 52,  9500, 1 }, // bloodra
 	{ 271,  7, 6, 12375, 52,  9400, 1 }, // admiral
 	{ 269,  5, 6, 11025, 52, 13600, 1 } // vicechee
@@ -346,6 +346,11 @@ static unsigned long setupSuspectLastSeenReportNoMatch = vcversion::AdjustOffset
 // ProcessVehicleSirenOrAlarmHack
 static unsigned long fbiNoMatchEndJump = vcversion::AdjustOffset(0x005F03F0);
 static unsigned long fbiMatchEndJump = vcversion::AdjustOffset(0x005F03FF);
+
+static unsigned long quietHelicopter1EndJump = vcversion::AdjustOffset(0x005F480D);
+static unsigned long quietHelicopter2EndJump = vcversion::AdjustOffset(0x005F466B);
+static unsigned long quietHelicopter3EndJump = vcversion::AdjustOffset(0x005F4B27);
+static unsigned long quietHelicopter4EndJump = vcversion::AdjustOffset(0x005F5018);
 
 bool cAudioManagerHack::initialise()
 {
@@ -434,6 +439,11 @@ bool cAudioManagerHack::initialise()
 
 	// player talk sfx
 	isPlayerSfxTommy = !!GetPrivateProfileInt("Misc", "UseTommySfx", 0, "./gta-lc.ini");
+
+	InjectHook(0x005F4806, cAudioManagerHack::QuietHelicopter1, PATCH_JUMP);
+	InjectHook(0x005F4664, cAudioManagerHack::QuietHelicopter2, PATCH_JUMP);
+	InjectHook(0x005F4B20, cAudioManagerHack::QuietHelicopter3, PATCH_JUMP);
+	InjectHook(0x005F5011, cAudioManagerHack::QuietHelicopter4, PATCH_JUMP);
 
 	return true;
 }
@@ -1945,4 +1955,76 @@ unsigned int cAudioManagerHack::GetGenericFemaleTalkSfx(CPed *ped, unsigned shor
 		return 9942;
 	}
 	return store;
+}
+
+void __declspec(naked) cAudioManagerHack::QuietHelicopter1()
+{
+	__asm
+	{
+		mov eax, [esp+0DCh]           // get arg0
+		mov eax, [eax+0Ch]            // get vehicle pointer
+		movsx eax, word ptr [eax+5Ch] // get vehicle model
+		cmp eax, CAR_DELOFLY
+		jnz notDelofly
+		mov dword ptr [ebp+1Ch], 79
+		jmp end
+	notDelofly:
+		mov dword ptr [ebp+1Ch], 11
+	end:
+		jmp quietHelicopter1EndJump
+	}
+}
+
+void __declspec(naked) cAudioManagerHack::QuietHelicopter2()
+{
+	__asm
+	{
+		mov eax, [esp+0DCh]           // get arg0
+		mov eax, [eax+0Ch]            // get vehicle pointer
+		movsx eax, word ptr [eax+5Ch] // get vehicle model
+		cmp eax, CAR_DELOFLY
+		jnz notDelofly
+		mov dword ptr [ebp+1Ch], 79
+		jmp end
+	notDelofly:
+		mov dword ptr [ebp+1Ch], 8
+	end:
+		jmp quietHelicopter2EndJump
+	}
+}
+
+void __declspec(naked) cAudioManagerHack::QuietHelicopter3()
+{
+	__asm
+	{
+		mov eax, [esp+0DCh]           // get arg0
+		mov eax, [eax+0Ch]            // get vehicle pointer
+		movsx eax, word ptr [eax+5Ch] // get vehicle model
+		cmp eax, CAR_DELOFLY
+		jnz notDelofly
+		mov dword ptr [ebp+1Ch], 79
+		jmp end
+	notDelofly:
+		mov dword ptr [ebp+1Ch], 9
+	end:
+		jmp quietHelicopter3EndJump
+	}
+}
+
+void __declspec(naked) cAudioManagerHack::QuietHelicopter4()
+{
+	__asm
+	{
+		mov eax, [esp+0DCh]           // get arg0
+		mov eax, [eax+0Ch]            // get vehicle pointer
+		movsx eax, word ptr [eax+5Ch] // get vehicle model
+		cmp eax, CAR_DELOFLY
+		jnz notDelofly
+		mov dword ptr [ebp+1Ch], 79
+		jmp end
+	notDelofly:
+		mov dword ptr [ebp+1Ch], 10
+	end:
+		jmp quietHelicopter4EndJump
+	}
 }

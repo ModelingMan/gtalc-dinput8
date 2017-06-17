@@ -2,7 +2,7 @@
 
 #define CAR_LANDSTAL   130
 #define CAR_IDAHO      131
-#define CAR_BANSHEE    132
+#define CAR_STINGER    132
 #define CAR_LINERUN    133
 #define CAR_PEREN      134
 #define CAR_SENTINEL   135
@@ -12,16 +12,16 @@
 #define CAR_STRETCH    139
 #define CAR_MANANA     140
 #define CAR_INFERNUS   141
-#define CAR_YARDIE     142
+#define CAR_BLISTA     142
 #define CAR_PONY       143
 #define CAR_MULE       144
-#define CAR_HOTRING    145
+#define CAR_CHEETAH    145
 #define CAR_AMBULAN    146
 #define CAR_FBIRANCH   147
 #define CAR_MOONBEAM   148
 #define CAR_ESPERANT   149
 #define CAR_TAXI       150
-#define CAR_MAFIA      151
+#define CAR_KURUMA     151
 #define CAR_BOBCAT     152
 #define CAR_MRWHOOP    153
 #define CAR_BFINJECT   154
@@ -29,7 +29,7 @@
 #define CAR_POLICE     156
 #define CAR_ENFORCER   157
 #define CAR_SECURICA   158
-#define CAR_WASHING    159
+#define CAR_BANSHEE    159
 #define BOAT_PREDATOR  160
 #define CAR_BUS        161
 #define CAR_RHINO      162
@@ -42,10 +42,10 @@
 #define CAR_STALLION   169
 #define CAR_RUMPO      170
 #define CAR_RCBANDIT   171
-#define CAR_CORPSE     172
+#define CAR_BELLYUP    172
 #define CAR_PACKER     173
-#define CAR_PANLANT    174
-#define CAR_KURUMA     175
+#define CAR_MAFIA      174
+#define CAR_YARDIE     175
 #define BOAT_SQUALO    176
 #define CAR_SEASPAR    177
 #define BIKE_PIZZABOY  178
@@ -80,7 +80,7 @@
 #define CAR_PHOENIX    207
 #define CAR_WALTON     208
 #define CAR_REGINA     209
-#define CAR_STINGER    210
+#define CAR_CORPSE     210
 #define CAR_DELODRV    211
 #define CAR_BURRITO    212
 #define CAR_SANDKING   213
@@ -94,11 +94,11 @@
 #define CAR_VIRGO      221
 #define CAR_GREENWOO   222
 #define BOAT_JETMAX    223
-#define CAR_CHEETAH    224
+#define CAR_HOTRING    224
 #define CAR_COLUMB     225
-#define CAR_BLISTA     226
+#define CAR_WASHING    226
 #define CAR_POLMAV     227
-#define CAR_BELLYUP    228
+#define CAR_PANLANT    228
 #define CAR_MRWONGS    229
 #define CAR_MESA       230
 #define CAR_RCGOBLIN   231

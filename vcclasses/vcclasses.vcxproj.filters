@@ -253,5 +253,14 @@
     <ClCompile Include="src\CColStore.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CMoneyMessages.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPlane.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CReplay.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

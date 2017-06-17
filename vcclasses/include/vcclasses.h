@@ -81,6 +81,7 @@ public:
 	void SetRotate(float, float, float);
 	void SetRotateZ(float);
 	void SetRotateZOnly(float);
+	void SetTranslate(float, float, float);
 	void ResetOrientation(void);
 	void UpdateRW(void);
 };
@@ -374,11 +375,13 @@ public:
 	float          accelerationResistance; // 0x0C0
 	unsigned char  pspace3[0x003C];
 	float          speed;                  // 0x100
-	unsigned char  pspace4[0x0016];
+	unsigned char  pspace4[0x0004];
+	CEntity        *collidingEntity;       // 0x108
+	unsigned char  pspace5[0x000E];
 	unsigned char  field_11A;              // 0x11A
-	unsigned char  pspace5[0x0002];
-	char           originLevel;            // 0x11D
 	unsigned char  pspace6[0x0002];
+	char           originLevel;            // 0x11D
+	unsigned char  pspace7[0x0002];
 	// 0x120
 
 	bool GetHasCollidedWith(CEntity *);
@@ -404,6 +407,7 @@ public:
 
 	void SetEngineStatus(unsigned int);
 	void SetWheelStatus(int, unsigned int);
+	unsigned int GetPanelStatus(int);
 	unsigned int GetEngineStatus();
 };
 
@@ -417,52 +421,44 @@ class CVehicle : public CPhysical
 {
 public:
 	// 0x120
-	unsigned long  handlingData;           // 0x120
+	unsigned long  handlingData;      // 0x120
 	unsigned char  space1[0x0032];
-	unsigned char  targetBehavior;         // 0x156
+	unsigned char  targetBehavior;    // 0x156
 	unsigned char  space2[0x0009];
-	unsigned char  cruiseSpeed;            // 0x160
+	unsigned char  cruiseSpeed;       // 0x160
 	unsigned char  space3[0x003B];
-	CEntity        *targetEntity;          // 0x19C
-	unsigned char  firstColour;            // 0x1A0
-	unsigned char  secondColour;           // 0x1A1
-	unsigned char  componentA;             // 0x1A2
-	unsigned char  componentB;             // 0x1A3
+	CEntity        *targetEntity;     // 0x19C
+	unsigned char  firstColour;       // 0x1A0
+	unsigned char  secondColour;      // 0x1A1
+	unsigned char  componentA;        // 0x1A2
+	unsigned char  componentB;        // 0x1A3
 	unsigned char  space4[0x0004];
-	class CPed     *driver;                // 0x1A8
-	class CPed     *passengers[8];         // 0x1AC
+	class CPed     *driver;           // 0x1A8
+	class CPed     *passengers[8];    // 0x1AC
 	unsigned char  space5[0x020];
-	float          steerAngle;             // 0x1EC
-	float          gasPedal;               // 0x1F0
-	float          brakePedal;             // 0x1F4
+	float          steerAngle;        // 0x1EC
+	float          gasPedal;          // 0x1F0
+	float          brakePedal;        // 0x1F4
 	unsigned char  space6;
-	unsigned char  field_1F9;              // 0x1F9
-	unsigned char  field_1FA;              // 0x1FA
-	unsigned char  field_1FB;              // 0x1FB
-	unsigned char  field_1FC;              // 0x1FC
-	unsigned char  field_1FD;              // 0x1FD
-	unsigned char  bombState;              // 0x1FE
-	unsigned char  field_1FF;              // 0x1FF
-	unsigned char  field_200;              // 0x200
-	unsigned char  powerPillsCarried;      // 0x201
-	unsigned char  field_202;              // 0x202
-	unsigned char  field_203;              // 0x203
-	float          health;                 // 0x204
+	unsigned char  field_1F9;         // 0x1F9
+	unsigned char  field_1FA;         // 0x1FA
+	unsigned char  field_1FB;         // 0x1FB
+	unsigned char  field_1FC;         // 0x1FC
+	unsigned char  field_1FD;         // 0x1FD
+	unsigned char  bombState;         // 0x1FE
+	unsigned char  field_1FF;         // 0x1FF
+	unsigned char  field_200;         // 0x200
+	unsigned char  powerPillsCarried; // 0x201
+	unsigned char  field_202;         // 0x202
+	unsigned char  field_203;         // 0x203
+	float          health;            // 0x204
 	unsigned char  space7[0x0008];
-	CEntity        *bombOwner;             // 0x210
+	CEntity        *bombOwner;        // 0x210
 	unsigned char  space8[0x01C];
-	unsigned int   lock;                   // 0x230
+	unsigned int   lock;              // 0x230
 	unsigned char  space9[0x0068];
-	unsigned int   type;                   // 0x29C
-	CDamageManager damageManager;          // 0x2A0
-	unsigned char  space10[0x0249];
-	unsigned char  field_501;              // 0x501
-	unsigned char  space11[0x005E];
-	float          burningDuration;        // 0x560
-	unsigned char  space12[0x0061];
-	unsigned char  numberOfWheelsOnGround; // 0x5C5
-	unsigned char  space13[0x0016];
-	// 0x5DC
+	unsigned int   type;              // 0x29C
+	// 0x2A0
 
 	static bool &bCheat3;
 	static bool &bAllDodosCheat;
@@ -475,7 +471,7 @@ public:
 	void *operator new(unsigned int);
 };
 
-static_assert(sizeof(CVehicle) == 0x5DC, "Size of CVehicle is not 0x5DC bytes.");
+static_assert(sizeof(CVehicle) == 0x2A0, "Size of CVehicle is not 0x2A0 bytes.");
 
 //########################################################################
 //# CAutomobile
@@ -484,10 +480,24 @@ static_assert(sizeof(CVehicle) == 0x5DC, "Size of CVehicle is not 0x5DC bytes.")
 class CAutomobile : public CVehicle
 {
 public:
+	// 0x2A0
+	CDamageManager damageManager;          // 0x2A0
+	unsigned char  space1[0x0249];
+	unsigned char  field_501;              // 0x501
+	unsigned char  space2[0x005E];
+	float          burningDuration;        // 0x560
+	unsigned char  space3[0x0061];
+	unsigned char  numberOfWheelsOnGround; // 0x5C5
+	unsigned char  space4[0x0016];
+	// 0x5DC
+
 	static unsigned char &m_sAllTaxiLights;
 
+	void SetPanelDamage(int, int, bool);
 	CAutomobile(int, unsigned char);
 };
+
+static_assert(sizeof(CAutomobile) == 0x5DC, "Size of CAutomobile is not 0x5DC bytes.");
 
 //########################################################################
 //# CPed
@@ -521,17 +531,19 @@ public:
 		unsigned int unk1;  // 0x10
 		unsigned int unk2;  // 0x14
 	} weapons[10];                 // 0x408
-	unsigned char  space8[0x002C];
+	unsigned char  space8[0x0010];
+	CPed           *targetPed;     // 0x508
+	unsigned char  space9[0x0018];
 	void           *activeFire;    // 0x524
-	unsigned char  space9[0x00B2];
+	unsigned char  space10[0x00B2];
 	unsigned short talkType;       // 0x5DA
-	unsigned char  space10[0x0004];
+	unsigned char  space11[0x0004];
 	unsigned int   phrase;         // 0x5E0
-	unsigned char  space11[0x0010];
+	unsigned char  space12[0x0010];
 	CWanted        *wanted;        // 0x5F4
-	unsigned char  space12[0x0040];
+	unsigned char  space13[0x0040];
 	unsigned char  drunkenness;    // 0x638
-	unsigned char  space13[0x009F];
+	unsigned char  space14[0x009F];
 	// 0x6D8
 
 	void ClearFollowPath(void);
@@ -1359,6 +1371,7 @@ public:
 	static int &PeopleKilledByOthers;
 	static int &PropertyDestroyed;
 	static int &TotalNumberOfUniqueJumps;
+	static int &FlightTime;
 	static int &SeagullsKilled;
 	static float &LongestWheelieDist;
 	static float &PizzasDelivered;
@@ -1617,8 +1630,14 @@ public:
 class CBoat : public CVehicle
 {
 public:
+	// 0x2A0
+	unsigned char space[0x0220];
+	// 0x4C0
+
 	CBoat(int, unsigned char);
 };
+
+static_assert(sizeof(CBoat) == 0x4C0, "Size of CBoat is not 0x4C0 bytes.");
 
 //########################################################################
 //# CBike
@@ -1627,8 +1646,14 @@ public:
 class CBike : public CVehicle
 {
 public:
+	// 0x2A0
+	unsigned char space[0x024C];
+	// 0x4EC
+
 	CBike(int, unsigned char);
 };
+
+static_assert(sizeof(CBike) == 0x4EC, "Size of CBike is not 0x4EC bytes.");
 
 //########################################################################
 //# CBulletInfo
@@ -1764,6 +1789,48 @@ class CColStore
 {
 public:
 	static void RequestCollision(CVector2D const &);
+};
+
+//########################################################################
+//# CMoneyMessages
+//########################################################################
+
+class CMoneyMessages
+{
+public:
+	static void RegisterOne(CVector, char *, unsigned char, unsigned char, unsigned char, float, float);
+};
+
+//########################################################################
+//# CPlane
+//########################################################################
+
+class CPlane : public CVehicle
+{
+public:
+	// 0x2A0
+	short          ithPlane;         // 0x2A0
+	unsigned char  space1[0x002];
+	unsigned short field_2A4;        // 0x2A4
+	unsigned char  space2[0x00B];
+	bool           isDrugRunCesnaOn; // 0x2B1
+	bool           isDropOffCesnaOn; // 0x2B2
+	unsigned char  space3;
+	// 0x2B4
+
+	CPlane(int, unsigned char);
+};
+
+static_assert(sizeof(CPlane) == 0x2B4, "Size of CPlane is not 0x2B4 bytes.");
+
+//########################################################################
+//# CReplay
+//########################################################################
+
+class CReplay
+{
+public:
+	static unsigned char &Mode;
 };
 
 #endif

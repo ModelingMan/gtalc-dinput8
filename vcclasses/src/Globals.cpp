@@ -32,10 +32,13 @@ namespace VCGlobals
 	ScriptParameter *ScriptParams = reinterpret_cast<ScriptParameter *>(vcversion::AdjustOffset(0x007D7438));
 	CProjectileInfo *gaProjectileInfo = reinterpret_cast<CProjectileInfo *>(vcversion::AdjustOffset(0x007DB888));
 	wchar_t *gUString2 = reinterpret_cast<wchar_t *>(vcversion::AdjustOffset(0x007D9010));
+	char *gString = reinterpret_cast<char *>(vcversion::AdjustOffset(0x007F8378));
 	CPhoneInfo &gPhoneInfo = *reinterpret_cast<CPhoneInfo *>(vcversion::AdjustOffset(0x00817CF0));
 	wchar_t *gUString = reinterpret_cast<wchar_t *>(vcversion::AdjustOffset(0x00821068));
 	RwTexture *&gpShadowHeliTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x00975218));
+	PathNode *&pPathNodes = *reinterpret_cast<PathNode **>(vcversion::AdjustOffset(0x00978750));
 	RwTexture *&gpShadowExplosionTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x00978DB4));
+	int &NumPathNodes = *reinterpret_cast<int *>(vcversion::AdjustOffset(0x0097F220));
 	RwTexture *&gpShadowCarTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x0097F2EC));
 	RsGlobalType &RsGlobal = *reinterpret_cast<RsGlobalType *>(vcversion::AdjustOffset(0x009B48D8));
 	RwTexture *&gpShadowPedTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x009B5F2C));

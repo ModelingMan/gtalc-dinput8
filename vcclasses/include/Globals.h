@@ -44,10 +44,20 @@ namespace VCGlobals
 	extern ScriptParameter *ScriptParams;
 	extern CProjectileInfo *gaProjectileInfo;
 	extern wchar_t *gUString2;
+	extern char *gString;
 	extern CPhoneInfo &gPhoneInfo;
 	extern wchar_t *gUString;
 	extern RwTexture *&gpShadowHeliTex;
+	struct PathNode
+	{
+		CVector pos;
+		float distance;
+		bool isChanged;
+		unsigned char pad[3];
+	};
+	extern PathNode *&pPathNodes;
 	extern RwTexture *&gpShadowExplosionTex;
+	extern int &NumPathNodes;
 	extern RwTexture *&gpShadowCarTex;
 	struct RsGlobalType
 	{

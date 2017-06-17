@@ -119,6 +119,9 @@
     <ClCompile Include="src\CVehicleHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CPlayerInfoHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CRunningScriptHack.h">
@@ -230,6 +233,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\CVehicleHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CPlayerInfoHack.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

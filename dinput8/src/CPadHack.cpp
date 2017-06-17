@@ -102,7 +102,7 @@ void CPadHack::HealthCheat()
 {
 	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT3"), true, false);
 	VCGlobals::FindPlayerPed()->health = static_cast<float>(CWorld::Players[CWorld::PlayerInFocus].maxHealth);
-	if (CVehicle *vehicle = VCGlobals::FindPlayerVehicle()) {
+	if (CAutomobile *vehicle = static_cast<CAutomobile *>(VCGlobals::FindPlayerVehicle())) {
 		vehicle->health = 1000.0;
 		if (!vehicle->type) {
 			CDamageManager *damageManager = &vehicle->damageManager;

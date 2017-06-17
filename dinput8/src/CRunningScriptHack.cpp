@@ -225,7 +225,7 @@ bool CRunningScriptHack::_014D_text_pager()
 	VCGlobals::strcpy(text, reinterpret_cast<char *>(&CTheScripts::ScriptSpace[this->m_dwScriptIP]));
 	this->m_dwScriptIP += 8;
 	this->CollectParameters(&this->m_dwScriptIP, 3);
-	reinterpret_cast<CPagerHack *>(CUserDisplay::Pager)->AddMessage(TheText.Get(text), ScriptParams[0].uint16, ScriptParams[1].uint16, ScriptParams[2].uint16);
+	static_cast<CPagerHack *>(CUserDisplay::Pager)->AddMessage(TheText.Get(text), ScriptParams[0].uint16, ScriptParams[1].uint16, ScriptParams[2].uint16);
 	return 0;
 }
 
@@ -243,7 +243,7 @@ bool CRunningScriptHack::_034B_commercial_passed()
 	return 0;
 }
 
-bool CRunningScriptHack::_034C_suburban_passed()
+inline bool CRunningScriptHack::_034C_suburban_passed()
 {
 	CStats::SuburbanPassed = 1;
 	return 0;
@@ -406,7 +406,7 @@ bool CRunningScriptHack::_02FB_activate_crusher_crane()
 	return 0;
 }
 
-bool CRunningScriptHack::_0351_is_nasty_game()
+inline bool CRunningScriptHack::_0351_is_nasty_game()
 {
 	this->UpdateCompareFlag(CGame::nastyGame);
 	return 0;
@@ -733,7 +733,7 @@ bool CRunningScriptHack::_02C5_get_number_of_power_pills_eaten()
 	return 0;
 }
 
-bool CRunningScriptHack::_02C6_clear_pacman()
+inline bool CRunningScriptHack::_02C6_clear_pacman()
 {
 	CPacManPickupsHack::CleanUpPacManStuff();
 	return 0;
@@ -757,13 +757,13 @@ bool CRunningScriptHack::_02C8_get_number_of_power_pills_carried()
 	return 0;
 }
 
-bool CRunningScriptHack::_02C9_clear_number_of_power_pills_carried()
+inline bool CRunningScriptHack::_02C9_clear_number_of_power_pills_carried()
 {
 	CPacManPickupsHack::ResetPowerPillsCarriedByPlayer();
 	return 0;
 }
 
-bool CRunningScriptHack::_02D9_clear_number_of_power_pills_eaten()
+inline bool CRunningScriptHack::_02D9_clear_number_of_power_pills_eaten()
 {
 	CPacManPickupsHack::ResetPowerPillsEatenInRace();
 	return 0;
@@ -917,7 +917,7 @@ bool CRunningScriptHack::_044E_set_car_ignore_level_transitions()
 bool CRunningScriptHack::_044F_make_craigs_car_a_bit_stronger()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 2);
-	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32);
+	CAutomobile *vehicle = static_cast<CAutomobile *>(CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32));
 	vehicle->field_501 &= 0xDF;
 	if (ScriptParams[1].int32) {
 		vehicle->field_501 |= 0x20;
@@ -925,7 +925,7 @@ bool CRunningScriptHack::_044F_make_craigs_car_a_bit_stronger()
 	return 0;
 }
 
-bool CRunningScriptHack::_0452_enable_player_control_camera()
+inline bool CRunningScriptHack::_0452_enable_player_control_camera()
 {
 	*(unsigned short *)(CPad::GetPad(0) + 0xF0) &= 0xFFFE;
 	return 0;
@@ -934,7 +934,7 @@ bool CRunningScriptHack::_0452_enable_player_control_camera()
 bool CRunningScriptHack::_015E_is_car_in_air()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
-	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32);
+	CAutomobile *vehicle = static_cast<CAutomobile *>(CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32));
 	this->UpdateCompareFlag(vehicle->numberOfWheelsOnGround == 0);
 	return 0;
 }
@@ -959,7 +959,7 @@ bool CRunningScriptHack::_0354_start_chase_scene()
 	return 0;
 }
 
-bool CRunningScriptHack::_0355_stop_chase_scene()
+inline bool CRunningScriptHack::_0355_stop_chase_scene()
 {
 	CRecordDataForChaseHack::CleanUpChaseScene();
 	return 0;

@@ -1,3 +1,5 @@
+#include "vcversion.h"
+
 // based on SilentPatch
 enum eCallPatcher
 {
@@ -9,7 +11,7 @@ template<typename T>
 inline void InjectHook(unsigned long address, T data, eCallPatcher nType = PATCH_CALL)
 {
 	address = vcversion::AdjustOffset(address);
-	*reinterpret_cast<unsigned char *>(address) = nType == PATCH_JUMP ? 0xE9 : 0xE8;
+	*reinterpret_cast<unsigned char *>(address) = static_cast<unsigned char>(nType == PATCH_JUMP ? 0xE9 : 0xE8);
 	*reinterpret_cast<unsigned long *>(address + 1) = (unsigned long)data - address - 5;
 }
 

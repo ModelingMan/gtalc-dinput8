@@ -51,6 +51,7 @@
     <ClCompile Include="src\CMessages.cpp" />
     <ClCompile Include="src\CMissionCleanup.cpp" />
     <ClCompile Include="src\CModelInfo.cpp" />
+    <ClCompile Include="src\CMoneyMessages.cpp" />
     <ClCompile Include="src\CObject.cpp" />
     <ClCompile Include="src\CPad.cpp" />
     <ClCompile Include="src\CParticle.cpp" />
@@ -62,6 +63,7 @@
     <ClCompile Include="src\CPhysical.cpp" />
     <ClCompile Include="src\CPickups.cpp" />
     <ClCompile Include="src\CPlaceable.cpp" />
+    <ClCompile Include="src\CPlane.cpp" />
     <ClCompile Include="src\CPointLights.cpp" />
     <ClCompile Include="src\CPools.cpp" />
     <ClCompile Include="src\CPopulation.cpp" />
@@ -69,6 +71,7 @@
     <ClCompile Include="src\CRadar.cpp" />
     <ClCompile Include="src\CRecordDataForChase.cpp" />
     <ClCompile Include="src\CRenderer.cpp" />
+    <ClCompile Include="src\CReplay.cpp" />
     <ClCompile Include="src\CRestart.cpp" />
     <ClCompile Include="src\CRunningScript.cpp" />
     <ClCompile Include="src\cSampleManager.cpp" />
