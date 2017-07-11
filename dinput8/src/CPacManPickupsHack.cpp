@@ -1,6 +1,5 @@
 #include "CPacManPickupsHack.h"
 #include <cmath>
-#include <new>
 #include "Globals.h"
 #include "vcversion.h"
 #include "SilentCall.h"
@@ -213,8 +212,7 @@ void CPacManPickupsHack::GeneratePMPickUps(CVector center, float radius, short c
 			aPMPickups[i].position.z = colpoint.point.z + 0.7f;
 
 			if (scrambleModel != 0xFFFF) {
-				void *place = CObject::operator new(0x194);
-				CObject *object = ::new (place)CObject(scrambleModel, true);
+				CObject *object = new CObject(scrambleModel, true);
 				if (object) {
 					object->field_16C = 2;
 					object->GetMatrix().SetRotate(0.0, 0.0, -1.5707964f);
@@ -249,8 +247,7 @@ void CPacManPickupsHack::GeneratePMPickUpsForRace(void)
 			aPMPickups[i].position.y = aRacePoints1[i].y;
 			aPMPickups[i].position.z = aRacePoints1[i].z + OFFSETZ;
 			if (raceModel != 0xFFFF) {
-				void *place = CObject::operator new(0x194);
-				CObject *object = ::new (place)CObject(raceModel, true);
+				CObject *object = new CObject(raceModel, true);
 				if (object) {
 					object->field_16C = 2;
 					object->GetMatrix().SetRotate(0.0, 0.0, -1.5707964f);

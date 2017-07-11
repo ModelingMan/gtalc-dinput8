@@ -1,6 +1,5 @@
 #include "CCranesHack.h"
 #include <cmath>
-#include <new>
 #include "vcversion.h"
 #include "Globals.h"
 #include "SilentCall.h"
@@ -198,8 +197,7 @@ void CCranesHack::AddThisOneCrane(CEntity *entity)
 		// new! magnet for cranes!
 		if (aCranes[index].isNotCab || entity->GetY() > 0.0) {
 			if (ModelIndices::MI_MAGNET != 0xFFFF) {
-				void *place = CObject::operator new(0x194);
-				CObject *object = ::new (place)CObject(ModelIndices::MI_MAGNET, false);
+				CObject *object = new CObject(ModelIndices::MI_MAGNET, false);
 				if (object) {
 					object->field_16C = 2;
 					object->field_051 &= 0xFE;
@@ -223,7 +221,7 @@ void CCranesHack::InitCranes()
 	CCranes::NumCranes = 0;
 	for (int i = 0; i < CPools::ms_pBuildingPool->totalCount; i++) {
 		if ((CPools::ms_pBuildingPool->flags[i] & 0x80) != 0x80) {
-			unsigned short model = CPools::ms_pBuildingPool->entities[i].modelIndex;
+			short model = CPools::ms_pBuildingPool->entities[i].modelIndex;
 			if (model == ModelIndices::MODELID_CRANE_1 ||
 				model == ModelIndices::MODELID_CRANE_2 ||
 				model == ModelIndices::MODELID_CRANE_3) {

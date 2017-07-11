@@ -12,7 +12,10 @@ bool CWeaponEffectsHack::initialise()
 	InjectHook(0x005D511C, &CWeaponEffectsHack::InitHackProxy, PATCH_JUMP);
 
 	// transparent crosshair
-	Patch<unsigned char>(0x005D4EEE, 9);
+	Patch<unsigned char>(0x005D4EEE, 9); // use 6 for no outline
+
+	// sniper dot (aap's skygfx_vc)
+	Patch<unsigned char>(0x00558024, 6);
 	return true;
 }
 

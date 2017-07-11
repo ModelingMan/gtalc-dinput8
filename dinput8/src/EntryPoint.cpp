@@ -88,6 +88,8 @@ static unsigned long dodoShadowJumpEnd = vcversion::AdjustOffset(0x0056E346);
 static void DodoAnims();
 static unsigned long dodoAnimsEndJump = vcversion::AdjustOffset(0x00590260);
 
+static unsigned char splashIndex[] = { 25, 22, 4, 13, 1, 21, 14, 16, 10, 12, 5, 9, 11, 18, 3, 2, 19, 23, 7, 17, 15, 6, 8, 20 };
+
 // center mouse (SilentPatch)
 static bool bGameInFocus = true;
 static LRESULT(CALLBACK **OldWndProc)(HWND, UINT, WPARAM, LPARAM);
@@ -299,6 +301,15 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		// leaf scaling
 		Patch<float>(0x00698CD8, 0.3);
 
+		// random loading screen (Silent), requires ids 0-25 to exist
+		if (GetPrivateProfileInt("Misc", "RandomLoadScreen", 0, "./gta-lc.ini")) {
+			Patch<unsigned char>(0x004A69D4, 0x90);
+			Patch<unsigned int>(0x004A69D4 + 1, 0x782474FF); // push [esp+78h]
+			Patch<unsigned char>(0x004A6DF7, 4);
+			Patch<void *>(0x004A6E09, &splashIndex);
+			memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x004A5C49)), 0x90, 5);
+		}
+
 		if (!GetPrivateProfileInt("Misc", "UseRCBaron", 0, "./gta-lc.ini")) {
 			// dodo wheels
 			InjectHook(0x0059EFF8, &DodoWheels1, PATCH_JUMP);
@@ -308,6 +319,18 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			// dodo anims
 			InjectHook(0x00590258, &DodoAnims, PATCH_JUMP);
 		}
+
+		// remove security guard behavior
+		Patch<unsigned char>(0x0050BF78, 0xEB);
+
+		// remove vercetti gang behavior
+		Patch<unsigned char>(0x005143B7, 0xEB);
+		Patch<unsigned char>(0x0051BDEE, 0xEB);
+		Patch<unsigned char>(0x0051C278, 0xEB);
+		Patch<unsigned char>(0x00525BC5, 0xEB);
+
+		// do not clear messages
+		memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x00582C70)), 0x90, 5);
 
 		// center mouse (SilentPatch)
 		InjectHook(0x004A5E45, &ResetMousePos);

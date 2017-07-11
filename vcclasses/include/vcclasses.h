@@ -176,7 +176,7 @@ public:
 	unsigned char  field_052;              // 0x052
 	unsigned char  field_053;              // 0x053
 	unsigned char  espace2[0x0008];
-	unsigned short modelIndex;             // 0x05C
+	short          modelIndex;             // 0x05C
 	unsigned char  espace3[0x0006];
 	// 0x064
 
@@ -578,8 +578,8 @@ public:
 	unsigned char space1[0x004C];
 	unsigned char field_16C;      // 0x16C
 	unsigned char field_16D;      // 0x16D
-	unsigned char space2[0x0032];
-	// 0x1A0
+	unsigned char space2[0x0026];
+	// 0x194
 
 	void ObjectDamage(float);
 	void *operator new(unsigned int);
@@ -587,7 +587,7 @@ public:
 	CObject(void);
 };
 
-static_assert(sizeof(CObject) == 0x1A0, "Size of CObject is not 0x1A0 bytes.");
+static_assert(sizeof(CObject) == 0x194, "Size of CObject is not 0x194 bytes.");
 
 //########################################################################
 //# CCutsceneHead
@@ -1056,7 +1056,7 @@ public:
 	unsigned char isInactive;         // 0x05
 	unsigned char hasResprayHappened; // 0x06
 	unsigned char padding1;           // 0x07
-	unsigned int  targetModel;        // 0x08
+	int           targetModel;        // 0x08
 	unsigned long doorObject;         // 0x0C
 	unsigned long crusherTopObject;   // 0x10
 	unsigned char unk2;               // 0x14

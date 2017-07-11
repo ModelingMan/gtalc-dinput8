@@ -126,7 +126,7 @@ void CBridgeHack::FindBridgeEntities(void)
 	for (int i = 0; i < CPools::ms_pBuildingPool->totalCount; i++) {
 		if ((CPools::ms_pBuildingPool->flags[i] & 0x80) != 0x80) {
 			CEntity *entity = &CPools::ms_pBuildingPool->entities[i];
-			unsigned short model = CPools::ms_pBuildingPool->entities[i].modelIndex;
+			short model = CPools::ms_pBuildingPool->entities[i].modelIndex;
 			if (model == ModelIndices::MI_BRIDGEWEIGHT) {
 				pWeight = entity;
 			}

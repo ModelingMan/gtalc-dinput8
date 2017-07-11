@@ -1,7 +1,6 @@
 // chase scene based on Silent's code
 #include "CRecordDataForChaseHack.h"
 #include <cmath>
-#include <new>
 #include "vcversion.h"
 #include "Globals.h"
 #include "SilentCall.h"
@@ -123,8 +122,7 @@ void CRecordDataForChaseHack::GiveUsACar(int model, CVector pos, float heading, 
 	CStreaming::LoadAllRequestedModels(false);
 	CCutsceneMgr::ms_cutsceneProcessing = store;
 	if (*(unsigned char *)(vcversion::AdjustOffset(0x0094DDD8) + model * 0x14) == 1) {
-		void *place = CVehicle::operator new(0x5DC);
-		CAutomobile *vehicle = ::new (place)CAutomobile(model, 2);
+		CAutomobile *vehicle = new CAutomobile(model, 2);
 		vehicle->GetPos() = pos;
 		vehicle->status &= 7;
 		vehicle->status |= 8;

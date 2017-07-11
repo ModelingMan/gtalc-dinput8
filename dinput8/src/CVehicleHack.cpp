@@ -15,8 +15,8 @@ static unsigned long awardExplosion1EndJump = vcversion::AdjustOffset(0x00598C6A
 static unsigned long awardExplosion2EndJump = vcversion::AdjustOffset(0x005B900A);
 
 // award money for collision
-static unsigned long awardCollision3EndJump = vcversion::AdjustOffset(0x0059C10C);
 static unsigned long awardCollision1EndJump = vcversion::AdjustOffset(0x0059B576);
+static unsigned long awardCollision3EndJump = vcversion::AdjustOffset(0x0059C10C);
 
 bool CVehicleHack::initialise()
 {

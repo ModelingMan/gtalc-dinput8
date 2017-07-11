@@ -1,4 +1,5 @@
 #include "CPickupsHack.h"
+#include <Windows.h>
 #include "Globals.h"
 #include "vcversion.h"
 #include "SilentCall.h"
@@ -16,6 +17,134 @@ static char text[53][8] =
 // DoPickUpEffects
 static unsigned long pickupEffectEndJump = vcversion::AdjustOffset(0x0043F294);
 static unsigned long pickupEffectNoMatchJump = vcversion::AdjustOffset(0x0043F246);
+
+static unsigned short AmmoForWeapon[38] =
+{
+	0,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1, // bat
+	1,
+	1,
+	1,
+	1,
+	1,
+	5, // grenade
+	8,
+	8,
+	5, // molotov
+	8,
+	45, // colt45
+	24,
+	32,
+	28,
+	25, // shotgun
+	200,
+	125, // uzi
+	120,
+	150, // ak47
+	300, // m16
+	120,
+	25, // sniper
+	28,
+	5, // rocket
+	250, // flame
+	200,
+	1000,
+	1,
+	400,
+	36,
+	0
+};
+
+static unsigned short AmmoForWeapon_OnStreet[38] =
+{
+	0,
+	1,
+	1,
+	1,
+	1,
+	1,
+	1, // bat
+	1,
+	1,
+	1,
+	1,
+	1,
+	1, // grenade
+	4,
+	4,
+	1, // molotov
+	4,
+	9, // colt45
+	12,
+	16,
+	14,
+	5, // shotgun
+	100,
+	25, // uzi
+	60,
+	30, // ak47
+	60, // m16
+	60,
+	5, // sniper
+	14,
+	1, // rocket
+	50, // flame
+	100,
+	500,
+	1,
+	400,
+	36,
+	0
+};
+
+static short CostOfWeapon[40] =
+{
+	0,
+	10,
+	10,
+	10,
+	10,
+	10,
+	10, // bat
+	10,
+	10,
+	10,
+	10,
+	10,
+	2000, // grenade
+	1000,
+	1000,
+	2000, // molotov
+	8000,
+	250, // colt45
+	400,
+	1200,
+	1250,
+	1500, // shotgun
+	800,
+	800, // uzi
+	650,
+	3000, // ak47
+	5000, // m16
+	400,
+	10000, // sniper
+	10000,
+	25000, // rocket
+	25000, // flame
+	8000,
+	10000,
+	1000,
+	11000,
+	500,
+	20,
+	3000, // armor/adrenaline
+	0
+};
 
 bool CPickupsHack::initialise()
 {
@@ -40,6 +169,21 @@ bool CPickupsHack::initialise()
 	InjectHook(0x00441293, &CPickupsHack::UpdateHack);
 	Patch<unsigned short>(0x00441298, 0x9090);
 	Patch<unsigned int>(0x004412DC, 1000000);
+
+	// weapon ammo and cost
+	for (int i = 0; i < 38; i++) {
+		Patch<unsigned short>(0x00687F68 + i * 2, AmmoForWeapon[i]);
+	}
+	for (int i = 0; i < 38; i++) {
+		Patch<unsigned short>(0x00687FB4 + i * 2, AmmoForWeapon_OnStreet[i]);
+	}
+	for (int i = 0; i < 40; i++) {
+		Patch<short>(0x00688000 + i * 2, CostOfWeapon[i]);
+	}
+
+	// do not halve ammo of dropped weapon
+	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x0043DFED)), 0x90, 11);
+	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x0043E0F6)), 0x90, 11);
 
 	return true;
 }

@@ -8,4 +8,5 @@ public:
 	static bool initialise();
 
 	static void CamControlHack();
+	static void ProcessObbeCinemaCameraCarHack();
 };
