@@ -1,5 +1,4 @@
 #include "CWantedHack.h"
-#include "vcversion.h"
 #include "SilentCall.h"
 #include <Windows.h>
 

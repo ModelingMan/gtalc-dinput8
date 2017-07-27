@@ -146,17 +146,64 @@ static short CostOfWeapon[40] =
 	0
 };
 
+struct PickupColor
+{
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+	unsigned char unk1;
+	float unk2;
+} aPickupColor[41] =
+{
+	{ 0x80, 0x80, 0x80, 0, 1.0 },
+	{ 0x80, 0x80, 0x80, 0, 1.0 },
+	{ 0x61, 0xC2, 0xF7, 0, 1.0 },
+	{ 0x61, 0xC2, 0xF7, 0, 1.0 },
+	{ 0x61, 0xC2, 0xF7, 0, 1.0 },
+	{ 0x61, 0xC2, 0xF7, 0, 1.0 },
+	{ 0xFF,    0,    0, 0, 1.0 }, // bat
+	{ 0x61, 0xC2, 0xF7, 0, 1.0 },
+	{ 0x61, 0xC2, 0xF7, 0, 1.0 },
+	{ 0x61, 0xC2, 0xF7, 0, 1.0 },
+	{ 0x61, 0xC2, 0xF7, 0, 1.0 },
+	{ 0x61, 0xC2, 0xF7, 0, 1.0 },
+	{ 0xFF, 0xFF, 0xFF, 0, 1.0 }, // grenade
+	{ 0x1B, 0x59, 0x82, 0, 1.0 },
+	{ 0x1B, 0x59, 0x82, 0, 1.0 },
+	{ 0x80, 0xFF,    0, 0, 1.0 }, // molotov
+	{ 0x1B, 0x59, 0x82, 0, 1.0 },
+	{    0, 0xFF,    0, 0, 1.0 }, // colt45
+	{ 0x95, 0xC2, 0x18, 0, 1.0 },
+	{ 0x2D, 0x9B, 0x5A, 0, 1.0 },
+	{ 0x2D, 0x9B, 0x5A, 0, 1.0 },
+	{ 0xFF, 0xFF,    0, 0, 1.0 }, // shotgun
+	{ 0xFF, 0xE3, 0x4F, 0, 1.0 },
+	{ 0x80, 0x80, 0xFF, 0, 1.0 }, // uzi
+	{ 0xFF, 0xE3, 0x4F, 0, 1.0 },
+	{ 0xFF,    0, 0xFF, 0, 1.0 }, // ak47
+	{    0, 0xFF, 0xFF, 0, 1.0 }, // m16
+	{ 0xFE, 0x89,    0, 0, 1.0 },
+	{ 0xFF, 0x80,    0, 0, 1.0 }, // sniper
+	{ 0xF9, 0x83, 0xD7, 0, 1.0 },
+	{    0, 0xFF, 0x80, 0, 1.0 }, // rocket
+	{ 0x80,    0, 0xFF, 0, 1.0 }, // flame
+	{ 0xA4, 0x28, 0xB2, 0, 1.0 },
+	{ 0xA4, 0x28, 0xB2, 0, 1.0 },
+	{ 0x45, 0x45, 0x45, 0, 1.0 },
+	{ 0x45, 0x45, 0x45, 0, 1.0 },
+	{ 0x45, 0x45, 0x45, 0, 1.0 },
+	{ 0x80, 0xFF, 0x80, 0, 1.0 }, // 37
+	{    0,    0, 0xFF, 0, 1.0 }, // 38
+	{    0,    0,    0, 0, 1.0 }, // 39
+	{ 0xFF, 0xFF, 0x64, 0, 1.0 }
+};
+
 bool CPickupsHack::initialise()
 {
 	InjectHook(0x0043E639, &CPickupsHack::RenderPickUpTextHack, PATCH_JUMP);
 
 	// non-weapon pickup effects
 	InjectHook(0x0043F0F5, &CPickupsHack::DoPickUpEffectsHack, PATCH_JUMP);
-
-	// pickup colors, blue-green-red
-	Patch<unsigned int>(0x006881C0, 0x80FF80); // color 37
-	Patch<unsigned int>(0x006881C8, 0xFF0000); // color 38
-	Patch<unsigned int>(0x006881D0, 0);        // color 39
 
 	// pickups light glow
 	Patch<unsigned char>(0x0043F52B, 0x10);
@@ -181,9 +228,23 @@ bool CPickupsHack::initialise()
 		Patch<short>(0x00688000 + i * 2, CostOfWeapon[i]);
 	}
 
+	// pickup colors
+	for (int i = 0; i < 41; i++) {
+		Patch<PickupColor>(0x00688098 + i * sizeof(PickupColor), aPickupColor[i]);
+	}
+
 	// do not halve ammo of dropped weapon
 	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x0043DFED)), 0x90, 11);
 	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x0043E0F6)), 0x90, 11);
+
+	// package corona
+	Patch<unsigned char>(0x0043EF12, 7);
+
+	// weapon corona
+	Patch<unsigned char>(0x0043F68C, 0);
+	Patch<unsigned int>(0x0043F6AF, 0);
+	Patch<float>(0x0068832C, 0);
+	Patch<float>(0x00688334, 0.05);
 
 	return true;
 }

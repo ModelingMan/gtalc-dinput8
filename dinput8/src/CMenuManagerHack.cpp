@@ -1,5 +1,4 @@
 #include "CMenuManagerHack.h"
-#include "vcversion.h"
 #include "SilentCall.h"
 
 struct MenuPage

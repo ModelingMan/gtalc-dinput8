@@ -13,7 +13,7 @@ __declspec(naked) void CRunningScript::StoreParameters(unsigned int *, short)
 	__asm jmp g_StoreParameters;
 }
 
-__declspec(naked) void CRunningScript::CollectParameters(unsigned int *scriptIP, int paramCount)
+__declspec(naked) void CRunningScript::CollectParameters(unsigned int *, int)
 {
 	__asm jmp g_CollectParameters;
 }
@@ -28,7 +28,7 @@ __declspec(naked) int CRunningScript::CollectNextParameterWithoutIncreasingPC(un
 	__asm jmp g_CollectNextParameterWithoutIncreasingPC;
 }
 
-__declspec(naked) void CRunningScript::UpdateCompareFlag(bool flag)
+__declspec(naked) void CRunningScript::UpdateCompareFlag(bool)
 {
 	__asm jmp g_UpdateCompareFlag;
 }

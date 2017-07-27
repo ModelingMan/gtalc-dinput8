@@ -1,5 +1,4 @@
 #include "CBridgeHack.h"
-#include "vcversion.h"
 #include "SilentCall.h"
 #include "ModelIndices.h"
 #include "Offset.h"

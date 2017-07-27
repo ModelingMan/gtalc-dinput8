@@ -1,6 +1,5 @@
 #include "CWaterLevelHack.h"
 #include <Windows.h>
-#include "vcversion.h"
 #include "Globals.h"
 #include "SilentCall.h"
 

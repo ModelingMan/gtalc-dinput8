@@ -35,6 +35,10 @@ namespace VCGlobals
 	char *gString = reinterpret_cast<char *>(vcversion::AdjustOffset(0x007F8378));
 	CPhoneInfo &gPhoneInfo = *reinterpret_cast<CPhoneInfo *>(vcversion::AdjustOffset(0x00817CF0));
 	wchar_t *gUString = reinterpret_cast<wchar_t *>(vcversion::AdjustOffset(0x00821068));
+	PathNode *&pPath4Nodes = *reinterpret_cast<PathNode **>(vcversion::AdjustOffset(0x0094DDAC));
+	PathNode *&pPath3Nodes = *reinterpret_cast<PathNode **>(vcversion::AdjustOffset(0x00974B4C));
+	PathNode *&pPath2Nodes = *reinterpret_cast<PathNode **>(vcversion::AdjustOffset(0x00974B78));
+	CPlane *&pDropOffCesna = *reinterpret_cast<CPlane **>(vcversion::AdjustOffset(0x009751C0));
 	RwTexture *&gpShadowHeliTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x00975218));
 	PathNode *&pPathNodes = *reinterpret_cast<PathNode **>(vcversion::AdjustOffset(0x00978750));
 	RwTexture *&gpShadowExplosionTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x00978DB4));
@@ -42,6 +46,7 @@ namespace VCGlobals
 	RwTexture *&gpShadowCarTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x0097F2EC));
 	RsGlobalType &RsGlobal = *reinterpret_cast<RsGlobalType *>(vcversion::AdjustOffset(0x009B48D8));
 	RwTexture *&gpShadowPedTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x009B5F2C));
+	CPlane *&pDrugRunCesna = *reinterpret_cast<CPlane **>(vcversion::AdjustOffset(0x009B5F7C));
 	RwTexture *&gpBloodPoolTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x00A0DAC8));
 	RwTexture *&gpShadowHeadLightsTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x00A1073C));
 	bool &gbFastTime = *reinterpret_cast<bool *>(vcversion::AdjustOffset(0x00A10B87));
@@ -115,32 +120,32 @@ namespace VCGlobals
 		__asm jmp g_DefinedState;
 	}
 
-	__declspec(naked) char *strcpy(char *dest, const char *src)
+	__declspec(naked) char *strcpy(char *, const char *)
 	{
 		__asm jmp g_strcpy;
 	}
 
-	__declspec(naked) char *strncpy(char *dest, const char *src, size_t n)
+	__declspec(naked) char *strncpy(char *, const char *, size_t)
 	{
 		__asm jmp g_strncpy;
 	}
 
-	__declspec(naked) char *strcat(char *dest, const char *src)
+	__declspec(naked) char *strcat(char *, const char *)
 	{
 		__asm jmp g_strcat;
 	}
 
-	__declspec(naked) int strcmp(const char *s1, const char *s2)
+	__declspec(naked) int strcmp(const char *, const char *)
 	{
 		__asm jmp g_strcmp;
 	}
 
-	__declspec(naked) int strncmp(const char *s1, const char *s2, size_t n)
+	__declspec(naked) int strncmp(const char *, const char *, size_t)
 	{
 		__asm jmp g_strncmp;
 	}
 
-	__declspec(naked) int sprintf(char *s, const char *format, ...)
+	__declspec(naked) int sprintf(char *, const char *, ...)
 	{
 		__asm jmp g_sprintf;
 	}
@@ -150,7 +155,7 @@ namespace VCGlobals
 		__asm jmp g_rand;
 	}
 
-	__declspec(naked) int sscanf(const char *s, const char *format, ...)
+	__declspec(naked) int sscanf(const char *, const char *, ...)
 	{
 		__asm jmp g_sscanf;
 	}

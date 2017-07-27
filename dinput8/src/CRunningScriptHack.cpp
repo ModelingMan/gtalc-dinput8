@@ -1,23 +1,24 @@
 #include "CRunningScriptHack.h"
 #include <Windows.h>
 #include <cmath>
-#include "CPagerHack.h"
-#include "CScrollBarHack.h"
 #include "CCranesHack.h"
 #include "CExplosionHack.h"
-#include "CProjectileInfoHack.h"
-#include "CPacManPickupsHack.h"
-#include "CObjectHack.h"
-#include "CSpecialParticleStuffHack.h"
 #include "CGameLogicHack.h"
+#include "CMessagesHack.h"
+#include "CObjectHack.h"
+#include "CPacManPickupsHack.h"
+#include "CPagerHack.h"
+#include "CProjectileInfoHack.h"
 #include "CRecordDataForChaseHack.h"
+#include "CScrollBarHack.h"
+#include "CSpecialParticleStuffHack.h"
 #include "CStatsHack.h"
 #include "Globals.h"
+#include "SilentCall.h"
 #include "vcclasses.h"
 #include "vcversion.h"
-#include "SilentCall.h"
 
-using namespace VCGlobals;
+using ::VCGlobals::ScriptParams;
 
 // GetRandomCarOfTypeInAreaNoSave
 static void GetRandomCarOfTypeInAreaNoSave();
@@ -59,10 +60,14 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 	// additional opcodes
 	case 0x0A2:
 		return this->_00A2_is_char_still_alive();
+	case 0x0BD:
+		return this->_00BD_print_soon();
 	case 0x135:
 		return this->_0135_change_car_lock();
 	case 0x16F:
 		return this->_016F_draw_shadow();
+	case 0x1E6:
+		return this->_01E6_print_with_number_soon();
 	case 0x1EE:
 		return this->_01EE_activate_crane();
 	case 0x1EF:
@@ -81,6 +86,8 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 		return this->_02CD_gosub_file();
 	case 0x2FB:
 		return this->_02FB_activate_crusher_crane();
+	case 0x2FE:
+		return this->_02FE_print_with_2_numbers_soon();
 	case 0x351:
 		return this->_0351_is_nasty_game();
 	case 0x356:
@@ -222,10 +229,10 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 bool CRunningScriptHack::_014D_text_pager()
 {
 	char text[8];
-	VCGlobals::strcpy(text, reinterpret_cast<char *>(&CTheScripts::ScriptSpace[this->m_dwScriptIP]));
+	VCGlobals::strcpy(text, &CTheScripts::ScriptSpace[this->m_dwScriptIP]);
 	this->m_dwScriptIP += 8;
 	this->CollectParameters(&this->m_dwScriptIP, 3);
-	static_cast<CPagerHack *>(CUserDisplay::Pager)->AddMessage(TheText.Get(text), ScriptParams[0].uint16, ScriptParams[1].uint16, ScriptParams[2].uint16);
+	static_cast<CPagerHack *>(CUserDisplay::Pager)->AddMessage(VCGlobals::TheText.Get(text), ScriptParams[0].uint16, ScriptParams[1].uint16, ScriptParams[2].uint16);
 	return 0;
 }
 
@@ -254,6 +261,16 @@ bool CRunningScriptHack::_00A2_is_char_still_alive()
 	this->CollectParameters(&this->m_dwScriptIP, 1);
 	CPed *ped = CPools::ms_pPedPool->GetAt(ScriptParams[0].int32);
 	this->UpdateCompareFlag(ped && ped->state != 0x37 && ped->state != 0x36);
+	return 0;
+}
+
+bool CRunningScriptHack::_00BD_print_soon()
+{
+	char text[8];
+	VCGlobals::strncpy(text, &CTheScripts::ScriptSpace[this->m_dwScriptIP], 8);
+	this->m_dwScriptIP += 8;
+	this->CollectParameters(&this->m_dwScriptIP, 2);
+	CMessagesHack::AddMessageSoon(VCGlobals::TheText.Get(text), ScriptParams[0].uint32, ScriptParams[1].uint16);
 	return 0;
 }
 
@@ -305,6 +322,16 @@ bool CRunningScriptHack::_016F_draw_shadow()
 	return 0;
 }
 
+bool CRunningScriptHack::_01E6_print_with_number_soon()
+{
+	char text[8];
+	VCGlobals::strncpy(text, &CTheScripts::ScriptSpace[this->m_dwScriptIP], 8);
+	this->m_dwScriptIP += 8;
+	this->CollectParameters(&this->m_dwScriptIP, 3);
+	CMessagesHack::AddMessageSoonWithNumber(VCGlobals::TheText.Get(text), ScriptParams[1].uint32, ScriptParams[2].uint16, ScriptParams[0].int32, -1, -1, -1, -1, -1);
+	return 0;
+}
+
 bool CRunningScriptHack::_01EE_activate_crane()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 10);
@@ -335,9 +362,9 @@ bool CRunningScriptHack::_024C_set_phone_message()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
 	char text[8];
-	VCGlobals::strncpy(text, reinterpret_cast<char *>(&CTheScripts::ScriptSpace[this->m_dwScriptIP]), 8);
+	VCGlobals::strncpy(text, &CTheScripts::ScriptSpace[this->m_dwScriptIP], 8);
 	this->m_dwScriptIP += 8;
-	VCGlobals::gPhoneInfo.SetPhoneMessage_JustOnce(ScriptParams[0].int32, TheText.Get(text), 0, 0, 0, 0, 0);
+	VCGlobals::gPhoneInfo.SetPhoneMessage_JustOnce(ScriptParams[0].int32, VCGlobals::TheText.Get(text), 0, 0, 0, 0, 0);
 	return 0;
 }
 
@@ -403,6 +430,16 @@ bool CRunningScriptHack::_02FB_activate_crusher_crane()
 	}
 	ScriptParams[9].float32 = ScriptParams[9].float32 * 3.1415927f * 5.5555557e-3f;
 	CCranesHack::ActivateCrane(ScriptParams[2].float32, ScriptParams[4].float32, ScriptParams[3].float32, ScriptParams[5].float32, ScriptParams[6].float32, ScriptParams[7].float32, ScriptParams[8].float32, ScriptParams[9].float32, true, false, ScriptParams[0].float32, ScriptParams[1].float32);
+	return 0;
+}
+
+bool CRunningScriptHack::_02FE_print_with_2_numbers_soon()
+{
+	char text[8];
+	VCGlobals::strncpy(text, &CTheScripts::ScriptSpace[this->m_dwScriptIP], 8);
+	this->m_dwScriptIP += 8;
+	this->CollectParameters(&this->m_dwScriptIP, 4);
+	CMessagesHack::AddMessageSoonWithNumber(VCGlobals::TheText.Get(text), ScriptParams[2].uint32, ScriptParams[3].uint16, ScriptParams[0].int32, ScriptParams[1].int32, -1, -1, -1, -1);
 	return 0;
 }
 
@@ -968,7 +1005,7 @@ inline bool CRunningScriptHack::_0355_stop_chase_scene()
 bool CRunningScriptHack::_0367_start_kill_frenzy_headshot()
 {
 	char text[8];
-	VCGlobals::strcpy(text, reinterpret_cast<char *>(&CTheScripts::ScriptSpace[this->m_dwScriptIP]));
+	VCGlobals::strcpy(text, &CTheScripts::ScriptSpace[this->m_dwScriptIP]);
 	this->m_dwScriptIP += 8;
 	this->CollectParameters(&this->m_dwScriptIP, 8);
 	CDarkel::StartFrenzy(ScriptParams[0].int32, ScriptParams[1].int32, ScriptParams[2].uint16, ScriptParams[3].int32, VCGlobals::TheText.Get(text), ScriptParams[4].int32, ScriptParams[5].int32, ScriptParams[6].int32, !!ScriptParams[7].int32, true);

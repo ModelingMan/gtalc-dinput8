@@ -18,8 +18,10 @@ public:
 
 	// additional opcodes
 	bool _00A2_is_char_still_alive();
+	bool _00BD_print_soon();
 	bool _0135_change_car_lock();
 	bool _016F_draw_shadow();
+	bool _01E6_print_with_number_soon();
 	bool _01EE_activate_crane();
 	bool _01EF_deactivate_crane();
 	bool _024C_set_phone_message();
@@ -29,6 +31,7 @@ public:
 	bool _02BD_is_debug_mode(); // custom opcode
 	bool _02CD_gosub_file();
 	bool _02FB_activate_crusher_crane();
+	bool _02FE_print_with_2_numbers_soon();
 	bool _0351_is_nasty_game();
 	bool _0356_is_explosion_in_area();
 	bool _0368_activate_military_crane();

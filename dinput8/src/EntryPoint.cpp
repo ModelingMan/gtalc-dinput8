@@ -2,40 +2,40 @@
 #include <tchar.h>
 #include <time.h>
 
-#include "cAudioManagerHack.h"
-#include "CFontHack.h"
-#include "CMovingThingsHack.h"
-#include "CPagerHack.h"
-#include "CRunningScriptHack.h"
-#include "CRendererHack.h"
-#include "CCranesHack.h"
-#include "CPickupsHack.h"
-#include "CPadHack.h"
-#include "CGaragesHack.h"
-#include "CWantedHack.h"
-#include "CPacManPickupsHack.h"
-#include "CProjectileInfoHack.h"
-#include "CCameraHack.h"
-#include "CFileLoaderHack.h"
-#include "CPathFindHack.h"
 #include "CBridgeHack.h"
-#include "CStatsHack.h"
-#include "CWeaponEffectsHack.h"
-#include "CObjectHack.h"
-#include "CRadarHack.h"
-#include "CPedHack.h"
-#include "CShinyTextsHack.h"
+#include "CCameraHack.h"
 #include "CCarCtrlHack.h"
+#include "CCranesHack.h"
+#include "CFileLoaderHack.h"
+#include "CFontHack.h"
 #include "CGameLogicHack.h"
-#include "CRecordDataForChaseHack.h"
+#include "CGaragesHack.h"
 #include "CMenuManagerHack.h"
-#include "CWaterLevelHack.h"
+#include "CMovingThingsHack.h"
+#include "CObjectHack.h"
+#include "CPacManPickupsHack.h"
+#include "CPadHack.h"
+#include "CPagerHack.h"
+#include "CPathFindHack.h"
+#include "CPedHack.h"
+#include "CPickupsHack.h"
+#include "CProjectileInfoHack.h"
+#include "CRadarHack.h"
+#include "CRecordDataForChaseHack.h"
+#include "CRendererHack.h"
+#include "CRunningScriptHack.h"
+#include "CShinyTextsHack.h"
+#include "CStatsHack.h"
 #include "CVehicleHack.h"
+#include "CWantedHack.h"
+#include "CWaterLevelHack.h"
+#include "CWeaponEffectsHack.h"
 #include "Globals.h"
 #include "ModelIndices.h"
-#include "vcversion.h"
-#include "SilentCall.h"
 #include "Offset.h"
+#include "SilentCall.h"
+#include "cAudioManagerHack.h"
+#include "vcversion.h"
 
 HMODULE hOrigDLL = NULL;
 
@@ -299,7 +299,7 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		Patch<float>(0x0056F516, 100.0);
 
 		// leaf scaling
-		Patch<float>(0x00698CD8, 0.3);
+		Patch<float>(0x00698CD8, 0.3f);
 
 		// random loading screen (Silent), requires ids 0-25 to exist
 		if (GetPrivateProfileInt("Misc", "RandomLoadScreen", 0, "./gta-lc.ini")) {
@@ -337,36 +337,35 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		OldWndProc = *(LRESULT(CALLBACK***)(HWND, UINT, WPARAM, LPARAM))vcversion::AdjustOffset(0x00601727);
 		Patch(0x00601727, &pCustomWndProc);
 
-		if (!cAudioManagerHack::initialise() ||
-			!CFontHack::initialise() ||
-			//!CHudHack::initialise() ||
-			!CMovingThingsHack::initialise() ||
-			!CPagerHack::initialise() ||
-			!CRunningScriptHack::initialise() ||
-			!CRendererHack::initialise() ||
-			!CCranesHack::initialise() ||
-			!CPickupsHack::initialise() ||
-			!CPadHack::initialise() ||
-			!CGaragesHack::initialise() ||
-			!CWantedHack::initialise() ||
-			!CPacManPickupsHack::initialise() ||
-			!CProjectileInfoHack::initialise() ||
+		if (!CBridgeHack::initialise() ||
 			!CCameraHack::initialise() ||
-			!CFileLoaderHack::initialise() ||
-			!CPathFindHack::initialise() ||
-			!CBridgeHack::initialise() ||
-			!CStatsHack::initialise() ||
-			!CWeaponEffectsHack::initialise() ||
-			!CObjectHack::initialise() ||
-			!CRadarHack::initialise() ||
-			!CPedHack::initialise() ||
-			!CShinyTextsHack::initialise() ||
 			!CCarCtrlHack::initialise() ||
+			!CCranesHack::initialise() ||
+			!CFileLoaderHack::initialise() ||
+			!CFontHack::initialise() ||
 			!CGameLogicHack::initialise() ||
-			!CRecordDataForChaseHack::initialise() ||
+			!CGaragesHack::initialise() ||
 			!CMenuManagerHack::initialise() ||
+			!CMovingThingsHack::initialise() ||
+			!CObjectHack::initialise() ||
+			!CPacManPickupsHack::initialise() ||
+			!CPadHack::initialise() ||
+			!CPagerHack::initialise() ||
+			!CPathFindHack::initialise() ||
+			!CPedHack::initialise() ||
+			!CPickupsHack::initialise() ||
+			!CProjectileInfoHack::initialise() ||
+			!CRadarHack::initialise() ||
+			!CRecordDataForChaseHack::initialise() ||
+			!CRendererHack::initialise() ||
+			!CRunningScriptHack::initialise() ||
+			!CShinyTextsHack::initialise() ||
+			!CStatsHack::initialise() ||
+			!CVehicleHack::initialise() ||
+			!CWantedHack::initialise() ||
 			!CWaterLevelHack::initialise() ||
-			!CVehicleHack::initialise()) {
+			!CWeaponEffectsHack::initialise() ||
+		    !cAudioManagerHack::initialise()) {
 			VirtualProtect((LPVOID)(0x400000 + sectionheader->VirtualAddress), sectionheader->Misc.VirtualSize, OldProtect, &OldProtect);
 			return FALSE;
 		}

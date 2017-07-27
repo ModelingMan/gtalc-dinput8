@@ -1,5 +1,4 @@
 #include "CObjectHack.h"
-#include "vcversion.h"
 #include "SilentCall.h"
 #include "ModelIndices.h"
 

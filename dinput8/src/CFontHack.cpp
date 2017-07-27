@@ -96,9 +96,9 @@ bool CFontHack::initialise()
 
 void CFontHack::PrintPagerString(float posX, float posY, float scaleX, float scaleY, wchar_t *text)
 {
-	int len = wcslen(text);
+	size_t len = wcslen(text);
 
-	for (int i = 0; i < len; i++) {
+	for (size_t i = 0; i < len; i++) {
 		if (text[i] >= ' ' && text[i] <= 'z') {
 			int row = (text[i] - 32) / 16;
 			int col = (text[i] - 32) % 16;

@@ -18,6 +18,8 @@ class CVector
 {
 public:
 	float x, y, z;
+
+	void Normalise(void);
 };
 
 //########################################################################
@@ -194,12 +196,31 @@ public:
 static_assert(sizeof(CEntity) == 0x064, "Size of CEntity is not 0x064 bytes.");
 
 //########################################################################
+//# CCam
+//########################################################################
+
+class CCam
+{
+public:
+	unsigned char space1[0x1CC];
+};
+
+static_assert(sizeof(CCam) == 0x1CC, "Size of CCam is not 0x1CC bytes.");
+
+//########################################################################
 //# CCamera
 //########################################################################
 
 class CCamera : public CPlaceable
 {
 public:
+	unsigned char space1[0x0A4];
+	float unk;  // 0x0E4
+	unsigned char space2[0x0A0];
+	CCam ccam1; // 0x188
+	CCam ccam2; // 0x354
+	CCam ccam3; // 0x520
+
 	void SetMotionBlurAlpha(int);
 	void SetMotionBlur(int, int, int, int, int);
 	void CamShake(float, float, float, float);
@@ -287,19 +308,40 @@ public:
 //# CMessages
 //########################################################################
 
+struct BriefMessage
+{
+	wchar_t *message;
+	unsigned short flag;
+	unsigned char pad[2];
+	unsigned int duration;
+	unsigned int timeMessageAdded;
+	int tokenNumber1;
+	int tokenNumber2;
+	int tokenNumber3;
+	int tokenNumber4;
+	int tokenNumber5;
+	int tokenNumber6;
+	wchar_t *tokenString;
+};
+
+static_assert(sizeof(BriefMessage) == 0x2C, "Size of BriefMessage is not 0x2C bytes.");
+
 class CMessages
 {
 public:
 	static void AddMessageJumpQWithNumber(wchar_t *, unsigned int, unsigned short, int, int, int, int, int, int);
 	static void AddMessageWithNumber(wchar_t *, unsigned int, unsigned short, int, int, int, int, int, int);
+	static void InsertPlayerControlKeysInString(wchar_t *);
 	static void InsertStringInString(wchar_t *, wchar_t *);
 	static void InsertNumberInString(wchar_t *, int, int, int, int, int, int, wchar_t *);
-	static void AddToPreviousBriefArray(wchar_t *, int, int, int, int, int, int, unsigned short *);
+	static void AddToPreviousBriefArray(wchar_t *, int, int, int, int, int, int, wchar_t *);
 	static void AddBigMessageQ(wchar_t *, unsigned int, unsigned short);
 	static void AddBigMessage(wchar_t *, unsigned int, unsigned short);
 	static void AddMessageJumpQ(wchar_t *, unsigned int, unsigned short);
 	static void AddMessage(wchar_t *, unsigned int, unsigned short);
 	static void Display(void);
+
+	static BriefMessage *BriefMessages;
 };
 
 //########################################################################
@@ -524,10 +566,10 @@ public:
 	unsigned char  space7[0x0030];
 	struct Weapon
 	{
-		unsigned int type;  // 0x00
+		int          type;  // 0x00
 		unsigned int state; // 0x04
 		unsigned int clip;  // 0x08
-		unsigned int ammo;  // 0x0C
+		int          ammo;  // 0x0C
 		unsigned int unk1;  // 0x10
 		unsigned int unk2;  // 0x14
 	} weapons[10];                 // 0x408
@@ -789,7 +831,7 @@ class CTheScripts
 {
 public:
 	static IntroTextLine *IntroTextLines;
-	static unsigned char *ScriptSpace;
+	static char *ScriptSpace;
 	static CRunningScript **pActiveScripts;
 	static class CMissionCleanup &MissionCleanUp;
 	static unsigned short &NumberOfIntroTextLinesThisFrame;
@@ -1805,6 +1847,16 @@ public:
 //# CPlane
 //########################################################################
 
+struct PathNode
+{
+	CVector pos;
+	float distance;
+	bool isChanged;
+	unsigned char pad[3];
+};
+
+static_assert(sizeof(PathNode) == 0x14, "Size of PathNodes is not 0x14 bytes.");
+
 class CPlane : public CVehicle
 {
 public:
@@ -1818,6 +1870,7 @@ public:
 	unsigned char  space3;
 	// 0x2B4
 
+	static PathNode *LoadPath(char const *, int &, float &, bool);
 	CPlane(int, unsigned char);
 };
 

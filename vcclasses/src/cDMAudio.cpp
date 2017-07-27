@@ -22,7 +22,7 @@ __declspec(naked) void cDMAudio::PlayRadioAnnouncement(unsigned char)
 	__asm jmp g_PlayRadioAnnouncement;
 }
 
-__declspec(naked) void cDMAudio::PlayFrontEndSound(int id, int unk)
+__declspec(naked) void cDMAudio::PlayFrontEndSound(int, int)
 {
 	__asm jmp g_PlayFrontEndSound;
 }

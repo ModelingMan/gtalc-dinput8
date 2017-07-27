@@ -3,7 +3,6 @@
 #include "CFontHack.h"
 #include "Globals.h"
 #include "vcclasses.h"
-#include "vcversion.h"
 #include "SilentCall.h"
 
 using namespace VCGlobals;

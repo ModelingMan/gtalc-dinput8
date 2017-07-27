@@ -34,12 +34,12 @@ __declspec(naked) void CFont::DrawFonts()
 	__asm jmp g_DrawFonts;
 }
 
-__declspec(naked) void CFont::GetNumberOfLines(float x, float y, wchar_t *text)
+__declspec(naked) void CFont::GetNumberOfLines(float, float, wchar_t *)
 {
 	__asm jmp g_GetNumberOfLines;
 }
 
-__declspec(naked) void CFont::GetTextRect(CRect *rectOut, float x, float y, wchar_t *text)
+__declspec(naked) void CFont::GetTextRect(CRect *, float, float, wchar_t *)
 {
 	__asm jmp g_GetTextRect;
 }
@@ -49,12 +49,12 @@ __declspec(naked) void CFont::Initialise()
 	__asm jmp g_Initialise;
 }
 
-__declspec(naked) void CFont::PrintString(float x, float y, wchar_t *text)
+__declspec(naked) void CFont::PrintString(float, float, wchar_t *)
 {
 	__asm jmp g_PrintString;
 }
 
-__declspec(naked) void CFont::SetAlphaFade(float alpha)
+__declspec(naked) void CFont::SetAlphaFade(float)
 {
 	__asm jmp g_SetAlphaFade;
 }
@@ -69,7 +69,7 @@ __declspec(naked) void CFont::SetBackGroundOnlyTextOn()
 	__asm jmp g_SetBackGroundOnlyTextOn;
 }
 
-__declspec(naked) void CFont::SetBackgroundColor(CRGBA *color)
+__declspec(naked) void CFont::SetBackgroundColor(CRGBA *)
 {
 	__asm jmp g_SetBackgroundColor;
 }
@@ -94,27 +94,27 @@ __declspec(naked) void CFont::SetCentreOn()
 	__asm jmp g_SetCentreOn;
 }
 
-__declspec(naked) void CFont::SetCentreSize(float size)
+__declspec(naked) void CFont::SetCentreSize(float)
 {
 	__asm jmp g_SetCentreSize;
 }
 
-__declspec(naked) void CFont::SetColor(CRGBA *color)
+__declspec(naked) void CFont::SetColor(CRGBA *)
 {
 	__asm jmp g_SetColor;
 }
 
-__declspec(naked) void CFont::SetDropColor(CRGBA *color)
+__declspec(naked) void CFont::SetDropColor(CRGBA *)
 {
 	__asm jmp g_SetDropColor;
 }
 
-__declspec(naked) void CFont::SetDropShadowPosition(short pos)
+__declspec(naked) void CFont::SetDropShadowPosition(short)
 {
 	__asm jmp g_SetDropShadowPosition;
 }
 
-__declspec(naked) void CFont::SetFontStyle(short style)
+__declspec(naked) void CFont::SetFontStyle(short)
 {
 	__asm jmp g_SetFontStyle;
 }
@@ -149,17 +149,17 @@ __declspec(naked) void CFont::SetRightJustifyOn()
 	__asm jmp g_SetRightJustifyOn;
 }
 
-__declspec(naked) void CFont::SetRightJustifyWrap(float wrap)
+__declspec(naked) void CFont::SetRightJustifyWrap(float)
 {
 	__asm jmp g_SetRightJustifyWrap;
 }
 
-__declspec(naked) void CFont::SetScale(float x, float y)
+__declspec(naked) void CFont::SetScale(float, float)
 {
 	__asm jmp g_SetScale;
 }
 
-__declspec(naked) void CFont::SetWrapx(float wrapx)
+__declspec(naked) void CFont::SetWrapx(float)
 {
 	__asm jmp g_SetWrapx;
 }

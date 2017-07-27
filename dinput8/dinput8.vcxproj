@@ -150,6 +150,7 @@
     <ClCompile Include="src\CGameLogicHack.cpp" />
     <ClCompile Include="src\CGaragesHack.cpp" />
     <ClCompile Include="src\CMenuManagerHack.cpp" />
+    <ClCompile Include="src\CMessagesHack.cpp" />
     <ClCompile Include="src\CMovingThingsHack.cpp" />
     <ClCompile Include="src\CObjectHack.cpp" />
     <ClCompile Include="src\CPacManPickupsHack.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="include\CGameLogicHack.h" />
     <ClInclude Include="include\CGaragesHack.h" />
     <ClInclude Include="include\CMenuManagerHack.h" />
+    <ClInclude Include="include\CMessagesHack.h" />
     <ClInclude Include="include\CMovingThingsHack.h" />
     <ClInclude Include="include\CObjectHack.h" />
     <ClInclude Include="include\CPacManPickupsHack.h" />

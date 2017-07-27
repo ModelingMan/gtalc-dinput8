@@ -47,14 +47,11 @@ namespace VCGlobals
 	extern char *gString;
 	extern CPhoneInfo &gPhoneInfo;
 	extern wchar_t *gUString;
+	extern PathNode *&pPath4Nodes;
+	extern PathNode *&pPath3Nodes;
+	extern PathNode *&pPath2Nodes;
+	extern CPlane *&pDropOffCesna;
 	extern RwTexture *&gpShadowHeliTex;
-	struct PathNode
-	{
-		CVector pos;
-		float distance;
-		bool isChanged;
-		unsigned char pad[3];
-	};
 	extern PathNode *&pPathNodes;
 	extern RwTexture *&gpShadowExplosionTex;
 	extern int &NumPathNodes;
@@ -75,6 +72,7 @@ namespace VCGlobals
 	};
 	extern RsGlobalType &RsGlobal;
 	extern RwTexture *&gpShadowPedTex;
+	extern CPlane *&pDrugRunCesna;
 	extern RwTexture *&gpBloodPoolTex;
 	extern RwTexture *&gpShadowHeadLightsTex;
 	extern bool &gbFastTime;

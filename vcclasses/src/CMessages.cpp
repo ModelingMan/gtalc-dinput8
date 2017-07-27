@@ -1,8 +1,11 @@
 #include "vcclasses.h"
 #include "vcversion.h"
 
+BriefMessage *CMessages::BriefMessages = reinterpret_cast<BriefMessage *>(vcversion::AdjustOffset(0x009458D0));
+
 static unsigned long g_AddMessageJumpQWithNumber = vcversion::AdjustOffset(0x00583440);
 static unsigned long g_AddMessageWithNumber = vcversion::AdjustOffset(0x00583560);
+static unsigned long g_InsertPlayerControlKeysInString = vcversion::AdjustOffset(0x005836B0);
 static unsigned long g_InsertStringInString = vcversion::AdjustOffset(0x00583AF0);
 static unsigned long g_InsertNumberInString = vcversion::AdjustOffset(0x00583C80);
 static unsigned long g_AddToPreviousBriefArray = vcversion::AdjustOffset(0x00583DE0);
@@ -22,6 +25,11 @@ __declspec(naked) void CMessages::AddMessageWithNumber(wchar_t *, unsigned int, 
 	__asm jmp g_AddMessageWithNumber;
 }
 
+__declspec(naked) void CMessages::InsertPlayerControlKeysInString(wchar_t *)
+{
+	__asm jmp g_InsertPlayerControlKeysInString;
+}
+
 __declspec(naked) void CMessages::InsertStringInString(wchar_t *, wchar_t *)
 {
 	__asm jmp g_InsertStringInString;
@@ -32,7 +40,7 @@ __declspec(naked) void CMessages::InsertNumberInString(wchar_t *, int, int, int,
 	__asm jmp g_InsertNumberInString;
 }
 
-__declspec(naked) void CMessages::AddToPreviousBriefArray(wchar_t *, int, int, int, int, int, int, unsigned short *)
+__declspec(naked) void CMessages::AddToPreviousBriefArray(wchar_t *, int, int, int, int, int, int, wchar_t *)
 {
 	__asm jmp g_AddToPreviousBriefArray;
 }
