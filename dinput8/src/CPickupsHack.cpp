@@ -45,9 +45,9 @@ static unsigned short AmmoForWeapon[38] =
 	200,
 	125, // uzi
 	120,
-	150, // ak47
-	300, // m16
 	120,
+	300, // m16
+	150, // ak47
 	25, // sniper
 	28,
 	5, // rocket
@@ -87,9 +87,9 @@ static unsigned short AmmoForWeapon_OnStreet[38] =
 	100,
 	25, // uzi
 	60,
-	30, // ak47
-	60, // m16
 	60,
+	60, // m16
+	30, // ak47
 	5, // sniper
 	14,
 	1, // rocket
@@ -129,9 +129,9 @@ static short CostOfWeapon[40] =
 	800,
 	800, // uzi
 	650,
-	3000, // ak47
+	1200,
 	5000, // m16
-	400,
+	3000, // ak47
 	10000, // sniper
 	10000,
 	25000, // rocket
@@ -180,9 +180,9 @@ struct PickupColor
 	{ 0xFF, 0xE3, 0x4F, 0, 1.0 },
 	{ 0x80, 0x80, 0xFF, 0, 1.0 }, // uzi
 	{ 0xFF, 0xE3, 0x4F, 0, 1.0 },
-	{ 0xFF,    0, 0xFF, 0, 1.0 }, // ak47
+	{ 0xFF, 0xE3, 0x4F, 0, 1.0 },
 	{    0, 0xFF, 0xFF, 0, 1.0 }, // m16
-	{ 0xFE, 0x89,    0, 0, 1.0 },
+	{ 0xFF,    0, 0xFF, 0, 1.0 }, // ak47
 	{ 0xFF, 0x80,    0, 0, 1.0 }, // sniper
 	{ 0xF9, 0x83, 0xD7, 0, 1.0 },
 	{    0, 0xFF, 0x80, 0, 1.0 }, // rocket
@@ -239,6 +239,9 @@ bool CPickupsHack::initialise()
 
 	// package corona
 	Patch<unsigned char>(0x0043EF12, 7);
+
+	// package sound
+	Patch<unsigned char>(0x00441368, 85);
 
 	// weapon corona
 	Patch<unsigned char>(0x0043F68C, 0);

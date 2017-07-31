@@ -3,9 +3,9 @@
 #include <cmath>
 #include "CBridgeHack.h"
 #include "Globals.h"
-#include "vcversion.h"
-#include "SilentCall.h"
 #include "ModelIndices.h"
+#include "SilentCall.h"
+#include "vcversion.h"
 
 #define REPORT_AMBULANCE     234
 #define REPORT_VAN           235
@@ -102,6 +102,8 @@ static unsigned char scriptObjectCellBeatingCounter;
 #define BRIDGE_WARNING 495
 #define BRIDGE_ONE_SHOT 132
 #define BRIDGE_MOTOR 319
+
+#define WEAPON_SFX_AK47 90
 
 const struct PoliceRadioZone
 {
@@ -352,6 +354,8 @@ static unsigned long quietHelicopter2EndJump = vcversion::AdjustOffset(0x005F466
 static unsigned long quietHelicopter3EndJump = vcversion::AdjustOffset(0x005F4B27);
 static unsigned long quietHelicopter4EndJump = vcversion::AdjustOffset(0x005F5018);
 
+static const float akAudioDistance = 6400.0f;
+
 bool cAudioManagerHack::initialise()
 {
 	InjectHook(0x005DBCA7, &ProcessFrontEndHackProxy, PATCH_JUMP);
@@ -444,6 +448,13 @@ bool cAudioManagerHack::initialise()
 	InjectHook(0x005F4664, cAudioManagerHack::QuietHelicopter2, PATCH_JUMP);
 	InjectHook(0x005F4B20, cAudioManagerHack::QuietHelicopter3, PATCH_JUMP);
 	InjectHook(0x005F5011, cAudioManagerHack::QuietHelicopter4, PATCH_JUMP);
+
+	// ak47 changes
+	Patch<unsigned int>(0x005EC4C1, WEAPON_SFX_AK47);
+	Patch<unsigned char>(0x005EC4D6, WEAPON_SFX_AK47);
+	Patch<float>(0x005EC514, 80.0);
+	Patch<const float *>(0x005EC526, &akAudioDistance);
+	Patch<unsigned char>(0x005EC546, 0x46);
 
 	return true;
 }

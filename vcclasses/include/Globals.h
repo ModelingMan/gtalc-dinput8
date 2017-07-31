@@ -77,6 +77,8 @@ namespace VCGlobals
 	extern RwTexture *&gpShadowHeadLightsTex;
 	extern bool &gbFastTime;
 
+	char *GetLevelSplashScreen(int);
+	CSprite2d *LoadSplash(char const *);
 	void MatchModelString(char *, unsigned short);
 	void InitModelIndices(void);
 	void VehicleCheat(int);

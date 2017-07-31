@@ -51,6 +51,8 @@ namespace VCGlobals
 	RwTexture *&gpShadowHeadLightsTex = *reinterpret_cast<RwTexture **>(vcversion::AdjustOffset(0x00A1073C));
 	bool &gbFastTime = *reinterpret_cast<bool *>(vcversion::AdjustOffset(0x00A10B87));
 
+	static unsigned long g_GetLevelSplashScreen = vcversion::AdjustOffset(0x004A6D90);
+	static unsigned long g_LoadSplash = vcversion::AdjustOffset(0x004A6E80);
 	static unsigned long g_MatchModelString = vcversion::AdjustOffset(0x004A75DD);
 	static unsigned long g_InitModelIndices = vcversion::AdjustOffset(0x004A8C64);
 	static unsigned long g_VehicleCheat = vcversion::AdjustOffset(0x004AE8F0);
@@ -69,6 +71,16 @@ namespace VCGlobals
 	static unsigned long g_sprintf = vcversion::AdjustOffset(0x00648C10);
 	static unsigned long g_rand = vcversion::AdjustOffset(0x006499F0);
 	static unsigned long g_sscanf = vcversion::AdjustOffset(0x0064A730);
+
+	__declspec(naked) char *GetLevelSplashScreen(int)
+	{
+		__asm jmp g_GetLevelSplashScreen;
+	}
+
+	__declspec(naked) CSprite2d *LoadSplash(char const *)
+	{
+		__asm jmp g_LoadSplash;
+	}
 
 	__declspec(naked) void MatchModelString(char *, unsigned short)
 	{

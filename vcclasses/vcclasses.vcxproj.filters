@@ -265,5 +265,8 @@
     <ClCompile Include="src\CVector.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CRGBA.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

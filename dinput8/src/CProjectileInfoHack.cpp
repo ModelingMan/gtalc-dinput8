@@ -1,7 +1,8 @@
 #include "CProjectileInfoHack.h"
-#include "vcversion.h"
 #include "Globals.h"
 #include "SilentCall.h"
+#include "WeaponTypes.h"
+#include "vcversion.h"
 
 using ::VCGlobals::gaProjectileInfo;
 
@@ -22,8 +23,8 @@ bool CProjectileInfoHack::IsProjectileInRange(float x1, float y1, float z1, floa
 	for (int i = 0; i < MAX_PROJECTILES; i++) {
 		if (CObject *object = ms_apProjectile[i]) {
 			if (gaProjectileInfo[i].doesProjectileExist &&
-				gaProjectileInfo[i].weaponType >= 12 &&
-				gaProjectileInfo[i].weaponType <= 16 &&
+				gaProjectileInfo[i].weaponType >= WEAPONTYPE_GRENADE &&
+				gaProjectileInfo[i].weaponType <= WEAPONTYPE_ROCKET &&
 				object->GetX() >= x1 && object->GetX() <= x2 &&
 				object->GetY() >= y1 && object->GetY() <= y2 &&
 				object->GetZ() >= z1 && object->GetZ() <= z2) {

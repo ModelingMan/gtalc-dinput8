@@ -73,6 +73,7 @@
     <ClCompile Include="src\CRenderer.cpp" />
     <ClCompile Include="src\CReplay.cpp" />
     <ClCompile Include="src\CRestart.cpp" />
+    <ClCompile Include="src\CRGBA.cpp" />
     <ClCompile Include="src\CRunningScript.cpp" />
     <ClCompile Include="src\cSampleManager.cpp" />
     <ClCompile Include="src\CScriptPaths.cpp" />

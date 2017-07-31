@@ -1,8 +1,9 @@
 #include "CPadHack.h"
 #include "Globals.h"
-#include "vcversion.h"
-#include "SilentCall.h"
 #include "ModelIndices.h"
+#include "SilentCall.h"
+#include "WeaponTypes.h"
+#include "vcversion.h"
 
 static void UpdatePedCount();
 static unsigned long updatePedCountEndJump = vcversion::AdjustOffset(0x0053B6ED);
@@ -60,7 +61,7 @@ void CPadHack::WeaponCheat()
 	CStreaming::RequestModel(274, 1); // colt45
 	CStreaming::RequestModel(282, 1); // uzi
 	CStreaming::RequestModel(279, 1); // shotgun
-	CStreaming::RequestModel(284, 1); // ak47
+	CStreaming::RequestModel(276, 1); // ak47
 	CStreaming::RequestModel(280, 1); // m16
 	CStreaming::RequestModel(285, 1); // sniper
 	CStreaming::RequestModel(287, 1); // rocket
@@ -68,22 +69,22 @@ void CPadHack::WeaponCheat()
 	CStreaming::RequestModel(272, 1); // molotov
 	CStreaming::RequestModel(270, 1); // grenade
 	CStreaming::LoadAllRequestedModels(false);
-	VCGlobals::FindPlayerPed()->GiveWeapon(6, 1, true);    // bat
-	VCGlobals::FindPlayerPed()->GiveWeapon(17, 100, true); // colt45
-	VCGlobals::FindPlayerPed()->GiveWeapon(23, 100, true); // uzi
-	VCGlobals::FindPlayerPed()->GiveWeapon(21, 20, true);  // shotgun
-	VCGlobals::FindPlayerPed()->GiveWeapon(25, 200, true); // ak47
-	VCGlobals::FindPlayerPed()->GiveWeapon(26, 200, true); // m16
-	VCGlobals::FindPlayerPed()->GiveWeapon(28, 5, true);   // sniper
-	VCGlobals::FindPlayerPed()->GiveWeapon(30, 5, true);   // rocket
-	VCGlobals::FindPlayerPed()->GiveWeapon(31, 200, true); // flame
-	VCGlobals::FindPlayerPed()->GiveWeapon(15, 5, true);   // molotov
-	VCGlobals::FindPlayerPed()->GiveWeapon(12, 5, true);   // grenade
+	VCGlobals::FindPlayerPed()->GiveWeapon(WEAPONTYPE_BASEBALLBAT, 1, true);     // bat
+	VCGlobals::FindPlayerPed()->GiveWeapon(WEAPONTYPE_PISTOL, 100, true);        // colt45
+	VCGlobals::FindPlayerPed()->GiveWeapon(WEAPONTYPE_UZI, 100, true);           // uzi
+	VCGlobals::FindPlayerPed()->GiveWeapon(WEAPONTYPE_STUBBY_SHOTGUN, 20, true); // shotgun
+	VCGlobals::FindPlayerPed()->GiveWeapon(WEAPONTYPE_CHAINGUN, 200, true);      // ak47
+	VCGlobals::FindPlayerPed()->GiveWeapon(WEAPONTYPE_M16, 200, true);           // m16
+	VCGlobals::FindPlayerPed()->GiveWeapon(WEAPONTYPE_SNIPERRIFLE, 5, true);     // sniper
+	VCGlobals::FindPlayerPed()->GiveWeapon(WEAPONTYPE_ROCKETLAUNCHER, 5, true);  // rocket
+	VCGlobals::FindPlayerPed()->GiveWeapon(WEAPONTYPE_FLAMETHROWER, 200, true);  // flame
+	VCGlobals::FindPlayerPed()->GiveWeapon(WEAPONTYPE_MOLOTOV, 5, true);         // molotov
+	VCGlobals::FindPlayerPed()->GiveWeapon(WEAPONTYPE_GRENADE, 5, true);         // grenade
 	CStreaming::SetModelIsDeletable(264);
 	CStreaming::SetModelIsDeletable(274);
 	CStreaming::SetModelIsDeletable(282);
 	CStreaming::SetModelIsDeletable(279);
-	CStreaming::SetModelIsDeletable(284);
+	CStreaming::SetModelIsDeletable(276);
 	CStreaming::SetModelIsDeletable(280);
 	CStreaming::SetModelIsDeletable(285);
 	CStreaming::SetModelIsDeletable(287);

@@ -1,10 +1,10 @@
 #include "vcclasses.h"
 #include "vcversion.h"
 
-CPool<CObject, CCutsceneHead> *&CPools::ms_pObjectPool = *(CPool<CObject, CCutsceneHead> **)vcversion::AdjustOffset(0x0094DBE0);
-CPool<CBuilding> *&CPools::ms_pBuildingPool = *(CPool<CBuilding> **)vcversion::AdjustOffset(0x0097F240);
-CPool<CPed, CPlayerPed> *&CPools::ms_pPedPool = *(CPool<CPed, CPlayerPed> **)vcversion::AdjustOffset(0x0097F2AC);
-CPool<CVehicle, CAutomobile> *&CPools::ms_pVehiclePool = *(CPool<CVehicle, CAutomobile> **)vcversion::AdjustOffset(0x00A0FDE4);
+CPool<CObject, CCutsceneHead> *&CPools::ms_pObjectPool = *reinterpret_cast<CPool<CObject, CCutsceneHead> **>(vcversion::AdjustOffset(0x0094DBE0));
+CPool<CBuilding> *&CPools::ms_pBuildingPool = *reinterpret_cast<CPool<CBuilding> **>(vcversion::AdjustOffset(0x0097F240));
+CPool<CPed, CPlayerPed> *&CPools::ms_pPedPool = *reinterpret_cast<CPool<CPed, CPlayerPed> **>(vcversion::AdjustOffset(0x0097F2AC));
+CPool<CVehicle, CAutomobile> *&CPools::ms_pVehiclePool = *reinterpret_cast<CPool<CVehicle, CAutomobile> **>(vcversion::AdjustOffset(0x00A0FDE4));
 
 static unsigned long g_CVehicle_CAutomobile_GetIndex = vcversion::AdjustOffset(0x0042C4B0);
 static unsigned long g_CObject_CCutsceneHead_GetIndex = vcversion::AdjustOffset(0x00434A10);

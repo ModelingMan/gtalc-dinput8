@@ -44,8 +44,7 @@ public:
 	unsigned char b;
 	unsigned char a;
 
-	CRGBA() : r(0), g(0), b(0), a(0){}
-	CRGBA(unsigned char r, unsigned char g, unsigned char b, unsigned char a) : r(r), g(g), b(b), a(a){}
+	CRGBA(unsigned char, unsigned char, unsigned char, unsigned char);
 };
 
 //########################################################################
@@ -542,6 +541,21 @@ public:
 static_assert(sizeof(CAutomobile) == 0x5DC, "Size of CAutomobile is not 0x5DC bytes.");
 
 //########################################################################
+//# CWeapon
+//########################################################################
+
+class CWeapon
+{
+public:
+	int          type;  // 0x00
+	unsigned int state; // 0x04
+	unsigned int clip;  // 0x08
+	int          ammo;  // 0x0C
+	unsigned int unk1;  // 0x10
+	unsigned int unk2;  // 0x14
+};
+
+//########################################################################
 //# CPed
 //########################################################################
 
@@ -564,15 +578,7 @@ public:
 	unsigned char  space6[0x0027];
 	unsigned int   pedType;        // 0x3D4
 	unsigned char  space7[0x0030];
-	struct Weapon
-	{
-		int          type;  // 0x00
-		unsigned int state; // 0x04
-		unsigned int clip;  // 0x08
-		int          ammo;  // 0x0C
-		unsigned int unk1;  // 0x10
-		unsigned int unk2;  // 0x14
-	} weapons[10];                 // 0x408
+	CWeapon        weapons[10];    // 0x408
 	unsigned char  space8[0x0010];
 	CPed           *targetPed;     // 0x508
 	unsigned char  space9[0x0018];

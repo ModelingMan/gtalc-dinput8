@@ -9,4 +9,5 @@ public:
 
 	static void ServiceTalkingHackProxy();
 	void ServiceTalkingHack();
+	static void InflictDamageHack();
 };

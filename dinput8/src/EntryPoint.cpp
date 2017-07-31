@@ -30,10 +30,12 @@
 #include "CWantedHack.h"
 #include "CWaterLevelHack.h"
 #include "CWeaponEffectsHack.h"
+#include "CWeaponHack.h"
 #include "Globals.h"
 #include "ModelIndices.h"
 #include "Offset.h"
 #include "SilentCall.h"
+#include "WeaponTypes.h"
 #include "cAudioManagerHack.h"
 #include "vcversion.h"
 
@@ -332,6 +334,12 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		// do not clear messages
 		memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x00582C70)), 0x90, 5);
 
+		// ak47 changes
+		memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x005349DD)), 0x90, 5);
+		memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x0055762E)), 0x90, 5);
+		Patch<unsigned char>(0x004ED820, WEAPONTYPE_CHAINGUN);
+		Patch<unsigned char>(0x004ED827, WEAPONTYPE_CHAINGUN);
+
 		// center mouse (SilentPatch)
 		InjectHook(0x004A5E45, &ResetMousePos);
 		OldWndProc = *(LRESULT(CALLBACK***)(HWND, UINT, WPARAM, LPARAM))vcversion::AdjustOffset(0x00601727);
@@ -365,7 +373,8 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			!CWantedHack::initialise() ||
 			!CWaterLevelHack::initialise() ||
 			!CWeaponEffectsHack::initialise() ||
-		    !cAudioManagerHack::initialise()) {
+			!CWeaponHack::initialise() ||
+			!cAudioManagerHack::initialise()) {
 			VirtualProtect((LPVOID)(0x400000 + sectionheader->VirtualAddress), sectionheader->Misc.VirtualSize, OldProtect, &OldProtect);
 			return FALSE;
 		}
