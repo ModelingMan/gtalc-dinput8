@@ -279,10 +279,10 @@ void CPacManPickupsHack::GenerateOnePMPickUp(CVector pos)
 void CPacManPickupsHack::Render(void)
 {
 	if (bPMActive) {
-		RwRenderStateSet(8, 0);
-		RwRenderStateSet(12, 1);
-		RwRenderStateSet(10, 2);
-		RwRenderStateSet(11, 2);
+		RwRenderStateSet(8, 0);  // rwRENDERSTATEZWRITEENABLE
+		RwRenderStateSet(12, 1); // rwRENDERSTATEVERTEXALPHAENABLE
+		RwRenderStateSet(10, 2); // rwRENDERSTATESRCBLEND
+		RwRenderStateSet(11, 2); // rwRENDERSTATEDESTBLEND
 		RwRenderStateSet(1, (int)**(void ***)vcversion::AdjustOffset(0x00695550));
 		for (int i = 0; i < MAX_PACMAN_PICKUP; i++) {
 			if (aPMPickups[i].state) {
@@ -302,10 +302,10 @@ void CPacManPickupsHack::Render(void)
 				}
 			}
 		}
-		//RwRenderStateSet(10, 5);
-		//RwRenderStateSet(11, 6);
-		//RwRenderStateSet(8, 1);
-		//RwRenderStateSet(12, 0);
+		//RwRenderStateSet(10, 5); // rwRENDERSTATESRCBLEND
+		//RwRenderStateSet(11, 6); // rwRENDERSTATEDESTBLEND
+		//RwRenderStateSet(8, 1);  // rwRENDERSTATEZWRITEENABLE
+		//RwRenderStateSet(12, 0); // rwRENDERSTATEVERTEXALPHAENABLE
 	}
 	CallRender();
 }

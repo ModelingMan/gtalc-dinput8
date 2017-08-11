@@ -26,6 +26,7 @@
 #include "CRunningScriptHack.h"
 #include "CShinyTextsHack.h"
 #include "CStatsHack.h"
+#include "CTheZonesHack.h"
 #include "CVehicleHack.h"
 #include "CWantedHack.h"
 #include "CWaterLevelHack.h"
@@ -369,6 +370,7 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			!CRunningScriptHack::initialise() ||
 			!CShinyTextsHack::initialise() ||
 			!CStatsHack::initialise() ||
+			!CTheZonesHack::initialise() ||
 			!CVehicleHack::initialise() ||
 			!CWantedHack::initialise() ||
 			!CWaterLevelHack::initialise() ||

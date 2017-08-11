@@ -1,6 +1,7 @@
 #include "renderware.h"
 #include "vcversion.h"
 
+static unsigned long g_RpAnimBlendClumpGetFirstAssociation = vcversion::AdjustOffset(0x00402E20);
 static unsigned long g_RsMouseSetPos = vcversion::AdjustOffset(0x006030C0);
 static unsigned long g_RpClumpForAllAtomics = vcversion::AdjustOffset(0x00640D00);
 static unsigned long g_RwMatrixDestroy = vcversion::AdjustOffset(0x006445F0);
@@ -16,6 +17,11 @@ static unsigned long g_RwIm3DTransform = vcversion::AdjustOffset(0x0065AE90);
 static unsigned long g_RwIm3DEnd = vcversion::AdjustOffset(0x0065AF60);
 static unsigned long g_RwIm3DRenderIndexedPrimitive = vcversion::AdjustOffset(0x0065AF90);
 static unsigned long g_RwIm3DRenderLine = vcversion::AdjustOffset(0x0065B0F0);
+
+__declspec(naked) unsigned long RpAnimBlendClumpGetFirstAssociation(unsigned long)
+{
+	__asm jmp g_RpAnimBlendClumpGetFirstAssociation;
+}
 
 __declspec(naked) void RsMouseSetPos(RwV2d *)
 {

@@ -9,6 +9,7 @@ unsigned short &CTheZones::TotalNumberOfNavigationZones = *reinterpret_cast<unsi
 
 static unsigned long g_InitialiseAudioZoneArray = vcversion::AdjustOffset(0x004DC430);
 static unsigned long g_GetLevelFromPosition = vcversion::AdjustOffset(0x004DD300);
+static unsigned long g_Init = vcversion::AdjustOffset(0x004DDFA0);
 
 __declspec(naked) void CTheZones::InitialiseAudioZoneArray(void)
 {
@@ -18,4 +19,9 @@ __declspec(naked) void CTheZones::InitialiseAudioZoneArray(void)
 __declspec(naked) int CTheZones::GetLevelFromPosition(CVector const *)
 {
 	__asm jmp g_GetLevelFromPosition;
+}
+
+__declspec(naked) void CTheZones::Init(void)
+{
+	__asm jmp g_Init;
 }

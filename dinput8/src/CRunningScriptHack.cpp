@@ -503,7 +503,7 @@ bool CRunningScriptHack::_03A0_is_crane_lifting_car()
 bool CRunningScriptHack::_03C2_is_phone_displaying_message()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
-	this->UpdateCompareFlag((unsigned long)&VCGlobals::gPhoneInfo.phones[ScriptParams[0].int32] == *(unsigned long *)vcversion::AdjustOffset(0x007030E8));
+	this->UpdateCompareFlag(&VCGlobals::gPhoneInfo.phones[ScriptParams[0].int32] == *(CPhoneInfo::CPhone **)vcversion::AdjustOffset(0x007030E8));
 	return 0;
 }
 

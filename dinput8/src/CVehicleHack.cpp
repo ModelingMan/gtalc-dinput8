@@ -1,9 +1,10 @@
 #include "CVehicleHack.h"
-#include "vcversion.h"
-#include "Globals.h"
-#include "SilentCall.h"
-#include "ModelIndices.h"
+#include <Windows.h>
 #include "CPlayerInfoHack.h"
+#include "Globals.h"
+#include "ModelIndices.h"
+#include "SilentCall.h"
+#include "vcversion.h"
 
 // PreRenderHack
 static unsigned long preRenderMatchAmbulan = vcversion::AdjustOffset(0x0058BE77);
@@ -24,7 +25,9 @@ bool CVehicleHack::initialise()
 	InjectHook(0x0058BE2F, &CVehicleHack::AutomobilePreRenderHack, PATCH_JUMP); // CAutomobile::PreRender
 
 	// open top car
-	InjectHook(0x0059C7E0, &CVehicleHack::IsOpenTopCarHackProxy, PATCH_JUMP); // CAutomobile::IsOpenTopCar
+	if (GetPrivateProfileInt("Misc", "OpenTopCar", 1, "./gta-lc.ini")) {
+		InjectHook(0x0059C7E0, &CVehicleHack::IsOpenTopCarHackProxy, PATCH_JUMP); // CAutomobile::IsOpenTopCar
+	}
 
 	// taxi cash
 	Patch<unsigned char>(0x005B8AB6, 25); // CVehicle::SetDriver

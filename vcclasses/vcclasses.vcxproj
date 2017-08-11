@@ -59,6 +59,7 @@
     <ClCompile Include="src\CPathFind.cpp" />
     <ClCompile Include="src\CPathInfoForObject.cpp" />
     <ClCompile Include="src\CPed.cpp" />
+    <ClCompile Include="src\CPedType.cpp" />
     <ClCompile Include="src\CPhoneInfo.cpp" />
     <ClCompile Include="src\CPhysical.cpp" />
     <ClCompile Include="src\CPickups.cpp" />
@@ -97,6 +98,7 @@
     <ClCompile Include="src\CVehicleModelInfo.cpp" />
     <ClCompile Include="src\CWanted.cpp" />
     <ClCompile Include="src\CWaterLevel.cpp" />
+    <ClCompile Include="src\CWeapon.cpp" />
     <ClCompile Include="src\CWeaponInfo.cpp" />
     <ClCompile Include="src\CWeather.cpp" />
     <ClCompile Include="src\CWorld.cpp" />
@@ -161,7 +163,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>

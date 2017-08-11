@@ -553,6 +553,8 @@ public:
 	int          ammo;  // 0x0C
 	unsigned int unk1;  // 0x10
 	unsigned int unk2;  // 0x14
+
+	static bool &bPhotographHasBeenTaken;
 };
 
 //########################################################################
@@ -1383,6 +1385,7 @@ public:
 
 	static void InitialiseAudioZoneArray(void);
 	static int GetLevelFromPosition(CVector const *);
+	static void Init(void);
 };
 
 //########################################################################
@@ -1890,6 +1893,25 @@ class CReplay
 {
 public:
 	static unsigned char &Mode;
+};
+
+//########################################################################
+//# CPedType
+//########################################################################
+
+struct PedType
+{
+	unsigned char space1[0x18];
+	unsigned int threat;
+	unsigned char space2[4];
+};
+
+static_assert(sizeof(PedType) == 0x20, "Size of PedType is not 0x20 bytes.");
+
+class CPedType
+{
+public:
+	static PedType **ms_apPedType;
 };
 
 #endif

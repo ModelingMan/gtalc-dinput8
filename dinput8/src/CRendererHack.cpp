@@ -57,12 +57,12 @@ void __declspec(naked) CRendererHack::RenderEverythingBarRoadsHackProxy(void)
 void CRendererHack::RenderEverythingBarRoadsHack(int model)
 {
 	if (buildings && buildings[model]) {
-		RwRenderStateSet(0x14, 1);
+		RwRenderStateSet(0x14, 1); // rwRENDERSTATESTENCILFAIL
 		isStateOne = true;
 		return;
 	}
 	if (isStateOne) {
-		RwRenderStateSet(0x14, 2);
+		RwRenderStateSet(0x14, 2); // rwRENDERSTATESTENCILFAIL
 		isStateOne = false;
 	}
 }
