@@ -42,6 +42,8 @@ struct RwMatrix
 	unsigned int pad3;
 };
 
+typedef RwMatrix RwMatrixTag;
+
 struct RxObjSpace3DVertex
 {
 	RwV3d        objVertex;

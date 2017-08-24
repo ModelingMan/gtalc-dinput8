@@ -6,8 +6,9 @@ class CGaragesHack : public CGarages
 {
 public:
 	static bool initialise();
-	static bool HasImportExportGarageCollectedThisCar(short index, int slot); // CGarages::HasImportExportGarageCollectedThisCar
+	static bool HasImportExportGarageCollectedThisCar(short, int); // CGarages::HasImportExportGarageCollectedThisCar
 	static void InitHack();
+	static bool IsModelIndexADoorHack(unsigned int);
 };
 
 class CGarageHack : public CGarage

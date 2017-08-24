@@ -1,8 +1,7 @@
 #include "CPickupsHack.h"
-#include <Windows.h>
 #include "Globals.h"
-#include "vcversion.h"
 #include "SilentCall.h"
+#include "vcversion.h"
 
 using namespace VCGlobals;
 
@@ -234,8 +233,8 @@ bool CPickupsHack::initialise()
 	}
 
 	// do not halve ammo of dropped weapon
-	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x0043DFED)), 0x90, 11);
-	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x0043E0F6)), 0x90, 11);
+	Nop(0x0043DFED, 11);
+	Nop(0x0043E0F6, 11);
 
 	// package corona
 	Patch<unsigned char>(0x0043EF12, 7);

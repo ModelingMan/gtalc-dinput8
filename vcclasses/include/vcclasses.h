@@ -555,6 +555,8 @@ public:
 	unsigned int unk2;  // 0x14
 
 	static bool &bPhotographHasBeenTaken;
+
+	void Shutdown(void);
 };
 
 //########################################################################
@@ -565,41 +567,46 @@ class CPed : public CPhysical
 {
 public:
 	// 0x120
-	unsigned char  space1[0x002E];
-	unsigned char  field_14E;      // 0x14E
-	unsigned char  space2[0x00F5];
-	unsigned int   state;          // 0x244
-	unsigned char  space3[0x0004];
-	unsigned int   moveState;      // 0x24C
-	unsigned char  space4[0x0104];
-	float          health;         // 0x354
-	float          armour;         // 0x358
-	unsigned char  space5[0x004C];
-	CVehicle       *vehicle;       // 0x3A8
-	unsigned char  isInAnyVehicle; // 0x3AC
-	unsigned char  space6[0x0027];
-	unsigned int   pedType;        // 0x3D4
-	unsigned char  space7[0x0030];
-	CWeapon        weapons[10];    // 0x408
-	unsigned char  space8[0x0010];
-	CPed           *targetPed;     // 0x508
-	unsigned char  space9[0x0018];
-	void           *activeFire;    // 0x524
-	unsigned char  space10[0x00B2];
-	unsigned short talkType;       // 0x5DA
-	unsigned char  space11[0x0004];
-	unsigned int   phrase;         // 0x5E0
-	unsigned char  space12[0x0010];
-	CWanted        *wanted;        // 0x5F4
-	unsigned char  space13[0x0040];
-	unsigned char  drunkenness;    // 0x638
-	unsigned char  space14[0x009F];
+	unsigned char  space1[0x02E];
+	unsigned char  field_14E;        // 0x14E
+	unsigned char  field_14F;        // 0x14F
+	unsigned char  space2[0x0F4];
+	unsigned int   state;            // 0x244
+	unsigned char  space3[0x004];
+	unsigned int   moveState;        // 0x24C
+	unsigned char  space4[0x104];
+	float          health;           // 0x354
+	float          armour;           // 0x358
+	unsigned char  space5[0x04C];
+	CVehicle       *vehicle;         // 0x3A8
+	unsigned char  isInAnyVehicle;   // 0x3AC
+	unsigned char  space6[0x027];
+	unsigned int   pedType;          // 0x3D4
+	unsigned char  space7[0x030];
+	CWeapon        weapons[10];      // 0x408
+	unsigned char  space8[0x00C];
+	unsigned char  activeWeaponSlot; // 0x504
+	unsigned char  space9[0x003];
+	CPed           *targetPed;       // 0x508
+	unsigned char  space10[0x018];
+	void           *activeFire;      // 0x524
+	unsigned char  space11[0x0B2];
+	unsigned short talkType;         // 0x5DA
+	unsigned char  space12[0x004];
+	unsigned int   phrase;           // 0x5E0
+	unsigned char  space13[0x010];
+	CWanted        *wanted;          // 0x5F4
+	unsigned char  space14[0x040];
+	unsigned char  drunkenness;      // 0x638
+	unsigned char  space15[0x09F];
 	// 0x6D8
 
 	void ClearFollowPath(void);
 	void SetAmmo(int, unsigned int);
 	void GrantAmmo(int, unsigned int);
+	void SetCurrentWeapon(int);
 	void GiveWeapon(int, unsigned int, bool);
+	void RemoveWeaponModel(int);
 	bool IsPedInControl(void);
 	void AddInCarAnims(CVehicle *, bool);
 	void SetObjective(unsigned int, void *);

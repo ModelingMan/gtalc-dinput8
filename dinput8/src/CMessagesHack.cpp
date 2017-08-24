@@ -1,4 +1,13 @@
 #include "CMessagesHack.h"
+#include "SilentCall.h"
+
+bool CMessagesHack::initialise()
+{
+	// do not clear messages
+	Nop(0x00582C70, 5); // CMessages::ClearAllMessagesDisplayedByGame
+
+	return true;
+}
 
 void CMessagesHack::AddMessageSoon(wchar_t *message, unsigned int duration, unsigned short flag)
 {

@@ -105,12 +105,12 @@ static unsigned char scriptObjectCellBeatingCounter;
 
 #define WEAPON_SFX_AK47 90
 
-const struct PoliceRadioZone
+struct ZoneSfx
 {
 	char zone[8];
 	int sfx;
 	int padding;
-} policeRadioZones[TOTAL_AUDIO_ZONES] =
+} presetZoneSfx[TOTAL_AUDIO_ZONES] =
 {
 	{ "HOSPI_2", REPORT_ROCKFORD,       0 },
 	{ "CONSTRU", REPORT_FORTSTAUNTON,   0 },
@@ -336,7 +336,7 @@ const struct PedSfxDelay
 	{ 0, 0, 0, 0 }
 };
 
-static short audioZones[TOTAL_AUDIO_ZONES] = {};
+static short AudioZoneArray[TOTAL_AUDIO_ZONES] = {};
 static bool isPlayerSfxTommy;
 
 // ProcessFrontEndHackProxy
@@ -362,9 +362,9 @@ bool cAudioManagerHack::initialise()
 
 	// car alarms
 	if (!GetPrivateProfileInt("Misc", "UseVCCarAlarm", 0, "./gta-lc.ini")) {
-		Patch<unsigned int>(0x005F02F9, 0);
-		Patch<unsigned long>(0x005F0457, vcversion::AdjustOffset(0x006AD1B0));
-		Patch<unsigned long>(0x005F046D, vcversion::AdjustOffset(0x006AD1B4));
+		Patch<unsigned int>(0x005F02F7 + 2, 0);                                    // cAudioManager::ProcessVehicleSirenOrAlarm
+		Patch<unsigned long>(0x005F0454 + 3, vcversion::AdjustOffset(0x006AD1B0)); // cAudioManager::ProcessVehicleSirenOrAlarm
+		Patch<unsigned long>(0x005F046A + 3, vcversion::AdjustOffset(0x006AD1B4)); // cAudioManager::ProcessVehicleSirenOrAlarm
 	}
 
 	// suspect last seen report, requires modification of sfx
@@ -374,26 +374,26 @@ bool cAudioManagerHack::initialise()
 	Patch<unsigned char>(0x005FDBFF, TOTAL_AUDIO_ZONES);
 	Patch<unsigned char>(0x005FDC4A, TOTAL_AUDIO_ZONES);
 	Patch<unsigned char>(0x005FDC4F, TOTAL_AUDIO_ZONES);
-	Patch<unsigned long>(0x005FDC27, (unsigned long)&policeRadioZones + 4);
-	Patch<unsigned long>(0x005FDC2F, (unsigned long)&policeRadioZones);
-	Patch<unsigned long>(0x005FDC3D, (unsigned long)&policeRadioZones + 8);
+	Patch<void *>(0x005FDC25 + 2, &presetZoneSfx->zone[4]);
+	Patch<void *>(0x005FDC2D + 2, &presetZoneSfx->zone[0]);
+	Patch<void *>(0x005FDC3B + 2, &presetZoneSfx->sfx);
 
 	// play suspect last seen
 	Patch<unsigned char>(0x005FCF39, TOTAL_AUDIO_ZONES);
 	Patch<unsigned char>(0x005FCF87, TOTAL_AUDIO_ZONES);
 	Patch<unsigned char>(0x005FCF8C, TOTAL_AUDIO_ZONES);
-	Patch<unsigned long>(0x005FCF5F, (unsigned long)&policeRadioZones + 4);
-	Patch<unsigned long>(0x005FCF67, (unsigned long)&policeRadioZones);
-	Patch<unsigned long>(0x005FCF75, (unsigned long)&policeRadioZones + 8);
+	Patch<void *>(0x005FCF5D + 2, &presetZoneSfx->zone[4]);
+	Patch<void *>(0x005FCF65 + 2, &presetZoneSfx->zone[0]);
+	Patch<void *>(0x005FCF73 + 2, &presetZoneSfx->sfx);
 
 	// use custom audio zone array
-	Patch<void *>(0x004DC392, &audioZones); // CTheZones::FindAudioZone
-	Patch<void *>(0x005FCF49, &audioZones); // cAudioManager::PlaySuspectLastSeen
-	Patch<void *>(0x005FDC0F, &audioZones); // cAudioManager::SetupCrimeReport
+	Patch<void *>(0x004DC38E + 4, &AudioZoneArray); // CTheZones::FindAudioZone
+	Patch<void *>(0x005FCF45 + 4, &AudioZoneArray); // cAudioManager::PlaySuspectLastSeen
+	Patch<void *>(0x005FDC0B + 4, &AudioZoneArray); // cAudioManager::SetupCrimeReport
 	Patch<unsigned char>(0x004DC475, TOTAL_AUDIO_ZONES);
-	Patch<void *>(0x004DC48A, &audioZones);
+	Patch<void *>(0x004DC486 + 4, &AudioZoneArray); // CTheZones::InitialiseAudioZoneArray
 	Patch<unsigned char>(0x004DC4C4, TOTAL_AUDIO_ZONES);
-	Patch<void *>(0x004DC4D9, &audioZones);
+	Patch<void *>(0x004DC4D5 + 4, &AudioZoneArray); // CTheZones::InitialiseAudioZoneArray
 
 	// crane audio
 	auto function = &cAudioManagerHack::ProcessCraneAndBridge;

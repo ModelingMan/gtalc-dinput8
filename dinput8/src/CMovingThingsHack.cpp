@@ -1,12 +1,10 @@
 #include "CMovingThingsHack.h"
-#include <Windows.h>
 #include <cmath>
 #include "CDigitalClockHack.h"
 #include "CScrollBarHack.h"
 #include "CTowerClockHack.h"
 #include "Globals.h"
 #include "vcclasses.h"
-#include "vcversion.h"
 #include "SilentCall.h"
 #include "Offset.h"
 
@@ -19,20 +17,20 @@ CDigitalClockHack aDigitalClocks[3];
 bool CMovingThingsHack::initialise()
 {
 	InjectHook(0x0054FBFD, &Init);
-	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x0054FC02)), 0x90, 97);
+	Nop(0x0054FC02, 97);
 
 	InjectHook(0x0054F4E6, &Update);
-	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x0054F4EB)), 0x90, 46);
+	Nop(0x0054F4EB, 46);
 
 	InjectHook(0x0054F25B, &Render);
-	*reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x0054F260)) = 0xEED9EED9;
-	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x0054F264)), 0x90, 36);
+	Patch<unsigned long>(0x0054F260, 0xEED9EED9);
+	Nop(0x0054F264, 36);
 
 	// VC's CScrollBar::Init function takes in the full position of where the scrollbar ends, whereas III only takes the offset from the start
 	// These nops make the CScrollBar::Init function behave like in III
-	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x0054EC00)), 0x90, 10);
-	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x0054EC0F)), 0x90, 8);
-	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x0054EC1C)), 0x90, 8);
+	Nop(0x0054EC00, 10);
+	Nop(0x0054EC0F, 8);
+	Nop(0x0054EC1C, 8);
 
 	// undo nop
 	InjectHook(0x004A6556, vcversion::AdjustOffset(0x0054F250), PATCH_CALL); // render

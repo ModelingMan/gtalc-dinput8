@@ -14,6 +14,7 @@
 #include "CSpecialParticleStuffHack.h"
 #include "CStatsHack.h"
 #include "Globals.h"
+#include "ModelIndices.h"
 #include "SilentCall.h"
 #include "vcclasses.h"
 #include "vcversion.h"
@@ -72,6 +73,8 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 		return this->_01EE_activate_crane();
 	case 0x1EF:
 		return this->_01EF_deactivate_crane();
+	case 0x218:
+		return this->_0218_print_with_number_big_q();
 	case 0x24C:
 		return this->_024C_set_phone_message();
 	case 0x250:
@@ -92,6 +95,8 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 		return this->_0351_is_nasty_game();
 	case 0x356:
 		return this->_0356_is_explosion_in_area();
+	case 0x35B:
+		return this->_035B_create_floating_package();
 	case 0x368:
 		return this->_0368_activate_military_crane();
 	case 0x374:
@@ -358,6 +363,17 @@ bool CRunningScriptHack::_01EF_deactivate_crane()
 	return 0;
 }
 
+bool CRunningScriptHack::_0218_print_with_number_big_q()
+{
+	char text[8];
+	VCGlobals::strncpy(text, &CTheScripts::ScriptSpace[this->m_dwScriptIP], 8);
+	this->m_dwScriptIP += 8;
+	this->CollectParameters(&this->m_dwScriptIP, 3);
+	CMessages::InsertNumberInString(VCGlobals::TheText.Get(text), ScriptParams[0].int32, -1, -1, -1, -1, -1, VCGlobals::gUString);
+	CMessages::AddBigMessageQ(VCGlobals::gUString, ScriptParams[1].uint32, static_cast<unsigned short>(ScriptParams[2].int32 - 1));
+	return 0;
+}
+
 bool CRunningScriptHack::_024C_set_phone_message()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 1);
@@ -453,6 +469,18 @@ bool CRunningScriptHack::_0356_is_explosion_in_area()
 {
 	this->CollectParameters(&this->m_dwScriptIP, 7);
 	this->UpdateCompareFlag(CExplosionHack::TestForExplosionInArea(ScriptParams[0].int32, ScriptParams[1].float32, ScriptParams[4].float32, ScriptParams[2].float32, ScriptParams[5].float32, ScriptParams[3].float32, ScriptParams[6].float32));
+	return 0;
+}
+
+bool CRunningScriptHack::_035B_create_floating_package()
+{
+	this->CollectParameters(&this->m_dwScriptIP, 3);
+	CVector pos = { ScriptParams[0].float32, ScriptParams[1].float32, ScriptParams[2].float32 };
+	if (pos.z <= -100.0) {
+		pos.z = CWorld::FindGroundZForCoord(pos.x, pos.y) + 0.5f;
+	}
+	ScriptParams[0].int32 = CPickups::GenerateNewOne(pos, ModelIndices::MI_FLOATPACKAGE1, 14, 0, 0, 0, 0);
+	this->StoreParameters(&this->m_dwScriptIP, 1);
 	return 0;
 }
 

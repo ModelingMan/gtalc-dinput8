@@ -11,6 +11,7 @@
 #include "CGameLogicHack.h"
 #include "CGaragesHack.h"
 #include "CMenuManagerHack.h"
+#include "CMessagesHack.h"
 #include "CMovingThingsHack.h"
 #include "CObjectHack.h"
 #include "CPacManPickupsHack.h"
@@ -198,18 +199,18 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		}
 
 		// A/B drive fix (SilentPatch)
-		*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x005D7941)) = 'A';
-		*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x005D7B04)) = 'A';
+		Patch<unsigned int>(0x005D7940 + 1, 'A');
+		Patch<unsigned int>(0x005D7B00 + 4, 'A');
 
 		// disable DirectPlay dependency (SilentPatch)
-		*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x00601CA0)) = 0xB8;
-		*reinterpret_cast<unsigned int *>(vcversion::AdjustOffset(0x00601CA1)) = 0x900;
+		Patch<unsigned char>(0x00601CA0, 0xB8);
+		Patch<unsigned int>(0x00601CA0 + 1, 0x900);
 
 		// disable video memory check (SilentPatch)
-		*reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x00601E26)) = 0xEB;
+		Patch<unsigned char>(0x00601E26, 0xEB);
 
 		// window name
-		*reinterpret_cast<const char **>(vcversion::AdjustOffset(0x00602D36)) = windowName;
+		Patch<const char *>(0x00602D30 + 6, windowName);
 
 		// debug modes
 		{
@@ -237,7 +238,7 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 
 		// detonator weapon switch
 		Patch<unsigned char>(0x005D49C7, 0xD); // CWeapon::Update
-		memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x005345ED)), 0x90, 9); // CPlayerPed::ProcessWeaponSwitch
+		Nop(0x005345ED, 9); // CPlayerPed::ProcessWeaponSwitch
 
 		// 0410 (Purple Nines) fix
 		InjectHook(0x004EEED1, &GangsInitialise, PATCH_JUMP); // CGangs::Initialise
@@ -278,7 +279,7 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		InjectHook(0x004E94E0, &CivilianAI, PATCH_JUMP); // CCivilianPed::CivilianAI
 
 		// script paths allow replay
-		memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x00624EDB)), 0x90, 9);
+		Nop(0x00624EDB, 9); // CReplay::Update
 
 		// prioritize specific ped sfx
 		InjectHook(0x005DDB6C, &PedCommentsProcess, PATCH_JUMP); // cPedComments::Process
@@ -310,7 +311,7 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			Patch<unsigned int>(0x004A69D4 + 1, 0x782474FF); // push [esp+78h]
 			Patch<unsigned char>(0x004A6DF7, 4);
 			Patch<void *>(0x004A6E09, &splashIndex);
-			memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x004A5C49)), 0x90, 5);
+			Nop(0x004A5C49, 5);
 		}
 
 		if (!GetPrivateProfileInt("Misc", "UseRCBaron", 0, "./gta-lc.ini")) {
@@ -332,12 +333,9 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 		Patch<unsigned char>(0x0051C278, 0xEB);
 		Patch<unsigned char>(0x00525BC5, 0xEB);
 
-		// do not clear messages
-		memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x00582C70)), 0x90, 5);
-
 		// ak47 changes
-		memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x005349DD)), 0x90, 5);
-		memset(reinterpret_cast<void *>(vcversion::AdjustOffset(0x0055762E)), 0x90, 5);
+		Nop(0x005349DD, 5);
+		Nop(0x0055762E, 5);
 		Patch<unsigned char>(0x004ED820, WEAPONTYPE_CHAINGUN);
 		Patch<unsigned char>(0x004ED827, WEAPONTYPE_CHAINGUN);
 
@@ -355,6 +353,7 @@ BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)
 			!CGameLogicHack::initialise() ||
 			!CGaragesHack::initialise() ||
 			!CMenuManagerHack::initialise() ||
+			!CMessagesHack::initialise() ||
 			!CMovingThingsHack::initialise() ||
 			!CObjectHack::initialise() ||
 			!CPacManPickupsHack::initialise() ||

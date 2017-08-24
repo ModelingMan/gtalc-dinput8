@@ -24,6 +24,7 @@ public:
 	bool _01E6_print_with_number_soon();
 	bool _01EE_activate_crane();
 	bool _01EF_deactivate_crane();
+	bool _0218_print_with_number_big_q();
 	bool _024C_set_phone_message();
 	bool _0250_draw_light();
 	bool _02A1_message_wait();
@@ -34,6 +35,7 @@ public:
 	bool _02FE_print_with_2_numbers_soon();
 	bool _0351_is_nasty_game();
 	bool _0356_is_explosion_in_area();
+	bool _035B_create_floating_package();
 	bool _0368_activate_military_crane();
 	bool _0374_set_motion_blur();
 	bool _037F_give_player_detonator();

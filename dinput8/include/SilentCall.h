@@ -1,3 +1,4 @@
+#include <Windows.h>
 #include "vcversion.h"
 
 // based on SilentPatch
@@ -26,4 +27,9 @@ inline void ReadCall(unsigned long address, T &function)
 {
 	address = vcversion::AdjustOffset(address);
 	function = T(*(unsigned long *)(address + 1) + address + 5);
+}
+
+inline void Nop(unsigned long address, size_t n)
+{
+	memset(reinterpret_cast<void *>(vcversion::AdjustOffset(address)), 0x90, n);
 }

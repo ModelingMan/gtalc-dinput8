@@ -1,9 +1,9 @@
 #include "CGaragesHack.h"
 #include <cmath>
 #include "Globals.h"
-#include "vcversion.h"
-#include "SilentCall.h"
 #include "ModelIndices.h"
+#include "SilentCall.h"
+#include "vcversion.h"
 
 #define SPRAY_SHOP_COST 1000
 #define BOMB_SHOP_COST 1000
@@ -97,6 +97,10 @@ bool CGaragesHack::initialise()
 	InjectHook(0x00431599, &CGarageHack::SprayShopCostHack2, PATCH_JUMP);
 	Patch<void *>(0x004315AA, &sprayShopCost);
 	playerMoney = &CWorld::Players->m_Money;
+
+	// garage door model
+	InjectHook(0x0042C500, &CGaragesHack::IsModelIndexADoorHack, PATCH_JUMP);
+
 	return true;
 }
 
@@ -449,4 +453,41 @@ void __declspec(naked) CGarageHack::SprayShopCostHack2()
 		test eax, eax
 		jmp sprayShopCost2EndJump
 	}
+}
+
+bool CGaragesHack::IsModelIndexADoorHack(unsigned int model)
+{
+	return model == ModelIndices::MI_GARAGEDOOR1 ||
+		model == ModelIndices::MI_GARAGEDOOR2 ||
+		model == ModelIndices::MI_GARAGEDOOR3 ||
+		model == ModelIndices::MI_GARAGEDOOR4 ||
+		model == ModelIndices::MI_GARAGEDOOR5 ||
+		model == ModelIndices::MI_GARAGEDOOR6 ||
+		model == ModelIndices::MI_GARAGEDOOR7 ||
+		model == ModelIndices::MI_GARAGEDOOR9 ||
+		model == ModelIndices::MI_GARAGEDOOR10 ||
+		model == ModelIndices::MI_GARAGEDOOR11 ||
+		model == ModelIndices::MI_GARAGEDOOR12 ||
+		model == ModelIndices::MI_GARAGEDOOR13 ||
+		model == ModelIndices::MI_GARAGEDOOR14 ||
+		model == ModelIndices::MI_GARAGEDOOR15 ||
+		model == ModelIndices::MI_GARAGEDOOR16 ||
+		model == ModelIndices::MI_GARAGEDOOR17 ||
+		model == ModelIndices::MI_GARAGEDOOR18 ||
+		model == ModelIndices::MI_GARAGEDOOR19 ||
+		model == ModelIndices::MI_GARAGEDOOR20 ||
+		model == ModelIndices::MI_GARAGEDOOR21 ||
+		model == ModelIndices::MI_GARAGEDOOR22 ||
+		model == ModelIndices::MI_GARAGEDOOR23 ||
+		model == ModelIndices::MI_GARAGEDOOR24 ||
+		model == ModelIndices::MI_GARAGEDOOR25 ||
+		model == ModelIndices::MI_GARAGEDOOR26 ||
+		model == ModelIndices::MI_GARAGEDOOR27 ||
+		model == ModelIndices::MI_GARAGEDOOR28 ||
+		model == ModelIndices::MI_GARAGEDOOR29 ||
+		model == ModelIndices::MI_GARAGEDOOR30 ||
+		model == ModelIndices::MI_GARAGEDOOR31 ||
+		model == ModelIndices::MI_GARAGEDOOR32 ||
+		model == ModelIndices::MI_CRUSHERBODY ||
+		model == ModelIndices::MI_CRUSHERLID;
 }
