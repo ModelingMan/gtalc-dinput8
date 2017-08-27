@@ -16,6 +16,7 @@
 #include "Globals.h"
 #include "ModelIndices.h"
 #include "SilentCall.h"
+#include "WeaponTypes.h"
 #include "vcclasses.h"
 #include "vcversion.h"
 
@@ -514,8 +515,8 @@ bool CRunningScriptHack::_037F_give_player_detonator()
 {
 	CStreaming::RequestModel(291, 1);
 	CStreaming::LoadAllRequestedModels(false);
-	VCGlobals::FindPlayerPed()->GiveWeapon(34, 1, 1);
-	int slot = *(int *)(CWeaponInfo::GetWeaponInfo(34) + 0x60);
+	VCGlobals::FindPlayerPed()->GiveWeapon(WEAPONTYPE_DETONATOR, 1, true);
+	int slot = VCGlobals::FindPlayerPed()->GetWeaponSlot(WEAPONTYPE_DETONATOR);
 	VCGlobals::FindPlayerPed()->weapons[slot].state = 0;
 	return 0;
 }

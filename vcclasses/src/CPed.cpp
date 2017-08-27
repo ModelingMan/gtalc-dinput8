@@ -5,6 +5,7 @@ static unsigned long g_ClearFollowPath = vcversion::AdjustOffset(0x004F7920);
 static unsigned long g_SetAmmo = vcversion::AdjustOffset(0x004FF780);
 static unsigned long g_GrantAmmo = vcversion::AdjustOffset(0x004FF840);
 static unsigned long g_SetCurrentWeapon = vcversion::AdjustOffset(0x004FF900);
+static unsigned long g_GetWeaponSlot = vcversion::AdjustOffset(0x004FFA10);
 static unsigned long g_GiveWeapon = vcversion::AdjustOffset(0x004FFA30);
 static unsigned long g_RemoveWeaponModel = vcversion::AdjustOffset(0x004FFD80);
 static unsigned long g_IsPedInControl = vcversion::AdjustOffset(0x00501950);
@@ -30,6 +31,11 @@ __declspec(naked) void CPed::GrantAmmo(int, unsigned int)
 __declspec(naked) void CPed::SetCurrentWeapon(int)
 {
 	__asm jmp g_SetCurrentWeapon;
+}
+
+__declspec(naked) int CPed::GetWeaponSlot(int)
+{
+	__asm jmp g_GetWeaponSlot;
 }
 
 __declspec(naked) void CPed::GiveWeapon(int, unsigned int, bool)

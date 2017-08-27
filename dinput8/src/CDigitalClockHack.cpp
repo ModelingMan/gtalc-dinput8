@@ -58,12 +58,12 @@ void CDigitalClockHack::Render()
 	{
 		CSprite::InitSpriteBuffer();
 		char *text = FindDigitalClockMessage();
-		
+
 		v5 = (static_cast<float>(rand() % 256 + 768) * this->m_fScale) / 1024.0f;
 		unsigned char r = static_cast<unsigned char>(static_cast<float>(this->m_20) * v5);
 		unsigned char g = static_cast<unsigned char>(static_cast<float>(this->m_21) * v5);
 		unsigned char b = static_cast<unsigned char>(static_cast<float>(this->m_22) * v5);
-		
+
 		//RwRenderStateSet(rwRENDERSTATEZWRITEENABLE, 0);
 		//RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, (void *)1);
 		//RwRenderStateSet(rwRENDERSTATESRCBLEND, (void *)2);
@@ -78,7 +78,7 @@ void CDigitalClockHack::Render()
 		RwRenderStateSet(9, 2);
 		RwRenderStateSet(1, (int)**(void ***)vcversion::AdjustOffset(0x00695538));//dword_5FAF44->raster);
 		RwRenderStateSet(6, 1);
-		
+
 		int v20 = 0;
 		for (int i = 0; i < 5; i++, v20 += 8) {
 			v17 = 5 * (text[i] - ' ');

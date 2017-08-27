@@ -52,7 +52,7 @@ bool CMovingThingsHack::initialise()
 void CMovingThingsHack::Init()
 {
 	float x, y, z;
-	
+
 	x = 228.3f + OFFSETX;
 	y = -669.0f;
 	z = 39.0f + OFFSETZ;

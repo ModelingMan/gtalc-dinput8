@@ -448,7 +448,7 @@ void __declspec(naked) PedCommentsProcess()
 		cmp eax, 7
 		jbe match
 		add eax, 861
-		
+
 		// s_guard
 		sub eax, 2668
 		cmp eax, 12

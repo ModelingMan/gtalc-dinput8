@@ -15,6 +15,8 @@ public:
 	static void WantedLevelDownCheat();
 	static void TankCheat();
 	static void BlowUpCarsCheat();
+	static void MayhemCheat();
+	static void EverybodyAttacksPlayerCheat();
 	static void WeaponsForAllCheat();
 	static void FastTimeCheat();
 	static void SlowTimeCheat();
@@ -27,6 +29,4 @@ public:
 	static void OnlyRenderWheelsCheat();
 	static void ChittyChittyBangBangCheat();
 	static void StrongGripCheat();
-	static void VehicleCheat(); // custom cheat
-	static void VehicleReverseCheat(); // custom cheat
 };

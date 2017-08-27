@@ -28,7 +28,7 @@ void CTowerClockHack::Render()
 		unsigned char alpha = static_cast<unsigned char>(255 * this->m_fScale);
 		float hourHand = ((CClock::ms_nGameClockHours * 60 + CClock::ms_nGameClockMinutes) / 720.0f) * 6.2831855f;
 		float minuteHand = ((CClock::ms_nGameClockMinutes * 60 + CClock::ms_nGameClockSeconds) / 3600.0f) * 6.2831855f;
-		
+
 		//RwRenderStateSet(rwRENDERSTATEZWRITEENABLE, (void *)1);
 		//RwRenderStateSet(rwRENDERSTATEZTESTENABLE, (void *)1);
 		//RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, (void *)1);
@@ -43,12 +43,12 @@ void CTowerClockHack::Render()
 		RwRenderStateSet(11, 6);
 		RwRenderStateSet(9, 2);
 		RwRenderStateSet(1, 0);
-		
+
 		verts[0].color = this->m_22 | (this->m_21 << 8) | (this->m_20 << 16) | alpha << 24;
 		verts[1].color = this->m_22 | (this->m_21 << 8) | (this->m_20 << 16) | alpha << 24;
 		verts[2].color = this->m_22 | (this->m_21 << 8) | (this->m_20 << 16) | alpha << 24;
 		verts[3].color = this->m_22 | (this->m_21 << 8) | (this->m_20 << 16) | alpha << 24;
-		
+
 		verts[0].objVertex = { this->m_Position.x, this->m_Position.y, this->m_Position.z };
 		verts[1].objVertex.x = this->m_0C * this->m_1C * sin(minuteHand) + this->m_Position.x;
 		verts[1].objVertex.y = this->m_10 * this->m_1C * sin(minuteHand) + this->m_Position.y;

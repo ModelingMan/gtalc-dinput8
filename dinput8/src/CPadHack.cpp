@@ -7,7 +7,21 @@
 
 static void UpdatePedCount();
 static unsigned long updatePedCountEndJump = vcversion::AdjustOffset(0x0053B6ED);
-static char weaponsForAllArr[12] = { 6, 17, 23, 21, 25, 26, 28, 30, 31, 15, 12, 0 };
+static char weaponsForAllArr[12] =
+{
+	WEAPONTYPE_BASEBALLBAT,
+	WEAPONTYPE_PISTOL,
+	WEAPONTYPE_UZI,
+	WEAPONTYPE_STUBBY_SHOTGUN,
+	WEAPONTYPE_CHAINGUN,
+	WEAPONTYPE_M16,
+	WEAPONTYPE_SNIPERRIFLE,
+	WEAPONTYPE_ROCKETLAUNCHER,
+	WEAPONTYPE_FLAMETHROWER,
+	WEAPONTYPE_MOLOTOV,
+	WEAPONTYPE_GRENADE,
+	WEAPONTYPE_UNARMED
+};
 
 static char specialCharacters[10][8] =
 {
@@ -153,6 +167,22 @@ void CPadHack::BlowUpCarsCheat()
 	}
 }
 
+void CPadHack::MayhemCheat()
+{
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT1"), true, false);
+	for (int i = 4; i < 21; i++) {
+		CPedType::ms_apPedType[i]->threat = 0xFFFFF;
+	}
+}
+
+void CPadHack::EverybodyAttacksPlayerCheat()
+{
+	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT1"), true, false);
+	for (int i = 4; i < 21; i++) {
+		CPedType::ms_apPedType[i]->threat |= 1;
+	}
+}
+
 void CPadHack::WeaponsForAllCheat()
 {
 	CHud::SetHelpMessage(VCGlobals::TheText.Get("CHEAT1"), true, false);
@@ -247,11 +277,11 @@ void CPadHack::AddToCheatStringHack(char key)
 	} else if (VCGlobals::strncmp("GNABGNABGNAB", KeyBoardCheatString, 12) == 0) {
 		BlowUpCarsCheat();
 	} else if (VCGlobals::strncmp("PUGNISSERDEKILI", KeyBoardCheatString, 15) == 0) {
-		// ChangePlayerCheat
+		((void(__cdecl *)(void))vcversion::AdjustOffset(0x004AE7B0))();
 	} else if (VCGlobals::strncmp("DAAAMGNIOGLLASTI", KeyBoardCheatString, 16) == 0) {
-		// MayhemCheat
+		MayhemCheat();
 	} else if (VCGlobals::strncmp("EMSEKILYDOBON", KeyBoardCheatString, 13) == 0) {
-		// EverybodyAttacksPlayerCheat
+		EverybodyAttacksPlayerCheat();
 	} else if (VCGlobals::strncmp("LLAROFSNOPAEW", KeyBoardCheatString, 13) == 0) {
 		WeaponsForAllCheat();
 	} else if (VCGlobals::strncmp("UOYNEHWSEILFEMIT", KeyBoardCheatString, 16) == 0) {

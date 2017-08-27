@@ -585,7 +585,7 @@ public:
 	unsigned char  space7[0x030];
 	CWeapon        weapons[10];      // 0x408
 	unsigned char  space8[0x00C];
-	unsigned char  activeWeaponSlot; // 0x504
+	char           activeWeaponSlot; // 0x504
 	unsigned char  space9[0x003];
 	CPed           *targetPed;       // 0x508
 	unsigned char  space10[0x018];
@@ -605,6 +605,7 @@ public:
 	void SetAmmo(int, unsigned int);
 	void GrantAmmo(int, unsigned int);
 	void SetCurrentWeapon(int);
+	int GetWeaponSlot(int);
 	void GiveWeapon(int, unsigned int, bool);
 	void RemoveWeaponModel(int);
 	bool IsPedInControl(void);
@@ -1185,25 +1186,23 @@ public:
 class CExplosion
 {
 public:
-	struct Explosion
-	{
-		int           type;                   // 0x00
-		CVector       position;               // 0x04
-		float         radius;                 // 0x10
-		float         expansionRate;          // 0x14
-		CEntity       *owner;                 // 0x18
-		CEntity       *victim;                // 0x1C
-		unsigned int  timeExpire;             // 0x20
-		unsigned char counter;                // 0x24
-		unsigned char isCounterInitialised;   // 0x25
-		unsigned char noVehicleJetExplosion;  // 0x26
-		unsigned char hasSound;               // 0x27
-		unsigned int  timeVehicleExplosion;   // 0x28
-		unsigned int  timeExtendEffect;       // 0x2C
-		float         force;                  // 0x30
-		float         molotovGroundZ;         // 0x34
-	};
-	static Explosion *explosions;
+	int           type;                   // 0x00
+	CVector       position;               // 0x04
+	float         radius;                 // 0x10
+	float         expansionRate;          // 0x14
+	CEntity       *owner;                 // 0x18
+	CEntity       *victim;                // 0x1C
+	unsigned int  timeExpire;             // 0x20
+	unsigned char counter;                // 0x24
+	unsigned char isCounterInitialised;   // 0x25
+	unsigned char noVehicleJetExplosion;  // 0x26
+	unsigned char hasSound;               // 0x27
+	unsigned int  timeVehicleExplosion;   // 0x28
+	unsigned int  timeExtendEffect;       // 0x2C
+	float         force;                  // 0x30
+	float         molotovGroundZ;         // 0x34
+
+	static CExplosion *explosions;
 };
 
 //########################################################################
@@ -1316,8 +1315,34 @@ public:
 class CWeaponInfo
 {
 public:
-	static unsigned long GetWeaponInfo(int);
+	int     fireType;       // 0x00
+	float   range;          // 0x04
+	int     firingRate;     // 0x08
+	int     reload;         // 0x0C
+	int     ammo;           // 0x10
+	int     damage;         // 0x14
+	float   speed;          // 0x18
+	float   radius;         // 0x1C
+	float   lifeSpan;       // 0x20
+	float   spread;         // 0x24
+	CVector offsetVector;   // 0x28
+	int     anim;           // 0x34
+	float   animLoopStart;  // 0x38
+	float   animLoopEnd;    // 0x3C
+	float   animFirePoint;  // 0x40
+	float   anim2LoopStart; // 0x44
+	float   anim2LoopEnd;   // 0x48
+	float   anim2FirePoint; // 0x4C
+	float   breakoutAnim;   // 0x50
+	int     modelId;        // 0x54
+	int     model2Id;       // 0x58
+	int     flags;          // 0x5C
+	int     slot;           // 0x60
+
+	static CWeaponInfo *GetWeaponInfo(int);
 };
+
+static_assert(sizeof(CWeaponInfo) == 0x64, "Size of CWeaponInfo is not 0x64 bytes.");
 
 //########################################################################
 //# CMissionCleanup
@@ -1679,6 +1704,7 @@ public:
 	static bool IsBikeModel(int);
 	static bool IsCarModel(int);
 	static bool IsBoatModel(int);
+	static unsigned long GetModelInfo(char const *, int *);
 };
 
 //########################################################################
@@ -1906,19 +1932,16 @@ public:
 //# CPedType
 //########################################################################
 
-struct PedType
-{
-	unsigned char space1[0x18];
-	unsigned int threat;
-	unsigned char space2[4];
-};
-
-static_assert(sizeof(PedType) == 0x20, "Size of PedType is not 0x20 bytes.");
-
 class CPedType
 {
 public:
-	static PedType **ms_apPedType;
+	unsigned char space1[0x18];
+	unsigned int threat;
+	unsigned char space2[4];
+
+	static CPedType **ms_apPedType;
 };
+
+static_assert(sizeof(CPedType) == 0x20, "Size of CPedType is not 0x20 bytes.");
 
 #endif
