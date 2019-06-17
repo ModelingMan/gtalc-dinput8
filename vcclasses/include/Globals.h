@@ -4,12 +4,32 @@
 
 namespace VCGlobals
 {
-	extern CCamera& TheCamera;
-	extern CText& TheText;
-	extern cDMAudio& DMAudio;
-	extern cSampleManager& SampleManager;
+	extern CCamera &TheCamera;
+	extern CText &TheText;
+	extern cDMAudio &DMAudio;
+	extern cSampleManager &SampleManager;
+	extern cAudioManager &AudioManager;
+	extern CPathFind &ThePaths;
 
 	extern char *ScrollCharSet;
+	extern char *String_DigitalClock;
+
+	extern unsigned short &MI_SINGLESTREETLIGHTS1;
+	extern unsigned short &MI_DOUBLESTREETLIGHTS;
+	extern unsigned short &MI_CARMINE;
+	extern unsigned short &MI_NAUTICALMINE;
+	extern unsigned short &MI_PICKUP_ADRENALINE;
+	extern unsigned short &MI_PICKUP_BODYARMOUR;
+	extern unsigned short &MI_PICKUP_INFO;
+	extern unsigned short &MI_PICKUP_HEALTH;
+	extern unsigned short &MI_PICKUP_BONUS;
+	extern unsigned short &MI_PICKUP_BRIBE;
+	extern unsigned short &MI_PICKUP_KILLFRENZY;
+	extern unsigned short &MI_PICKUP_CAMERA;
+	extern unsigned short &MI_LITTLEHA_POLICE;
+	extern unsigned short &MI_LIGHTBEAM;
+	extern short *WeatherTypesList;
+	extern RwTexture *&gpWhiteTexture;
 
 	union ScriptParameter
 	{
@@ -22,21 +42,59 @@ namespace VCGlobals
 		float float32;
 	};
 	extern ScriptParameter *ScriptParams;
-
+	extern CProjectileInfo *gaProjectileInfo;
+	extern wchar_t *gUString2;
+	extern char *gString;
+	extern CPhoneInfo &gPhoneInfo;
+	extern wchar_t *gUString;
+	extern PathNode *&pPath4Nodes;
+	extern PathNode *&pPath3Nodes;
+	extern PathNode *&pPath2Nodes;
+	extern CPlane *&pDropOffCesna;
+	extern RwTexture *&gpShadowHeliTex;
+	extern PathNode *&pPathNodes;
+	extern RwTexture *&gpShadowExplosionTex;
+	extern int &NumPathNodes;
+	extern RwTexture *&gpShadowCarTex;
 	struct RsGlobalType
 	{
 		const char *appName;
-		int maximumWidth;
-		int maximumHeight;
+		int windowWidth;
+		int windowHeight;
 		int currentWidth;
 		int currentHeight;
-		int  quit;
+		unsigned int frameLimit;
+		int quit;
 		void *ps;
-		int keyboard[3];
-		int mouse[3];
-		int pad[3];
+		void *keyboard;
+		void *mouse;
+		void *pad;
 	};
-	extern RsGlobalType& Globals;
+	extern RsGlobalType &RsGlobal;
+	extern RwTexture *&gpShadowPedTex;
+	extern CPlane *&pDrugRunCesna;
+	extern RwTexture *&gpBloodPoolTex;
+	extern RwTexture *&gpShadowHeadLightsTex;
+	extern bool &gbFastTime;
 
-	CPlayerPed *FindPlayerPed();
+	char *GetLevelSplashScreen(int);
+	CSprite2d *LoadSplash(char const *);
+	void MatchModelString(char *, unsigned short);
+	void InitModelIndices(void);
+	void VehicleCheat(int);
+	float FindPlayerHeading(void);
+	CPlayerPed *FindPlayerPed(void);
+	CVehicle *FindPlayerVehicle(void);
+	CVector *FindPlayerCoors(CVector *);
+	CVector *CrossProduct(CVector *, CVector const &, CVector const &);
+	void UnicodeStrCpy(wchar_t *, wchar_t const *);
+	void DefinedState(void);
+	char *strcpy(char *dest, const char *src);
+	char *strncpy(char *dest, const char *src, size_t n);
+	char *strcat(char *dest, const char *src);
+	int strcmp(const char *s1, const char *s2);
+	int strncmp(const char *s1, const char *s2, size_t n);
+	int sprintf(char *s, const char *format, ...);
+	int rand(void);
+	int sscanf(const char *s, const char *format, ...);
 }

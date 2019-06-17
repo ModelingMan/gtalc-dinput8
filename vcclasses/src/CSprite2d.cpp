@@ -18,22 +18,22 @@ __declspec(naked) CSprite2d::~CSprite2d()
 	__asm jmp g_Destructor;
 }
 
-__declspec(naked) void CSprite2d::Draw(const CRect& rect, const CRGBA& colour, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
+__declspec(naked) void CSprite2d::Draw(const CRect &, const CRGBA &, float, float, float, float, float, float, float, float)
 {
 	__asm jmp g_Draw;
 }
 
-__declspec(naked) void CSprite2d::Draw(const CRect& rect, const CRGBA& colour)
+__declspec(naked) void CSprite2d::Draw(const CRect &, const CRGBA &)
 {
 	__asm jmp g_Draw2;
 }
 
-__declspec(naked) void CSprite2d::DrawRect(const CRect& rect, const CRGBA& colour)
+__declspec(naked) void CSprite2d::DrawRect(const CRect &, const CRGBA &)
 {
 	__asm jmp g_DrawRect;
 }
 
-__declspec(naked) void CSprite2d::SetTexture(char *name, char *maskName)
+__declspec(naked) void CSprite2d::SetTexture(char *, char *)
 {
 	__asm jmp g_SetTexture;
 }

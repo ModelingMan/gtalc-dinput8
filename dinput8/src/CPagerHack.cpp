@@ -1,10 +1,9 @@
 #include "CPagerHack.h"
+#include <wchar.h>
 #include "CFontHack.h"
 #include "Globals.h"
 #include "vcclasses.h"
-#include "vcversion.h"
-
-#include <wchar.h>
+#include "SilentCall.h"
 
 using namespace VCGlobals;
 
@@ -17,13 +16,8 @@ int	PagerSoundState = 0;
 
 bool CPagerHack::initialise()
 {
-	unsigned char *PagerDrawHackAddr = reinterpret_cast<unsigned char *>(vcversion::AdjustOffset(0x004A6501));
-	unsigned long *PagerSetMsgHackAddr = reinterpret_cast<unsigned long *>(vcversion::AdjustOffset(0x00584C27));
-
-	PagerDrawHackAddr[0] = 0xE9;
-	*reinterpret_cast<unsigned long *>(&PagerDrawHackAddr[1]) = reinterpret_cast<unsigned long>(&Draw) - reinterpret_cast<unsigned long>(&PagerDrawHackAddr[5]);
-
-	*PagerSetMsgHackAddr = reinterpret_cast<unsigned long>(&SetMessage) - reinterpret_cast<unsigned long>(PagerSetMsgHackAddr + 1);
+	InjectHook(0x004A6501, &Draw, PATCH_JUMP);
+	InjectHook(0x00584C26, &SetMessage);
 
 	return true;
 }
@@ -31,12 +25,10 @@ bool CPagerHack::initialise()
 void CPagerHack::AddMessage(wchar_t *text, unsigned short delay, unsigned short unk1, unsigned short unk2)
 {
 	bool bDone = false;
-	int iTextLength = wcslen(text);
+	unsigned short iTextLength = static_cast<unsigned short>(wcslen(text));
 
-	for (int iPagerIndex = 0; !bDone && iPagerIndex < 8; iPagerIndex++)
-	{
-		if (Pagers[iPagerIndex].Text == 0)
-		{
+	for (int iPagerIndex = 0; !bDone && iPagerIndex < 8; iPagerIndex++) {
+		if (Pagers[iPagerIndex].Text == 0) {
 			Pagers[iPagerIndex].Text = text;
 			Pagers[iPagerIndex].Delay = delay;
 			Pagers[iPagerIndex].Unk1 = unk1;
@@ -51,15 +43,10 @@ void CPagerHack::AddMessage(wchar_t *text, unsigned short delay, unsigned short 
 			Pagers[iPagerIndex].Unk9 = 0x0FFFFFFFF;
 			Pagers[iPagerIndex].Unk10 = 0x0FFFFFFFF;
 			bDone = true;
-		}
-		else
-		{
-			if (Pagers[iPagerIndex].Delay < delay)
-			{
-				if (iPagerIndex < 7)
-				{
-					for (int i = 7; i > iPagerIndex; i--)
-					{
+		} else {
+			if (Pagers[iPagerIndex].Delay < delay) {
+				if (iPagerIndex < 7) {
+					for (int i = 7; i > iPagerIndex; i--) {
 						Pagers[i].Text = Pagers[i - 1].Text;
 						Pagers[i].Delay = Pagers[i - 1].Delay;
 						Pagers[i].Scroll = Pagers[i - 1].Scroll;
@@ -74,9 +61,7 @@ void CPagerHack::AddMessage(wchar_t *text, unsigned short delay, unsigned short 
 						Pagers[i].Unk9 = Pagers[i - 1].Unk9;
 						Pagers[i].Unk10 = Pagers[i - 1].Unk10;
 					}
-				}
-				else
-				{
+				} else {
 					Pagers[iPagerIndex].Text = text;
 					Pagers[iPagerIndex].Delay = delay;
 					Pagers[iPagerIndex].Unk1 = unk1;
@@ -94,8 +79,7 @@ void CPagerHack::AddMessage(wchar_t *text, unsigned short delay, unsigned short 
 				}
 			}
 
-			if (bDone && iPagerIndex == 0)
-			{
+			if (bDone && iPagerIndex == 0) {
 				CMessages::AddToPreviousBriefArray(Pagers[iPagerIndex].Text,
 					Pagers[iPagerIndex].Unk5,
 					Pagers[iPagerIndex].Unk6,
@@ -110,16 +94,13 @@ void CPagerHack::AddMessage(wchar_t *text, unsigned short delay, unsigned short 
 
 void CPagerHack::Draw()
 {
-	if (PagerMessage[0] == 0 && PagerDrawState == 1)
-	{
+	if (PagerMessage[0] == 0 && PagerDrawState == 1) {
 		PagerSoundState = 0;
 		PagerDrawState = 2;
 	}
 
-	if (PagerMessage[0] != 0 || PagerDrawState == 2)
-	{
-		switch (PagerDrawState)
-		{
+	if (PagerMessage[0] != 0 || PagerDrawState == 2) {
+		switch (PagerDrawState) {
 		case 0:
 			PagerDrawState = 1;
 			PagerScrollLeft = 150.0f;
@@ -129,8 +110,7 @@ void CPagerHack::Draw()
 			if (PagerScrollLeft > 0.0f)
 				PagerScrollLeft -= (PagerScrollLeft * 0.1f == 10.0f ? 10.0f : PagerScrollLeft * 0.1f);
 
-			if (PagerSoundState == 0)
-			{
+			if (PagerSoundState == 0) {
 				DMAudio.PlayFrontEndSound(96, 0);
 				PagerSoundState = 1;
 			}
@@ -147,11 +127,10 @@ void CPagerHack::Draw()
 			break;
 		}
 
-		const float width = static_cast<float>(Globals.currentWidth);
-		const float height = static_cast<float>(Globals.currentHeight);
+		const float width = static_cast<float>(RsGlobal.currentWidth);
+		const float height = static_cast<float>(RsGlobal.currentHeight);
 
-		if (width / height < 1.5f )
-		{
+		if (width / height < 1.5f ) {
 			PagerSprite->Draw(
 				CRect(width * (26.0f / 640.0f) - PagerScrollLeft,
 				height * (107.0f / 448.0f),
@@ -160,9 +139,7 @@ void CPagerHack::Draw()
 				CRGBA(255, 255, 255, 255), 0.015f, 0.0f, 1.0f, 0.0f, 0.015f, 0.995f, 1.0f, 0.995f);
 
 			CFontHack::PrintPagerString(width * (52.0f / 640.0f) - PagerScrollLeft, height * (54.0f / 448.0f), 0.84f, 1.0f, PagerMessage);
-		}
-		else
-		{
+		} else {
 			CRect rect;
 			rect.left = width * (26.0f / 1920.0f) - PagerScrollLeft;
 			rect.right = width * (346.0f / 1920.0f) - PagerScrollLeft;

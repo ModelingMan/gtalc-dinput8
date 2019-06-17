@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="src">
@@ -18,9 +18,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\cAudioManagerHack.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\CHudHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\CPagerHack.cpp">
@@ -47,18 +44,99 @@
     <ClCompile Include="src\CCranesHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CExplosionHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CGaragesHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPadHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPickupsHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CWantedHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPacManPickupsHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CProjectileInfoHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCameraHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CFileLoaderHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPathFindHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CBridgeHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CStatsHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CWeaponEffectsHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CObjectHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CRadarHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPedHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CShinyTextsHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCarCtrlHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CRecordDataForChaseHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ModelIndices.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CSpecialParticleStuffHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CGameLogicHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CMenuManagerHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CWaterLevelHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CVehicleHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CPlayerInfoHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CMessagesHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CWeaponHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CTheZonesHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CRunningScriptHack.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\cAudioManagerHack.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\CHudHack.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Utils.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\CPagerHack.h">
@@ -85,12 +163,111 @@
     <ClInclude Include="include\CCranesHack.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\CExplosionHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CGaragesHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CPadHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CPickupsHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CWantedHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SilentCall.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CPacManPickupsHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CProjectileInfoHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CCameraHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CFileLoaderHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CPathFindHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CBridgeHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CStatsHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CWeaponEffectsHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CObjectHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CRadarHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CPedHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CShinyTextsHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CCarCtrlHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CRecordDataForChaseHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Offset.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ModelIndices.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CSpecialParticleStuffHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CGameLogicHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CMenuManagerHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CWaterLevelHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CVehicleHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CPlayerInfoHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CMessagesHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CWeaponHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\WeaponTypes.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CTheZonesHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="dinput8.def">
       <Filter>src</Filter>
     </None>
     <None Include="include\ScrollBarMessages.inc">
+      <Filter>include</Filter>
+    </None>
+    <None Include="include\PickupText.inc">
       <Filter>include</Filter>
     </None>
   </ItemGroup>
