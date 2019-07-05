@@ -30,7 +30,8 @@ char *FindDigitalClockMessage()
 		String_DigitalClock[2] = ' ';
 		String_DigitalClock[3] = '@';
 		String_DigitalClock[4] = 'C';
-	} else {
+	}
+	else {
 		String_DigitalClock[0] = CClock::ms_nGameClockHours / 10 + '0';
 		String_DigitalClock[1] = CClock::ms_nGameClockHours % 10 + '0';
 		String_DigitalClock[3] = CClock::ms_nGameClockMinutes / 10 + '0';
@@ -59,25 +60,25 @@ void CDigitalClockHack::Render()
 		CSprite::InitSpriteBuffer();
 		char *text = FindDigitalClockMessage();
 
-		v5 = (static_cast<float>(rand() % 256 + 768) * this->m_fScale) / 1024.0f;
+		v5 = (static_cast<float>(VCGlobals::rand() % 256 + 768) * this->m_fScale) / 1024.0f;
 		unsigned char r = static_cast<unsigned char>(static_cast<float>(this->m_20) * v5);
 		unsigned char g = static_cast<unsigned char>(static_cast<float>(this->m_21) * v5);
 		unsigned char b = static_cast<unsigned char>(static_cast<float>(this->m_22) * v5);
 
-		//RwRenderStateSet(rwRENDERSTATEZWRITEENABLE, 0);
-		//RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, (void *)1);
-		//RwRenderStateSet(rwRENDERSTATESRCBLEND, (void *)2);
-		//RwRenderStateSet(rwRENDERSTATEDESTBLEND, (void *)2);
-		//RwRenderStateSet(rwRENDERSTATETEXTUREFILTER, (void *)2);
-		//RwRenderStateSet(rwRENDERSTATETEXTURERASTER, dword_5FAF44->raster);
-		//RwRenderStateSet(rwRENDERSTATEZTESTENABLE, (void *)1);
-		RwRenderStateSet(8, 0);
-		RwRenderStateSet(12, 1);
-		RwRenderStateSet(10, 2);
-		RwRenderStateSet(11, 2);
-		RwRenderStateSet(9, 2);
-		RwRenderStateSet(1, (int)**(void ***)vcversion::AdjustOffset(0x00695538));//dword_5FAF44->raster);
-		RwRenderStateSet(6, 1);
+		RwRenderStateSet(rwRENDERSTATEZWRITEENABLE, (void *)FALSE);
+		RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, (void *)TRUE);
+		RwRenderStateSet(rwRENDERSTATESRCBLEND, (void *)rwBLENDONE);
+		RwRenderStateSet(rwRENDERSTATEDESTBLEND, (void *)rwBLENDONE);
+		RwRenderStateSet(rwRENDERSTATETEXTUREFILTER, (void *)rwFILTERLINEAR);
+		RwRenderStateSet(rwRENDERSTATETEXTURERASTER, **(void ***)vcversion::AdjustOffset(0x00695538));
+		RwRenderStateSet(rwRENDERSTATEZTESTENABLE, (void *)TRUE);
+		//RwRenderStateSet(8, 0);
+		//RwRenderStateSet(12, 1);
+		//RwRenderStateSet(10, 2);
+		//RwRenderStateSet(11, 2);
+		//RwRenderStateSet(9, 2);
+		//RwRenderStateSet(1, (int)**(void ***)vcversion::AdjustOffset(0x00695538));//dword_5FAF44->raster);
+		//RwRenderStateSet(6, 1);
 
 		int v20 = 0;
 		for (int i = 0; i < 5; i++, v20 += 8) {

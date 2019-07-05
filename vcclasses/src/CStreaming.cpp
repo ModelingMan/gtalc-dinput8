@@ -5,6 +5,7 @@ static unsigned long g_SetModelTxdIsDeletable = vcversion::AdjustOffset(0x0040AD
 static unsigned long g_SetModelIsDeletable = vcversion::AdjustOffset(0x0040AEA0);
 static unsigned long g_LoadAllRequestedModels = vcversion::AdjustOffset(0x0040B5F0);
 static unsigned long g_RequestModel = vcversion::AdjustOffset(0x0040E310);
+static unsigned long g_pMakeSpaceFor = vcversion::AdjustOffset(0x0040C190);
 
 __declspec(naked) void CStreaming::SetModelTxdIsDeletable(int)
 {
@@ -24,4 +25,9 @@ __declspec(naked) void CStreaming::LoadAllRequestedModels(bool)
 __declspec(naked) void CStreaming::RequestModel(int, int)
 {
 	__asm jmp g_RequestModel;
+}
+
+__declspec(naked) void CStreaming::MakeSpaceFor(int size)
+{
+	__asm jmp g_pMakeSpaceFor;
 }

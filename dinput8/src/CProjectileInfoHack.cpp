@@ -30,9 +30,11 @@ bool CProjectileInfoHack::IsProjectileInRange(float x1, float y1, float z1, floa
 				object->GetZ() >= z1 && object->GetZ() <= z2) {
 				if (destroy) {
 					gaProjectileInfo[i].doesProjectileExist = 0;
-					auto Destroy = (void(__thiscall *)(CObject *, int))*(unsigned long *)(object->vtbl + 8);
+					//auto Destroy = (void(__thiscall *)(CObject *, int))*(unsigned long *)(object->vtbl + 8);
+					//auto Destroy = (void(__thiscall *)(CObject *, int))*(unsigned long *)(*(unsigned long *)object + 8);
 					CWorld::Remove(object);
-					Destroy(object, 1);
+					//Destroy(object, 1);
+					delete object;
 				}
 				return true;
 			}

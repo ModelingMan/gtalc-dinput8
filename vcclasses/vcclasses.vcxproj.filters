@@ -274,5 +274,16 @@
     <ClCompile Include="src\CPedType.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CCutsceneObject.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CDirectory.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="Constructors.asm">
+      <Filter>src</Filter>
+    </MASM>
   </ItemGroup>
 </Project>

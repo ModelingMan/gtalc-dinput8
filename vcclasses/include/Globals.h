@@ -97,4 +97,10 @@ namespace VCGlobals
 	int sprintf(char *s, const char *format, ...);
 	int rand(void);
 	int sscanf(const char *s, const char *format, ...);
+	const char *GetFrameNodeName(void *);
+	RpHAnimHierarchy *GetFrameHierarchy(RpClump *);
+	RpAtomic *SetAtomicHierarchyCB(RpAtomic *, void *);
+	RpHAnimHierarchy *GetAnimHierarchyFromSkinClump(RpClump *);
+	int ConvertPedNode2BoneTag(int);
+	RpAtomic *GetFirstAtomic(RpClump *clump);
 }

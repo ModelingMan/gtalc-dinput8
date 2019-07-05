@@ -31,8 +31,10 @@
     <ClCompile Include="src\CColStore.cpp" />
     <ClCompile Include="src\CCranes.cpp" />
     <ClCompile Include="src\CCutsceneMgr.cpp" />
+    <ClCompile Include="src\CCutsceneObject.cpp" />
     <ClCompile Include="src\CDamageManager.cpp" />
     <ClCompile Include="src\CDarkel.cpp" />
+    <ClCompile Include="src\CDirectory.cpp" />
     <ClCompile Include="src\cDMAudio.cpp" />
     <ClCompile Include="src\CEntity.cpp" />
     <ClCompile Include="src\CExplosion.cpp" />
@@ -105,6 +107,11 @@
     <ClCompile Include="src\Globals.cpp" />
     <ClCompile Include="src\RenderWare.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <MASM Include="Constructors.asm">
+      <UseSafeExceptionHandlers Condition="'$(Configuration)|$(Platform)'=='Release (Without WPO)|Win32'">false</UseSafeExceptionHandlers>
+    </MASM>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4CD5D3AF-19A3-4519-AB2A-1AF1740E123B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -133,6 +140,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -159,6 +167,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ModuleDefinitionFile>Constructors.asm</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -180,6 +189,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>Constructors.asm</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (Without WPO)|Win32'">
@@ -202,9 +212,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <ModuleDefinitionFile>Constructors.asm</ModuleDefinitionFile>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
 </Project>

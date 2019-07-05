@@ -18,7 +18,9 @@ struct MenuPage
 	} menuItem[12];
 };
 
+#if __cplusplus >= 199711L
 static_assert(sizeof(MenuPage) == 0xE2, "Size of MenuPage is not 0xE2 bytes.");
+#endif
 
 static const MenuPage displayPage =
 {

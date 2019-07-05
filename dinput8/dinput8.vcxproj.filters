@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="src">
@@ -131,6 +131,15 @@
     <ClCompile Include="src\CTheZonesHack.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\CCutsceneMgrHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CCutsceneHeadHack.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rtanim.c">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CRunningScriptHack.h">
@@ -257,6 +266,18 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\CTheZonesHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CCutsceneMgrHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CCutsceneHeadHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CCutsceneObjectHack.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\rtanim.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

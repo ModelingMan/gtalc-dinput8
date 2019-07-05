@@ -1,8 +1,8 @@
 /*************************************************************************
-    vcclasses
+vcclasses
 
-    Developed for the Grand Theft Auto: Liberty City project
-    http://gtaforums.com/forum/333-
+Developed for the Grand Theft Auto: Liberty City project
+http://gtaforums.com/forum/333-
 *************************************************************************/
 
 #ifndef __VCCLASSES_H__
@@ -79,13 +79,31 @@ public:
 	CVector pos;        // 0x30
 	unsigned int pad3;  // 0x3C
 
+	RwMatrix *m_pAttachMatrix;
+	int m_OwnRwMatrix;
+
+	CMatrix()
+		: m_pAttachMatrix(0), m_OwnRwMatrix(0)
+	{
+
+	}
+
+	CMatrix(const CMatrix &rhs);
+	CMatrix(RwMatrix *rwMatrix, bool inheritMatrix);
+	~CMatrix();
+
+	CMatrix &operator =(const CMatrix &rhs);
+
 	void SetRotate(float, float, float);
+	void SetRotateY(float);
 	void SetRotateZ(float);
 	void SetRotateZOnly(float);
 	void SetTranslate(float, float, float);
 	void ResetOrientation(void);
 	void UpdateRW(void);
 };
+
+CMatrix operator *(const RwMatrix *lhs, const CMatrix &rhs);
 
 //########################################################################
 //# cPedParams
@@ -168,10 +186,10 @@ public:
 class CEntity // public CPlaceable
 {
 public:
-	unsigned long  vtbl;                   // 0x000
+	//unsigned long  vtbl;                   // 0x000, virtual functions declared below
 	CPlaceable     placeable;              // 0x004, offset due to virtual table
-	unsigned char  espace1[0x0008];
-	unsigned long  RpClump;                // 0x04C
+	//unsigned char  espace1[0x0008];		// These belong to CMatrix (RwMatrix * and a bool)
+	RpClump  *clump;                // 0x04C
 	unsigned char  status;                 // 0x050
 	unsigned char  field_051;              // 0x051
 	unsigned char  field_052;              // 0x052
@@ -182,17 +200,50 @@ public:
 	// 0x064
 
 	float GetDistanceFromCentreOfMassToBaseOfModel(void);
-	void UpdateRwFrame(void);
-	void RegisterReference(CEntity **);
 
 	CMatrix &GetMatrix() { return placeable.matrix; }
 	CVector &GetPos() { return placeable.matrix.pos; }
 	float &GetX() { return placeable.matrix.pos.x; }
 	float &GetY() { return placeable.matrix.pos.y; }
 	float &GetZ() { return placeable.matrix.pos.z; }
+
+	CEntity();
+
+	virtual void Add();
+	virtual void Remove();
+
+	virtual ~CEntity();
+
+	virtual void SetModelIndex(unsigned int idx);
+	virtual void SetModelIndexNoCreate(unsigned int idx);
+
+	virtual void CreateRwObject();
+	virtual void DeleteRwObject();
+
+	virtual CRect GetBoundRect();
+
+	virtual void ProcessControl();
+	virtual void ProcessCollision();
+	virtual void ProcessShift();
+
+	virtual void Teleport(CVector position);
+
+	virtual void PreRender();
+	virtual void Render();
+	virtual bool SetupLighting();
+	virtual void RemoveLighting(bool reset);
+
+	virtual void FlagToDestroyWhenNextProcessed();
+
+	void UpdateRpHAnim();
+	void UpdateRwFrame();
+
+	void RegisterReference(CEntity **entity);
 };
 
+#if __cplusplus >= 199711L
 static_assert(sizeof(CEntity) == 0x064, "Size of CEntity is not 0x064 bytes.");
+#endif
 
 //########################################################################
 //# CCam
@@ -204,7 +255,9 @@ public:
 	unsigned char space1[0x1CC];
 };
 
+#if __cplusplus >= 199711L
 static_assert(sizeof(CCam) == 0x1CC, "Size of CCam is not 0x1CC bytes.");
+#endif
 
 //########################################################################
 //# CCamera
@@ -323,7 +376,9 @@ struct BriefMessage
 	wchar_t *tokenString;
 };
 
+#if __cplusplus >= 199711L
 static_assert(sizeof(BriefMessage) == 0x2C, "Size of BriefMessage is not 0x2C bytes.");
+#endif
 
 class CMessages
 {
@@ -425,11 +480,27 @@ public:
 	unsigned char  pspace7[0x0002];
 	// 0x120
 
+	CPhysical();
+	virtual ~CPhysical();
+
+	virtual void Add();
+	virtual void Remove();
+
+	virtual void *GetBoundRect(void *rect);
+
+	virtual void ProcessControl();
+	virtual void ProcessCollision();
+	virtual void ProcessShift();
+
+	virtual int ProcessEntityCollision(CEntity *other, void *colPoint);
+
 	bool GetHasCollidedWith(CEntity *);
 	void RemoveAndAdd(void);
 };
 
+#if __cplusplus >= 199711L
 static_assert(sizeof(CPhysical) == 0x120, "Size of CPhysical is not 0x120 bytes.");
+#endif
 
 //########################################################################
 //# CDamageManager
@@ -452,7 +523,9 @@ public:
 	unsigned int GetEngineStatus();
 };
 
+#if __cplusplus >= 199711L
 static_assert(sizeof(CDamageManager) == 0x18, "Size of CDamageManager is not 0x18 bytes.");
+#endif
 
 //########################################################################
 //# CVehicle
@@ -512,7 +585,9 @@ public:
 	void *operator new(unsigned int);
 };
 
+#if __cplusplus >= 199711L
 static_assert(sizeof(CVehicle) == 0x2A0, "Size of CVehicle is not 0x2A0 bytes.");
+#endif
 
 //########################################################################
 //# CAutomobile
@@ -538,7 +613,9 @@ public:
 	CAutomobile(int, unsigned char);
 };
 
+#if __cplusplus >= 199711L
 static_assert(sizeof(CAutomobile) == 0x5DC, "Size of CAutomobile is not 0x5DC bytes.");
+#endif
 
 //########################################################################
 //# CWeapon
@@ -614,7 +691,9 @@ public:
 	void Say(unsigned short);
 };
 
+#if __cplusplus >= 199711L
 static_assert(sizeof(CPed) == 0x6D8, "Size of CPed is not 0x6D8 bytes.");
+#endif
 
 //########################################################################
 //# CPlayerPed
@@ -639,19 +718,55 @@ public:
 	unsigned char space2[0x0026];
 	// 0x194
 
+	virtual ~CObject();
+
+	virtual void ProcessControl();
+	virtual void Teleport(CVector);
+	virtual void Render();
+
+	void *operator new(unsigned int size, int index);
+	void operator delete(void *);
+
 	void ObjectDamage(float);
 	void *operator new(unsigned int);
 	CObject(int, bool);
 	CObject(void);
 };
 
+#if __cplusplus >= 199711L
 static_assert(sizeof(CObject) == 0x194, "Size of CObject is not 0x194 bytes.");
+#endif
+
+//########################################################################
+//# CCutsceneObject
+//########################################################################
+
+class CCutsceneObject : public CObject
+{
+public:
+	void *m_OneThing;			// 0x194
+	void *m_AnotherThing;		// 0x198
+	void *m_AndAnotherThing;	// 0x19C
+
+public:
+	CCutsceneObject();
+	virtual ~CCutsceneObject();
+
+	virtual void SetModelIndex(unsigned int idx);
+
+	virtual void ProcessControl();
+
+	virtual void PreRender();
+	virtual void Render();
+	virtual bool SetupLighting();
+	virtual void RemoveLighting(bool result);
+};
 
 //########################################################################
 //# CCutsceneHead
 //########################################################################
 
-class CCutsceneHead : public CObject
+class CCutsceneHead : public CCutsceneObject
 {
 
 };
@@ -725,7 +840,9 @@ public:
 	// 0x170
 };
 
+#if __cplusplus >= 199711L
 static_assert(sizeof(CPlayerInfo) == 0x170, "Size of CPlayerInfo is not 0x170 bytes.");
+#endif
 
 //########################################################################
 //# CRunningScript
@@ -1075,6 +1192,7 @@ public:
 	static void SetModelIsDeletable(int);
 	static void LoadAllRequestedModels(bool);
 	static void RequestModel(int, int);
+	static void MakeSpaceFor(int size);
 };
 
 //########################################################################
@@ -1342,7 +1460,9 @@ public:
 	static CWeaponInfo *GetWeaponInfo(int);
 };
 
+#if __cplusplus >= 199711L
 static_assert(sizeof(CWeaponInfo) == 0x64, "Size of CWeaponInfo is not 0x64 bytes.");
+#endif
 
 //########################################################################
 //# CMissionCleanup
@@ -1721,7 +1841,9 @@ public:
 	CBoat(int, unsigned char);
 };
 
+#if __cplusplus >= 199711L
 static_assert(sizeof(CBoat) == 0x4C0, "Size of CBoat is not 0x4C0 bytes.");
+#endif
 
 //########################################################################
 //# CBike
@@ -1737,7 +1859,9 @@ public:
 	CBike(int, unsigned char);
 };
 
+#if __cplusplus >= 199711L
 static_assert(sizeof(CBike) == 0x4EC, "Size of CBike is not 0x4EC bytes.");
+#endif
 
 //########################################################################
 //# CBulletInfo
@@ -1808,7 +1932,9 @@ public:
 	static unsigned int &NumShinyTexts;
 };
 
+#if __cplusplus >= 199711L
 static_assert(sizeof(CShinyTexts) == 0x58, "Size of CShinyTexts is not 0x58 bytes.");
+#endif
 
 //########################################################################
 //# CWaterLevel
@@ -1832,6 +1958,31 @@ public:
 };
 
 //########################################################################
+//# CDirectory
+//########################################################################
+
+class CDirectory
+{
+public:
+	struct DirectoryInfo
+	{
+		unsigned int offset;
+		unsigned int size;
+		char name[24];
+	};
+private:
+	DirectoryInfo *m_Items;
+	unsigned int m_MaxCount;
+	unsigned int m_Count;
+
+public:
+	CDirectory();
+	~CDirectory();
+
+	bool FindItem(const char *name, unsigned int &offset, unsigned int &size);
+};
+
+//########################################################################
 //# CCutsceneMgr
 //########################################################################
 
@@ -1839,6 +1990,11 @@ class CCutsceneMgr
 {
 public:
 	static bool &ms_cutsceneProcessing;
+	static float &ms_cutsceneTimer;
+	static CDirectory *&ms_pCutsceneDir;
+	static char *ms_cutsceneName; // Length is 8
+	static CCutsceneObject **ms_pCutsceneObjects;
+	static unsigned int &ms_numCutsceneObjs;
 
 	static void Update(void);
 };
@@ -1897,7 +2053,9 @@ struct PathNode
 	unsigned char pad[3];
 };
 
+#if __cplusplus >= 199711L
 static_assert(sizeof(PathNode) == 0x14, "Size of PathNodes is not 0x14 bytes.");
+#endif
 
 class CPlane : public CVehicle
 {
@@ -1916,7 +2074,9 @@ public:
 	CPlane(int, unsigned char);
 };
 
+#if __cplusplus >= 199711L
 static_assert(sizeof(CPlane) == 0x2B4, "Size of CPlane is not 0x2B4 bytes.");
+#endif
 
 //########################################################################
 //# CReplay
@@ -1942,6 +2102,8 @@ public:
 	static CPedType **ms_apPedType;
 };
 
+#if __cplusplus >= 199711L
 static_assert(sizeof(CPedType) == 0x20, "Size of CPedType is not 0x20 bytes.");
+#endif
 
 #endif

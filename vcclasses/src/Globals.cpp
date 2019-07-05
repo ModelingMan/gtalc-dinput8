@@ -71,6 +71,13 @@ namespace VCGlobals
 	static unsigned long g_sprintf = vcversion::AdjustOffset(0x00648C10);
 	static unsigned long g_rand = vcversion::AdjustOffset(0x006499F0);
 	static unsigned long g_sscanf = vcversion::AdjustOffset(0x0064A730);
+	static unsigned long g_GetFrameNodeName = vcversion::AdjustOffset(0x00580600);
+	static unsigned long g_GetFrameHierarchy = vcversion::AdjustOffset(0x0057F1E0);
+	static unsigned long g_SetAtomicHierarchyCB = vcversion::AdjustOffset(0x00541510);
+	static unsigned long g_GetAtomicSkinHierarchy = vcversion::AdjustOffset(0x0057F250);
+	static unsigned long g_GetAnimHierarchyFromSkinClump = vcversion::AdjustOffset(0x0057F250);
+	static unsigned long g_ConvertPedNode2BoneTag = vcversion::AdjustOffset(0x00405DE0);
+	static unsigned long g_GetFirstAtomic = vcversion::AdjustOffset(0x0057F980);
 
 	__declspec(naked) char *GetLevelSplashScreen(int)
 	{
@@ -170,5 +177,35 @@ namespace VCGlobals
 	__declspec(naked) int sscanf(const char *, const char *, ...)
 	{
 		__asm jmp g_sscanf;
+	}
+
+	__declspec(naked) const char *GetFrameNodeName(void *)
+	{
+		__asm jmp g_GetFrameNodeName;
+	}
+
+	__declspec(naked) RpHAnimHierarchy *GetFrameHierarchy(RpClump *)
+	{
+		__asm jmp g_GetFrameHierarchy;
+	}
+
+	__declspec(naked) RpAtomic *SetAtomicHierarchyCB(RpAtomic *, void *)
+	{
+		__asm jmp g_SetAtomicHierarchyCB;
+	}
+
+	__declspec(naked) RpHAnimHierarchy *GetAnimHierarchyFromSkinClump(RpClump *)
+	{
+		__asm jmp g_GetAnimHierarchyFromSkinClump;
+	}
+
+	__declspec(naked) int ConvertPedNode2BoneTag(int)
+	{
+		__asm jmp g_ConvertPedNode2BoneTag;
+	}
+
+	__declspec(naked) RpAtomic *GetFirstAtomic(RpClump *clump)
+	{
+		__asm jmp g_GetFirstAtomic;
 	}
 }

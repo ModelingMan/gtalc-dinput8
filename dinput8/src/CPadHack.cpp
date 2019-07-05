@@ -160,7 +160,8 @@ void CPadHack::BlowUpCarsCheat()
 		if ((CPools::ms_pVehiclePool->flags[i] & 0x80) != 0x80) {
 			CVehicle *vehicle = &CPools::ms_pVehiclePool->entities[i];
 			if (vehicle) {
-				auto BlowUpCar = (void(__thiscall *)(CVehicle *, int))*(unsigned long *)(vehicle->vtbl + 0x80);
+				//auto BlowUpCar = (void(__thiscall *)(CVehicle *, int))*(unsigned long *)(vehicle->vtbl + 0x80);
+				auto BlowUpCar = (void(__thiscall *)(CVehicle *, int))*(unsigned long *)(*(unsigned long *)vehicle + 0x80);
 				BlowUpCar(vehicle, 0);
 			}
 		}

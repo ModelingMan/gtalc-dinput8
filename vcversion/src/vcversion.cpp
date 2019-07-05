@@ -64,6 +64,7 @@ namespace vcversion
 		case verGTAVC_GER_10: return AdjustOffsetGER10(Offset);
 		case verGTAVC_GER_11: return AdjustOffsetGER11(Offset);
 		case verGTAVC_STEAM: return AdjustOffsetSTEAM(Offset);
+		case verUnknown: return 0;
 		}
 
 		return Offset;
@@ -79,6 +80,7 @@ namespace vcversion
 		case verGTAVC_GER_10: return "GTA VC German v1.0";
 		case verGTAVC_GER_11: return "GTA VC German v1.1";
 		case verGTAVC_STEAM: return "GTA VC Steam";
+		case verUnknown: return "GTA VC Unknown Version";
 		}
 
 		return "GTA VC Unknown Version";

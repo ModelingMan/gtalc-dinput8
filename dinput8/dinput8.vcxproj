@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -18,6 +18,7 @@
     <ProjectGuid>{689CC6C8-24A2-4E15-A65F-9C4D59F539BE}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>dinput8</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -116,7 +117,7 @@
       </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;DINPUT8_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)..\vcversion\include;$(ProjectDir)..\vcclasses\include</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
@@ -129,12 +130,13 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>$(SolutionDir)$(Configuration)\vcversion.lib;$(SolutionDir)$(Configuration)\vcclasses.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)..\$(ConfigurationName)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>dinput8.def</ModuleDefinitionFile>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -143,6 +145,8 @@
     <ClCompile Include="src\CCameraHack.cpp" />
     <ClCompile Include="src\CCarCtrlHack.cpp" />
     <ClCompile Include="src\CCranesHack.cpp" />
+    <ClCompile Include="src\CCutsceneHeadHack.cpp" />
+    <ClCompile Include="src\CCutsceneMgrHack.cpp" />
     <ClCompile Include="src\CDigitalClockHack.cpp" />
     <ClCompile Include="src\CExplosionHack.cpp" />
     <ClCompile Include="src\CFileLoaderHack.cpp" />
@@ -178,6 +182,7 @@
     <ClCompile Include="src\CWeaponHack.cpp" />
     <ClCompile Include="src\EntryPoint.cpp" />
     <ClCompile Include="src\ModelIndices.cpp" />
+    <ClCompile Include="src\rtanim.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\cAudioManagerHack.h" />
@@ -185,6 +190,9 @@
     <ClInclude Include="include\CCameraHack.h" />
     <ClInclude Include="include\CCarCtrlHack.h" />
     <ClInclude Include="include\CCranesHack.h" />
+    <ClInclude Include="include\CCutsceneHeadHack.h" />
+    <ClInclude Include="include\CCutsceneMgrHack.h" />
+    <ClInclude Include="include\CCutsceneObjectHack.h" />
     <ClInclude Include="include\CDigitalClockHack.h" />
     <ClInclude Include="include\CExplosionHack.h" />
     <ClInclude Include="include\CFileLoaderHack.h" />
@@ -220,6 +228,7 @@
     <ClInclude Include="include\CWeaponHack.h" />
     <ClInclude Include="include\ModelIndices.h" />
     <ClInclude Include="include\Offset.h" />
+    <ClInclude Include="include\rtanim.h" />
     <ClInclude Include="include\SilentCall.h" />
     <ClInclude Include="include\WeaponTypes.h" />
   </ItemGroup>

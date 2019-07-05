@@ -279,11 +279,17 @@ void CPacManPickupsHack::GenerateOnePMPickUp(CVector pos)
 void CPacManPickupsHack::Render(void)
 {
 	if (bPMActive) {
-		RwRenderStateSet(8, 0);  // rwRENDERSTATEZWRITEENABLE
-		RwRenderStateSet(12, 1); // rwRENDERSTATEVERTEXALPHAENABLE
-		RwRenderStateSet(10, 2); // rwRENDERSTATESRCBLEND
-		RwRenderStateSet(11, 2); // rwRENDERSTATEDESTBLEND
-		RwRenderStateSet(1, (int)**(void ***)vcversion::AdjustOffset(0x00695550));
+		//RwRenderStateSet(8, 0);  // rwRENDERSTATEZWRITEENABLE
+		//RwRenderStateSet(12, 1); // rwRENDERSTATEVERTEXALPHAENABLE
+		//RwRenderStateSet(10, 2); // rwRENDERSTATESRCBLEND
+		//RwRenderStateSet(11, 2); // rwRENDERSTATEDESTBLEND
+		//RwRenderStateSet(1, (int)**(void ***)vcversion::AdjustOffset(0x00695550));
+		RwRenderStateSet(rwRENDERSTATEZWRITEENABLE, (void *)FALSE);
+		RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, (void *)TRUE);
+		RwRenderStateSet(rwRENDERSTATESRCBLEND, (void *)rwBLENDONE);
+		RwRenderStateSet(rwRENDERSTATEDESTBLEND, (void *)rwBLENDONE);
+		RwRenderStateSet(rwRENDERSTATETEXTURERASTER, **(void ***)vcversion::AdjustOffset(0x00695550));
+
 		for (int i = 0; i < MAX_PACMAN_PICKUP; i++) {
 			if (aPMPickups[i].state) {
 				RwV3d pickup = { aPMPickups[i].position.x, aPMPickups[i].position.y, aPMPickups[i].position.z };
@@ -306,6 +312,10 @@ void CPacManPickupsHack::Render(void)
 		//RwRenderStateSet(11, 6); // rwRENDERSTATEDESTBLEND
 		//RwRenderStateSet(8, 1);  // rwRENDERSTATEZWRITEENABLE
 		//RwRenderStateSet(12, 0); // rwRENDERSTATEVERTEXALPHAENABLE
+		RwRenderStateSet(rwRENDERSTATESRCBLEND, (void *)rwBLENDSRCALPHA);
+		RwRenderStateSet(rwRENDERSTATEDESTBLEND, (void *)rwBLENDINVSRCALPHA);
+		RwRenderStateSet(rwRENDERSTATEZWRITEENABLE, (void *)TRUE);
+		RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, (void *)FALSE);
 	}
 	CallRender();
 }
@@ -329,15 +339,19 @@ void CPacManPickupHack::Update(void)
 		vehicle->accelerationResistance *= multiplier;
 		VCGlobals::FindPlayerPed()->wanted->counter += 10;
 		VCGlobals::FindPlayerPed()->wanted->UpdateWantedLevel();
-	} else if (state == 2) {
+	}
+	else if (state == 2) {
 		CPacManPickupsHack::PillsEatenInRace++;
 	}
 	VCGlobals::DMAudio.cDMAudio::PlayFrontEndSound(0x54, 0);
 	state = 0;
 	if (object) {
 		CWorld::Remove(object);
-		auto Destroy = (void(__thiscall *)(CObject *, int))*(unsigned long *)(object->vtbl + 8);
-		Destroy(object, 1);
+		//auto Destroy = (void(__thiscall *)(CObject *, int))*(unsigned long *)(object->vtbl + 8);
+		//auto Destroy = (void(__thiscall *)(CObject *, int))*(unsigned long *)(*(unsigned long *)object + 8);
+
+		//Destroy(object, 1);
+		delete object; // This will retrieve and call the deleter function from the vtable at offset 8 (see CEntity, order of virtual functions matches the vtables in gta-vc.exe)
 		object = 0;
 	}
 }
@@ -364,7 +378,8 @@ void CPacManPickupsHack::CleanUpPacManStuff(void)
 	for (int i = 0; i < MAX_PACMAN_PICKUP; i++) {
 		if (aPMPickups[i].state && aPMPickups[i].object) {
 			CWorld::Remove(aPMPickups[i].object);
-			auto Destroy = (void(__thiscall *)(CObject *, int))*(unsigned long *)(aPMPickups[i].object->vtbl + 8);
+			//auto Destroy = (void(__thiscall *)(CObject *, int))*(unsigned long *)(aPMPickups[i].object->vtbl + 8);
+			auto Destroy = (void(__thiscall *)(CObject *, int))*(unsigned long *)(*(unsigned long *)aPMPickups[i].object + 8);
 			Destroy(aPMPickups[i].object, 1);
 			aPMPickups[i].object = 0;
 		}

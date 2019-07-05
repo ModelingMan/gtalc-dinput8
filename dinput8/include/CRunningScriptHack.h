@@ -101,5 +101,8 @@ public:
 	bool _0430_warp_char_into_car_as_passenger(); // added opcode
 	bool _0432_get_char_in_car_passenger_seat(); // added opcode
 
+	bool _02F4_create_cutscene_actor_from_head_and_body();
+	bool _02F5_set_head_anim();
+
 	static int debugMode;
 };

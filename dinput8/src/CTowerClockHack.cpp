@@ -29,20 +29,20 @@ void CTowerClockHack::Render()
 		float hourHand = ((CClock::ms_nGameClockHours * 60 + CClock::ms_nGameClockMinutes) / 720.0f) * 6.2831855f;
 		float minuteHand = ((CClock::ms_nGameClockMinutes * 60 + CClock::ms_nGameClockSeconds) / 3600.0f) * 6.2831855f;
 
-		//RwRenderStateSet(rwRENDERSTATEZWRITEENABLE, (void *)1);
-		//RwRenderStateSet(rwRENDERSTATEZTESTENABLE, (void *)1);
-		//RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, (void *)1);
-		//RwRenderStateSet(rwRENDERSTATESRCBLEND, (void *)5);
-		//RwRenderStateSet(rwRENDERSTATEDESTBLEND, (void *)6);
-		//RwRenderStateSet(rwRENDERSTATETEXTUREFILTER, (void *)2);
-		//RwRenderStateSet(rwRENDERSTATETEXTURERASTER, 0);
-		RwRenderStateSet(8, 1);
-		RwRenderStateSet(6, 1);
-		RwRenderStateSet(12, 1);
-		RwRenderStateSet(10, 5);
-		RwRenderStateSet(11, 6);
-		RwRenderStateSet(9, 2);
-		RwRenderStateSet(1, 0);
+		RwRenderStateSet(rwRENDERSTATEZWRITEENABLE, (void *)TRUE);
+		RwRenderStateSet(rwRENDERSTATEZTESTENABLE, (void *)TRUE);
+		RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, (void *)TRUE);
+		RwRenderStateSet(rwRENDERSTATESRCBLEND, (void *)rwBLENDSRCALPHA);
+		RwRenderStateSet(rwRENDERSTATEDESTBLEND, (void *)rwBLENDINVSRCALPHA);
+		RwRenderStateSet(rwRENDERSTATETEXTUREFILTER, (void *)rwFILTERLINEAR);
+		RwRenderStateSet(rwRENDERSTATETEXTURERASTER, (void *)NULL);
+		//RwRenderStateSet(8, 1);
+		//RwRenderStateSet(6, 1);
+		//RwRenderStateSet(12, 1);
+		//RwRenderStateSet(10, 5);
+		//RwRenderStateSet(11, 6);
+		//RwRenderStateSet(9, 2);
+		//RwRenderStateSet(1, 0);
 
 		verts[0].color = this->m_22 | (this->m_21 << 8) | (this->m_20 << 16) | alpha << 24;
 		verts[1].color = this->m_22 | (this->m_21 << 8) | (this->m_20 << 16) | alpha << 24;

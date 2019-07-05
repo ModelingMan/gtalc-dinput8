@@ -2,6 +2,8 @@
 #include <Windows.h>
 #include <cmath>
 #include "CCranesHack.h"
+#include "CCutsceneHeadHack.h"
+#include "CCutsceneMgrHack.h"
 #include "CExplosionHack.h"
 #include "CGameLogicHack.h"
 #include "CMessagesHack.h"
@@ -88,6 +90,10 @@ bool CRunningScriptHack::ProcessOneCommandHack()
 		return this->_02BD_is_debug_mode();
 	case 0x2CD:
 		return this->_02CD_gosub_file();
+	case 0x2F4:
+		return this->_02F4_create_cutscene_actor_from_head_and_body();
+	case 0x2F5:
+		return this->_02F5_set_head_anim();
 	case 0x2FB:
 		return this->_02FB_activate_crusher_crane();
 	case 0x2FE:
@@ -1092,6 +1098,40 @@ bool CRunningScriptHack::_0432_get_char_in_car_passenger_seat()
 	CVehicle *vehicle = CPools::ms_pVehiclePool->GetAt(ScriptParams[0].int32);
 	ScriptParams[0].int32 = CPools::ms_pPedPool->GetIndex(vehicle->passengers[ScriptParams[1].int32]);
 	this->StoreParameters(&this->m_dwScriptIP, 1);
+	return 0;
+}
+
+bool CRunningScriptHack::_02F4_create_cutscene_actor_from_head_and_body()
+{
+	CollectParameters(&m_dwScriptIP, 2);
+
+	CObject *body = CPools::ms_pObjectPool->GetAt(ScriptParams[0].int32);
+
+	CCutsceneHeadHack *head = CCutsceneMgrHack::AddCutsceneHead(body, ScriptParams[1].int32);
+
+	ScriptParams[0].int32 = CPools::ms_pObjectPool->GetIndex(static_cast<CObject *>(head));
+	StoreParameters(&m_dwScriptIP, 1);
+
+	return 0;
+}
+
+bool CRunningScriptHack::_02F5_set_head_anim()
+{
+	char headAnimName[9];
+	CollectParameters(&m_dwScriptIP, 1);
+
+	CCutsceneHeadHack *head = static_cast<CCutsceneHeadHack *>(CPools::ms_pObjectPool->GetAt(ScriptParams[0].int32));
+
+	VCGlobals::strncpy(headAnimName, (const char *)&CTheScripts::ScriptSpace[m_dwScriptIP], 8);
+	headAnimName[8] = 0;
+	m_dwScriptIP += 8;
+
+	CTimer::Stop();
+
+	CCutsceneMgrHack::SetHeadAnim(headAnimName, head);
+
+	CTimer::Update();
+
 	return 0;
 }
 
