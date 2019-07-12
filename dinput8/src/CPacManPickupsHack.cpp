@@ -279,11 +279,6 @@ void CPacManPickupsHack::GenerateOnePMPickUp(CVector pos)
 void CPacManPickupsHack::Render(void)
 {
 	if (bPMActive) {
-		//RwRenderStateSet(8, 0);  // rwRENDERSTATEZWRITEENABLE
-		//RwRenderStateSet(12, 1); // rwRENDERSTATEVERTEXALPHAENABLE
-		//RwRenderStateSet(10, 2); // rwRENDERSTATESRCBLEND
-		//RwRenderStateSet(11, 2); // rwRENDERSTATEDESTBLEND
-		//RwRenderStateSet(1, (int)**(void ***)vcversion::AdjustOffset(0x00695550));
 		RwRenderStateSet(rwRENDERSTATEZWRITEENABLE, (void *)FALSE);
 		RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, (void *)TRUE);
 		RwRenderStateSet(rwRENDERSTATESRCBLEND, (void *)rwBLENDONE);
@@ -308,10 +303,6 @@ void CPacManPickupsHack::Render(void)
 				}
 			}
 		}
-		//RwRenderStateSet(10, 5); // rwRENDERSTATESRCBLEND
-		//RwRenderStateSet(11, 6); // rwRENDERSTATEDESTBLEND
-		//RwRenderStateSet(8, 1);  // rwRENDERSTATEZWRITEENABLE
-		//RwRenderStateSet(12, 0); // rwRENDERSTATEVERTEXALPHAENABLE
 		RwRenderStateSet(rwRENDERSTATESRCBLEND, (void *)rwBLENDSRCALPHA);
 		RwRenderStateSet(rwRENDERSTATEDESTBLEND, (void *)rwBLENDINVSRCALPHA);
 		RwRenderStateSet(rwRENDERSTATEZWRITEENABLE, (void *)TRUE);
@@ -347,10 +338,6 @@ void CPacManPickupHack::Update(void)
 	state = 0;
 	if (object) {
 		CWorld::Remove(object);
-		//auto Destroy = (void(__thiscall *)(CObject *, int))*(unsigned long *)(object->vtbl + 8);
-		//auto Destroy = (void(__thiscall *)(CObject *, int))*(unsigned long *)(*(unsigned long *)object + 8);
-
-		//Destroy(object, 1);
 		delete object; // This will retrieve and call the deleter function from the vtable at offset 8 (see CEntity, order of virtual functions matches the vtables in gta-vc.exe)
 		object = 0;
 	}
@@ -378,9 +365,7 @@ void CPacManPickupsHack::CleanUpPacManStuff(void)
 	for (int i = 0; i < MAX_PACMAN_PICKUP; i++) {
 		if (aPMPickups[i].state && aPMPickups[i].object) {
 			CWorld::Remove(aPMPickups[i].object);
-			//auto Destroy = (void(__thiscall *)(CObject *, int))*(unsigned long *)(aPMPickups[i].object->vtbl + 8);
-			auto Destroy = (void(__thiscall *)(CObject *, int))*(unsigned long *)(*(unsigned long *)aPMPickups[i].object + 8);
-			Destroy(aPMPickups[i].object, 1);
+			delete aPMPickups[i].object;
 			aPMPickups[i].object = 0;
 		}
 		aPMPickups[i].state = 0;

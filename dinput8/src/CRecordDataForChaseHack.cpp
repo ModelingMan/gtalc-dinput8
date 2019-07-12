@@ -36,9 +36,6 @@ void CRecordDataForChaseHack::RemoveCarFromChase(int id)
 {
 	if (pChaseCars[id]) {
 		CWorld::Remove(pChaseCars[id]);
-		//auto deleteCar = (void(__thiscall *)(CVehicle *, int))*(unsigned long *)(pChaseCars[id]->vtbl + 8);
-		//auto deleteCar = (void(__thiscall *)(CVehicle *, int))*(unsigned long *)(*(unsigned long *)pChaseCars[id] + 8);
-		//deleteCar(pChaseCars[id], 1);
 		delete pChaseCars[id];
 		pChaseCars[id] = 0;
 	}
@@ -49,9 +46,6 @@ void CRecordDataForChaseHack::CleanUpCarsForChaseScene(void)
 	for (int i = 0; i < MAX_CHASE_CARS; i++) {
 		if (pChaseCars[i]) {
 			CWorld::Remove(pChaseCars[i]);
-			//auto deleteCar = (void(__thiscall *)(CVehicle *, int))*(unsigned long *)(pChaseCars[i]->vtbl + 8);
-			//auto deleteCar = (void(__thiscall *)(CVehicle *, int))*(unsigned long *)(*(unsigned long *)pChaseCars[i] + 8);
-			//deleteCar(pChaseCars[i], 1);
 			delete pChaseCars[i];
 			pChaseCars[i] = 0;
 		}
@@ -144,9 +138,7 @@ void CRecordDataForChaseHack::ProcessControlCars(void)
 	if (Status == 3) {
 		for (int i = 0; i < MAX_CHASE_CARS; i++) {
 			if (pChaseCars[i]) {
-				//auto ProcessControl = (void(__thiscall *)(CAutomobile *))*(unsigned long *)(pChaseCars[i]->vtbl + 0x20);
-				auto ProcessControl = (void(__thiscall *)(CAutomobile *))*(unsigned long *)(*(unsigned long *)pChaseCars[i] + 0x20);
-				ProcessControl(pChaseCars[i]);
+				pChaseCars[i]->ProcessControl();
 			}
 		}
 	}
