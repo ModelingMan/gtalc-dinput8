@@ -161,8 +161,9 @@ void CPadHack::BlowUpCarsCheat()
 			CVehicle *vehicle = &CPools::ms_pVehiclePool->entities[i];
 			if (vehicle) {
 				//auto BlowUpCar = (void(__thiscall *)(CVehicle *, int))*(unsigned long *)(vehicle->vtbl + 0x80);
-				auto BlowUpCar = (void(__thiscall *)(CVehicle *, int))*(unsigned long *)(*(unsigned long *)vehicle + 0x80);
-				BlowUpCar(vehicle, 0);
+				//auto BlowUpCar = (void(__thiscall *)(CVehicle *, int))*(unsigned long *)(*(unsigned long *)vehicle + 0x80);
+				//BlowUpCar(vehicle, 0);
+				vehicle->BlowUpCar(nullptr);
 			}
 		}
 	}

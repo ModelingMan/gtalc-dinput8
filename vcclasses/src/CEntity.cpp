@@ -61,7 +61,7 @@ __declspec(naked) void CEntity::DeleteRwObject()
 	__asm jmp g_DeleteRwObject;
 }
 
-__declspec(naked) CRect CEntity::GetBoundRect()
+__declspec(naked) CRect *CEntity::GetBoundRect(CRect *)
 {
 	__asm jmp g_GetBoundRect;
 }

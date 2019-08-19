@@ -85,7 +85,7 @@ void CCutsceneHeadHack::ProcessControl()
 	RwMatrixScale(&matrices[index], &scale, rwCOMBINEPRECONCAT);
 
 	hier = RpSkinAtomicGetHAnimHierarchy(VCGlobals::GetFirstAtomic(clump));
-	RtAnimInterpolatorAddAnimTimeASM(
+	RtAnimInterpolatorAddAnimTime(
 		hier->currentAnim, CTimer::ms_fTimeStepNonClipped / 50);
 
 	CPhysical::ProcessControl();

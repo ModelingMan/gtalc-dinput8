@@ -34,7 +34,7 @@ __declspec(naked) void CPhysical::Remove()
 	__asm jmp g_Remove;
 }
 
-__declspec(naked) void *CPhysical::GetBoundRect(void *rect)
+__declspec(naked) CRect *CPhysical::GetBoundRect(CRect *rect)
 {
 	__asm jmp g_GetBoundRect;
 }

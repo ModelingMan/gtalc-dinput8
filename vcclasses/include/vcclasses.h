@@ -220,7 +220,7 @@ public:
 	virtual void CreateRwObject();
 	virtual void DeleteRwObject();
 
-	virtual CRect GetBoundRect();
+	virtual CRect *GetBoundRect(CRect *);
 
 	virtual void ProcessControl();
 	virtual void ProcessCollision();
@@ -266,7 +266,7 @@ static_assert(sizeof(CCam) == 0x1CC, "Size of CCam is not 0x1CC bytes.");
 class CCamera : public CPlaceable
 {
 public:
-	unsigned char space1[0x0A4];
+	unsigned char space1[0x09C];
 	float unk;  // 0x0E4
 	unsigned char space2[0x0A0];
 	CCam ccam1; // 0x188
@@ -481,12 +481,13 @@ public:
 	// 0x120
 
 	CPhysical();
-	virtual ~CPhysical();
 
 	virtual void Add();
 	virtual void Remove();
 
-	virtual void *GetBoundRect(void *rect);
+	virtual ~CPhysical();
+
+	virtual CRect *GetBoundRect(CRect *);
 
 	virtual void ProcessControl();
 	virtual void ProcessCollision();
@@ -530,6 +531,11 @@ static_assert(sizeof(CDamageManager) == 0x18, "Size of CDamageManager is not 0x1
 //########################################################################
 //# CVehicle
 //########################################################################
+
+enum eDoors
+{
+
+};
 
 class CVehicle : public CPhysical
 {
@@ -583,6 +589,37 @@ public:
 	bool AddPassenger(CPed *);
 	int FindTyreNearestPoint(float, float);
 	void *operator new(unsigned int);
+
+	virtual ~CVehicle();
+
+	virtual void SetModelIndex(unsigned int idx);
+
+	virtual bool SetupLighting();
+	virtual void RemoveLighting(bool reset);
+
+	virtual void FlagToDestroyWhenNextProcessed();
+
+	virtual void ProcessControlInputs(unsigned char);
+	virtual void GetComponentWorldPosition(int, CVector &);
+	virtual void IsComponentPresent(int);
+	virtual void SetComponentRotation(int, CVector);
+	virtual void OpenDoor(int, eDoors, float);
+	virtual void ProcessOpenDoor(unsigned int, unsigned int, float);
+	virtual void IsDoorReady(eDoors);
+	virtual void IsDoorFullyOpen(eDoors);
+	virtual void IsDoorClosed(eDoors);
+	virtual void IsDoorMissing(eDoors);
+	virtual void IsDoorReady(unsigned int);
+	virtual void IsDoorMissing(unsigned int);
+	virtual void IsOpenTopCar(void);
+	virtual void RemoveRefsToVehicle(CEntity *);
+	virtual void BlowUpCar(CEntity *);
+	virtual void SetUpWheelColModel(void *); //CColModel
+	virtual void BurstTyre(unsigned char, bool);
+	virtual void IsRoomForPedToLeaveCar(unsigned int, CVector *);
+	virtual void IsClearToDriveAway(void);
+	virtual void GetHeightAboveRoad(void);
+	virtual void PlayCarHorn(void);
 };
 
 #if __cplusplus >= 199711L
